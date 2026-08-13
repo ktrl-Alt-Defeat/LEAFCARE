@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   description:
     'AI-powered crop disease detection, localized weather forecasts, and farming guidance for farmers.',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export const viewport: Viewport = {

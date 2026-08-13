@@ -2,8 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Leaf, Bell, User } from 'lucide-react';
+import { Bell, User } from 'lucide-react';
 import { LanguageMenu } from './LanguageMenu';
+import { BrandLockup } from '@/components/ui/BrandMark';
 
 export interface HeaderProps {
   /** Page title. Shown in the bar on laptop widths, where the sidebar owns the brand. */
@@ -18,13 +19,12 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle, actions }) => {
     <header className="sticky top-0 z-40 h-[var(--header-h)] border-b border-slate-200/70 bg-white/85 backdrop-blur-md">
       <div className="page-shell flex h-full items-center justify-between gap-3">
         {/* Brand on phones, page title on laptops */}
-        <Link href="/home" className="group flex items-center gap-2 lg:hidden" aria-label="LeafCare home">
-          <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-tr from-agro-600 to-emerald-400 text-white shadow-soft-sm transition-transform group-hover:scale-105">
-            <Leaf className="h-[18px] w-[18px] fill-white/20" />
-          </div>
-          <span className="text-lg font-black leading-none tracking-tight text-slate-900">
-            Leaf<span className="text-agro-600">Care</span>
-          </span>
+        <Link
+          href="/home"
+          className="group flex items-center gap-2 transition-transform hover:scale-[1.02] lg:hidden"
+          aria-label="LeafCare home"
+        >
+          <BrandLockup size={36} priority />
         </Link>
 
         <div className="hidden min-w-0 flex-col lg:flex">

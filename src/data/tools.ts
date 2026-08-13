@@ -23,7 +23,7 @@ export const TOOLS_DATA: ToolItem[] = [
     category: 'Calculators',
     icon: '💦',
     description: 'Calculate required pesticide volume per spray tank.',
-    isInteractive: true
+    comingSoon: true
   },
   {
     id: 'crop_doctor',
@@ -31,7 +31,7 @@ export const TOOLS_DATA: ToolItem[] = [
     category: 'AI Assist',
     icon: '🩺',
     description: 'Interactive voice & text assistant for immediate plant help.',
-    isInteractive: true
+    comingSoon: true
   },
   {
     id: 'weather_radar',
@@ -39,7 +39,7 @@ export const TOOLS_DATA: ToolItem[] = [
     category: 'Weather',
     icon: '🌧️',
     description: 'Best time of day to spray based on wind and rain forecast.',
-    isInteractive: true
+    comingSoon: true
   },
   {
     id: 'planting_calendar',

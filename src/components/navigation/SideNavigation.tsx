@@ -4,7 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Camera, Leaf, Sparkles } from 'lucide-react';
+import { Camera, Sparkles } from 'lucide-react';
+import { BrandLockup } from '@/components/ui/BrandMark';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAppState } from '@/context/AppStateContext';
 import { NAV_ITEMS, isNavItemActive } from './navItems';
@@ -23,18 +24,8 @@ export const SideNavigation: React.FC = () => {
   return (
     <aside className="hidden lg:flex lg:h-dvh lg:w-60 xl:w-64 shrink-0 flex-col gap-6 border-r border-slate-200/80 bg-white px-4 py-5">
       {/* Brand */}
-      <Link href="/home" className="flex items-center gap-2.5 px-1">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-agro-600 to-emerald-400 text-white shadow-soft-sm">
-          <Leaf className="h-5 w-5 fill-white/20" />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-lg font-black leading-none tracking-tight text-slate-900">
-            Leaf<span className="text-agro-600">Care</span>
-          </span>
-          <span className="mt-1 text-[10px] font-semibold uppercase leading-none tracking-wider text-agro-700">
-            AI Crop Doctor
-          </span>
-        </div>
+      <Link href="/home" className="px-1">
+        <BrandLockup size={40} tagline="AI Crop Doctor" priority />
       </Link>
 
       {/* Primary scan action */}

@@ -129,22 +129,8 @@ export const CROPS_DATA: Crop[] = [
     color: 'bg-emerald-100 text-emerald-800 border-emerald-300',
     description: 'Sweet pepper crop sensitive to leaf spot and mosaic virus.'
   },
-  {
-    id: 'chili_pepper',
-    name: 'Pepper Bell',
-    translatedNames: {
-      en: 'Pepper Bell',
-      ta: 'மிளகாய்',
-      hi: 'हरी मिर्च',
-      te: 'మిరప',
-      ml: 'മുളക്',
-      kn: 'ಮೆಣಸಿನಕಾಯಿ'
-    },
-    category: 'Vegetables',
-    icon: '🌶️',
-    color: 'bg-red-100 text-red-800 border-red-300',
-    description: 'Pungent vegetable crop affected by anthracnose and leaf curl.'
-  },
+  // Note: the former 'chili_pepper' entry (listed as "Pepper Bell") duplicated
+  // 'bell_pepper' and has been merged into it.
   {
     id: 'cotton',
     name: 'Cotton',

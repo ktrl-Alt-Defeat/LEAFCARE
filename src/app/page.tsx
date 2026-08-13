@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Leaf } from 'lucide-react';
 import { useAppState } from '@/context/AppStateContext';
+import { BrandMark } from '@/components/ui/BrandMark';
 
 export default function RootPage() {
   const router = useRouter();
@@ -18,8 +18,8 @@ export default function RootPage() {
 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-gradient-to-b from-agro-50 via-white to-agro-50/60">
-      <div className="flex h-16 w-16 animate-float items-center justify-center rounded-3xl bg-gradient-to-tr from-agro-600 to-emerald-400 text-white shadow-soft-lg">
-        <Leaf className="h-8 w-8 fill-white/20" />
+      <div className="animate-float">
+        <BrandMark size={88} priority />
       </div>
       <div className="flex flex-col items-center gap-2">
         <span className="text-xl font-black tracking-tight text-slate-900">

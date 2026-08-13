@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Check, Leaf } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { SUPPORTED_LANGUAGES } from '@/data/languages';
+import { BrandMark } from '@/components/ui/BrandMark';
 import { LanguageCode } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
@@ -27,9 +28,9 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           initial={{ scale: 0, rotate: -20 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-          className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-tr from-agro-600 via-emerald-500 to-green-400 text-white shadow-soft-lg shadow-agro-600/30 lg:hidden"
+          className="mb-4 lg:hidden"
         >
-          <Leaf className="h-9 w-9 fill-white/20" />
+          <BrandMark size={72} priority />
         </motion.div>
 
         <motion.h1

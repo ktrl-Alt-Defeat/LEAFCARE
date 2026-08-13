@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { usePathname } from 'next/navigation';
-import { Leaf, ScanLine, CloudSun, Users } from 'lucide-react';
+import { ScanLine, CloudSun, Users } from 'lucide-react';
+import { BrandLockup } from '@/components/ui/BrandMark';
 import { SideNavigation } from '@/components/navigation/SideNavigation';
 import { BottomNavigation } from '@/components/navigation/BottomNavigation';
 import { useAppState } from '@/context/AppStateContext';
@@ -26,14 +27,7 @@ const OnboardingLayout: React.FC<{ children: React.ReactNode }> = ({ children })
     <aside className="relative hidden w-[42%] shrink-0 flex-col justify-between overflow-hidden bg-gradient-to-br from-agro-900 via-agro-800 to-emerald-950 p-10 text-white lg:flex xl:w-[46%]">
       <div className="pointer-events-none absolute -right-24 top-1/4 h-96 w-96 rounded-full bg-agro-500/20 blur-3xl" />
 
-      <div className="relative flex items-center gap-2.5">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25">
-          <Leaf className="h-6 w-6 fill-white/20" />
-        </div>
-        <span className="text-xl font-black tracking-tight">
-          Leaf<span className="text-agro-300">Care</span>
-        </span>
-      </div>
+      <BrandLockup size={44} inverted priority className="relative" />
 
       <div className="relative flex flex-col gap-6">
         <h2 className="max-w-sm text-3xl font-black leading-tight tracking-tight xl:text-4xl">

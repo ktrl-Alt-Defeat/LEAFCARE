@@ -1,4 +1,4 @@
-import { Home, Users, ShoppingBag, User, Sprout, type LucideIcon } from 'lucide-react';
+import { Home, Users, ShoppingBag, User, Sprout, BookOpen, type LucideIcon } from 'lucide-react';
 
 export interface NavItem {
   href: string;
@@ -15,8 +15,18 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/community', labelKey: 'navCommunity', defaultLabel: 'Community', icon: Users },
   { href: '/market', labelKey: 'navMarket', defaultLabel: 'Market', icon: ShoppingBag },
   { href: '/crops', labelKey: 'navCrops', defaultLabel: 'My Crops', icon: Sprout, desktopOnly: true },
+  {
+    href: '/catalog',
+    labelKey: 'navCatalog',
+    defaultLabel: 'Crop Catalog',
+    icon: BookOpen,
+    desktopOnly: true,
+  },
   { href: '/profile', labelKey: 'navProfile', defaultLabel: 'Profile', icon: User },
 ];
 
 export const isNavItemActive = (pathname: string, href: string): boolean =>
-  pathname === href || (href === '/home' && pathname === '/');
+  pathname === href ||
+  (href === '/home' && pathname === '/') ||
+  // Keep the catalog entry lit while viewing an individual crop sheet.
+  (href === '/catalog' && pathname.startsWith('/catalog/'));

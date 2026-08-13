@@ -25,6 +25,39 @@ export interface Crop {
   description: string;
 }
 
+/** Agronomy reference sheet shown in the crops catalog. */
+export interface CropAgronomy {
+  cropId: string;
+  growing: {
+    temperature: string;
+    exposure: string;
+    rainfall: string;
+    humidity?: string;
+    watering: string;
+  };
+  soil: {
+    type: string;
+    ph: string;
+    drainage?: string;
+  };
+  cultivation: {
+    lifeCycle: string;
+    labour: 'Low' | 'Medium' | 'High';
+    plantingMethod: string;
+    rowSpacing: string;
+    plantSpacing: string;
+  };
+  nutrients: {
+    nitrogen: string;
+    phosphorus: string;
+    potassium: string;
+  };
+  companions: {
+    good: string[];
+    bad: string[];
+  };
+}
+
 export interface Disease {
   id: string;
   cropId: string;
