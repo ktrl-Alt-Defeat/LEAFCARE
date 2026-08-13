@@ -79,15 +79,8 @@ export interface Disease {
   disclaimer: string;
 }
 
-export interface WeatherInfo {
-  temp: number;
-  condition: string;
-  locationName: string;
-  humidity: number;
-  rainProbability: number;
-  windSpeed: number;
-  sprayingCondition: 'Optimal' | 'Favorable' | 'Unfavorable';
-}
+// Weather types live with the Open-Meteo service in `@/lib/open-meteo`, which is
+// the single source of truth for meteorological data.
 
 export interface ScanResult {
   id: string;

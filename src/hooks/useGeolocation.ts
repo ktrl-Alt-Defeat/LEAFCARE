@@ -1,54 +1,59 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { WeatherInfo } from '@/types';
+import { useCallback, useEffect, useState } from 'react';
+import { useAppState } from '@/context/AppStateContext';
 
+export type GeolocationStatus = 'idle' | 'locating' | 'ready' | 'unavailable';
+
+export interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
+
+/**
+ * Device coordinates only — weather lives in `useWeather`, which reads from the
+ * centralized Open-Meteo service.
+ *
+ * The browser prompt is only triggered when location was granted during
+ * onboarding, so the dashboard never ambushes the user with a permission dialog.
+ */
 export const useGeolocation = () => {
-  const [weather, setWeather] = useState<WeatherInfo>({
-    temp: 26,
-    condition: 'Partly Cloudy',
-    locationName: 'Mayiladuthurai, Tamil Nadu',
-    humidity: 78,
-    rainProbability: 25,
-    windSpeed: 12,
-    sprayingCondition: 'Optimal'
-  });
-  const [loading, setLoading] = useState<boolean>(false);
+  const { permissions, hydrated } = useAppState();
+  const [coords, setCoords] = useState<Coordinates | null>(null);
+  const [status, setStatus] = useState<GeolocationStatus>('idle');
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          // Simulated weather lookup based on coordinates
-          const lat = pos.coords.latitude;
-          if (lat > 20) {
-            setWeather({
-              temp: 24,
-              condition: 'Sunny & Clear',
-              locationName: 'Karnal, Haryana',
-              humidity: 65,
-              rainProbability: 10,
-              windSpeed: 8,
-              sprayingCondition: 'Optimal'
-            });
-          } else {
-            setWeather({
-              temp: 28,
-              condition: 'Humid & Moist',
-              locationName: 'Thanjavur, Tamil Nadu',
-              humidity: 82,
-              rainProbability: 35,
-              windSpeed: 14,
-              sprayingCondition: 'Favorable'
-            });
-          }
-        },
-        () => {
-          // Fallback location
-        }
-      );
+  const locate = useCallback(() => {
+    if (typeof window === 'undefined' || !('geolocation' in navigator)) {
+      setStatus('unavailable');
+      return;
     }
+
+    setStatus('locating');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCoords({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        setStatus('ready');
+      },
+      (error) => {
+        console.warn('Geolocation unavailable:', error.message);
+        setStatus('unavailable');
+      },
+      { timeout: 10_000, maximumAge: 5 * 60 * 1000 }
+    );
   }, []);
 
-  return { weather, loading };
+  useEffect(() => {
+    if (!hydrated) return;
+
+    if (permissions.location === 'granted') {
+      locate();
+    } else {
+      setStatus('unavailable');
+    }
+  }, [hydrated, permissions.location, locate]);
+
+  return { coords, status, locate };
 };
