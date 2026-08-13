@@ -2,73 +2,71 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Image as ImageIcon, RefreshCw, Zap, ZapOff } from 'lucide-react';
+import { Image as ImageIcon, RefreshCw } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export interface ScanControlsProps {
   onCapture: () => void;
   onFlipCamera: () => void;
   onGalleryClick: () => void;
-  onToggleFlash: () => void;
-  flashOn: boolean;
   captureReady: boolean;
   disabled?: boolean;
+  className?: string;
 }
 
 export const ScanControls: React.FC<ScanControlsProps> = ({
   onCapture,
   onFlipCamera,
   onGalleryClick,
-  onToggleFlash,
-  flashOn,
   captureReady,
-  disabled = false
+  disabled = false,
+  className,
 }) => {
   return (
-    <div className="absolute inset-x-0 bottom-0 z-30 flex flex-col items-center pb-8 pt-4 px-6 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent">
-      {/* Rotational Quality Hint Banner */}
-      <div className="mb-6 bg-slate-900/90 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 text-[11px] font-medium text-emerald-300 shadow-lg">
-        💡 Use natural light & capture one leaf at a time
+    <div className={cn('flex flex-col items-center', className)}>
+      <div className="mb-6 rounded-full border border-white/10 bg-slate-900/90 px-4 py-1.5 text-[11px] font-medium text-emerald-300 shadow-lg backdrop-blur-md">
+        💡 Use natural light &amp; capture one leaf at a time
       </div>
 
-      {/* Main Control Bar */}
-      <div className="flex items-center justify-between w-full max-w-xs">
-        {/* Gallery Upload Fallback Button */}
+      <div className="flex w-full max-w-xs items-center justify-between">
         <button
           onClick={onGalleryClick}
-          className="w-12 h-12 rounded-full bg-slate-800/80 backdrop-blur-md text-white flex items-center justify-center border border-white/20 hover:bg-slate-700 active:scale-95 transition-all shadow-lg"
-          title="Choose from Gallery"
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-slate-800/80 text-white shadow-lg backdrop-blur-md transition-all hover:bg-slate-700 active:scale-95"
+          title="Choose from gallery"
           aria-label="Choose from gallery"
         >
-          <ImageIcon className="w-5 h-5" />
+          <ImageIcon className="h-5 w-5" />
         </button>
 
-        {/* Large Circular Capture Button */}
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={onCapture}
           disabled={disabled}
-          className={`relative w-20 h-20 rounded-full flex items-center justify-center p-1.5 transition-transform ${
+          className={cn(
+            'relative flex h-20 w-20 items-center justify-center rounded-full p-1.5 transition-transform disabled:opacity-50',
             captureReady
-              ? 'ring-4 ring-agro-400 ring-offset-4 ring-offset-slate-950 scale-105'
+              ? 'scale-105 ring-4 ring-agro-400 ring-offset-4 ring-offset-slate-950'
               : 'ring-4 ring-white/50'
-          }`}
+          )}
           aria-label="Capture leaf photo"
         >
-          <div className="w-full h-full rounded-full bg-white flex items-center justify-center p-1.5 shadow-2xl">
-            <div className={`w-full h-full rounded-full transition-colors ${
-              captureReady ? 'bg-agro-600 animate-pulse' : 'bg-agro-600'
-            }`} />
-          </div>
+          <span className="flex h-full w-full items-center justify-center rounded-full bg-white p-1.5 shadow-2xl">
+            <span
+              className={cn(
+                'h-full w-full rounded-full bg-agro-600 transition-colors',
+                captureReady && 'animate-pulse'
+              )}
+            />
+          </span>
         </motion.button>
 
-        {/* Camera Flip Button */}
         <button
           onClick={onFlipCamera}
-          className="w-12 h-12 rounded-full bg-slate-800/80 backdrop-blur-md text-white flex items-center justify-center border border-white/20 hover:bg-slate-700 active:scale-95 transition-all shadow-lg"
-          title="Switch Camera"
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-slate-800/80 text-white shadow-lg backdrop-blur-md transition-all hover:bg-slate-700 active:scale-95"
+          title="Switch camera"
           aria-label="Switch camera"
         >
-          <RefreshCw className="w-5 h-5" />
+          <RefreshCw className="h-5 w-5" />
         </button>
       </div>
     </div>

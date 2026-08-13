@@ -5,6 +5,7 @@ import { Star, MapPin, ShieldCheck, PhoneCall } from 'lucide-react';
 import { MarketProduct } from '@/types';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
+import { SafeImage } from '@/components/ui/SafeImage';
 
 export interface ProductDetailModalProps {
   product: MarketProduct | null;
@@ -20,12 +21,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   return (
     <Modal isOpen={!!product} onClose={onClose} title={product.name}>
       <div className="flex flex-col gap-4">
-        <div className="relative w-full h-48 rounded-2xl overflow-hidden shadow-sm">
-          {/* eslint-disable-next-html-script-for-img */}
-          <img
+        <div className="relative h-48 w-full overflow-hidden rounded-2xl shadow-sm sm:h-56">
+          <SafeImage
             src={product.imageUrl}
             alt={product.name}
-            className="w-full h-full object-cover"
+            fallbackEmoji="📦"
+            className="h-full w-full object-cover"
           />
         </div>
 

@@ -18,11 +18,11 @@ export const ScanAnalysisAnimation: React.FC<ScanAnalysisAnimationProps> = ({
   const progressPercent = Math.round(((currentStepIndex + 1) / ANALYSIS_STEPS.length) * 100);
 
   return (
-    <div className="absolute inset-0 z-50 bg-slate-950 flex flex-col items-center justify-between p-6">
-      {/* Background Captured Image Container */}
-      <div className="relative w-full h-[65vh] rounded-3xl overflow-hidden shadow-2xl border border-white/20 mt-4">
+    <div className="absolute inset-0 z-50 flex flex-col items-center justify-between gap-4 bg-slate-950 p-6">
+      {/* Captured frame — capped so it stays portrait on wide laptop screens. */}
+      <div className="relative mt-4 h-[58vh] w-full max-w-[26rem] overflow-hidden rounded-3xl border border-white/20 shadow-2xl">
         {capturedImage ? (
-          // eslint-disable-next-html-script-for-img
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={capturedImage}
             alt="Captured crop leaf"
@@ -53,7 +53,7 @@ export const ScanAnalysisAnimation: React.FC<ScanAnalysisAnimationProps> = ({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-sm bg-slate-900/90 backdrop-blur-xl border border-white/20 rounded-3xl p-5 text-white flex flex-col gap-3 shadow-2xl mb-4"
+        className="mb-4 flex w-full max-w-[26rem] flex-col gap-3 rounded-3xl border border-white/20 bg-slate-900/90 p-5 text-white shadow-2xl backdrop-blur-xl"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

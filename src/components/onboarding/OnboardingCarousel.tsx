@@ -12,10 +12,7 @@ export interface OnboardingCarouselProps {
   onSkip: () => void;
 }
 
-export const OnboardingCarousel: React.FC<OnboardingCarouselProps> = ({
-  onComplete,
-  onSkip
-}) => {
+export const OnboardingCarousel: React.FC<OnboardingCarouselProps> = ({ onComplete, onSkip }) => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const { t } = useLanguage();
 
@@ -23,76 +20,63 @@ export const OnboardingCarousel: React.FC<OnboardingCarouselProps> = ({
   const currentSlide = ONBOARDING_SLIDES[currentSlideIndex];
 
   const handleNext = () => {
-    if (isLastSlide) {
-      onComplete();
-    } else {
-      setCurrentSlideIndex(prev => prev + 1);
-    }
+    if (isLastSlide) onComplete();
+    else setCurrentSlideIndex((prev) => prev + 1);
   };
 
   return (
-    <div className="flex flex-col min-h-screen justify-between p-6 bg-white relative overflow-hidden">
-      {/* Top Navbar with Skip */}
-      <div className="flex items-center justify-between pt-4">
-        <span className="text-xs font-bold text-agro-700 uppercase tracking-widest bg-agro-50 px-3 py-1 rounded-full border border-agro-200">
+    <div className="onboarding-stage">
+      <div className="flex items-center justify-between pt-4 lg:pt-0">
+        <span className="rounded-full border border-agro-200 bg-agro-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-agro-700">
           Step {currentSlideIndex + 1} of {ONBOARDING_SLIDES.length}
         </span>
         <button
           onClick={onSkip}
-          className="text-sm font-semibold text-slate-500 hover:text-agro-700 px-3 py-1.5 rounded-lg transition-colors"
+          className="rounded-lg px-3 py-1.5 text-sm font-semibold text-slate-500 transition-colors hover:text-agro-700"
         >
           {t('skip', 'Skip')}
         </button>
       </div>
 
-      {/* Main Slide Animated Content */}
-      <div className="flex-1 flex flex-col items-center justify-center my-6">
+      <div className="my-6 flex flex-1 flex-col items-center justify-center lg:my-0 lg:flex-none">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide.id}
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.35, ease: 'easeInOut' }}
-            className="flex flex-col items-center text-center max-w-sm px-2"
+            exit={{ opacity: 0, x: -40 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="flex max-w-sm flex-col items-center px-2 text-center"
           >
-            {/* Animated Large Illustration Badge Container */}
             <motion.div
               animate={{ y: [0, -8, 0] }}
               transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-              className={`w-40 h-40 rounded-full bg-gradient-to-tr ${currentSlide.color} text-white flex items-center justify-center shadow-soft-lg mb-8 relative`}
+              // Smaller on short laptop screens so the CTA stays above the fold.
+              className={`relative mb-8 flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-tr text-white shadow-soft-lg h-sm:h-40 h-sm:w-40 ${currentSlide.color}`}
             >
-              <span className="text-7xl select-none" role="img" aria-label="Illustration">
+              <span className="select-none text-6xl h-sm:text-7xl" role="img" aria-hidden="true">
                 {currentSlide.icon}
               </span>
-              <span className="absolute -bottom-2 bg-white text-slate-800 text-xs font-bold px-3 py-1 rounded-full shadow-md border border-slate-100">
+              <span className="absolute -bottom-2 rounded-full border border-slate-100 bg-white px-3 py-1 text-xs font-bold text-slate-800 shadow-md">
                 {currentSlide.badge}
               </span>
             </motion.div>
 
-            {/* Slide Title */}
-            <h2 className="text-2xl font-extrabold text-slate-900 leading-tight mb-3">
+            <h2 className="mb-3 text-2xl font-extrabold leading-tight text-slate-900">
               {t(currentSlide.titleKey, currentSlide.defaultTitle)}
             </h2>
 
-            {/* Slide Description */}
-            <p className="text-slate-600 font-normal text-base leading-relaxed">
+            <p className="text-base leading-relaxed text-slate-600">
               {t(currentSlide.descKey, currentSlide.defaultDesc)}
             </p>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Bottom Controls: Pagination Dots + Next/Get Started Button */}
-      <div className="flex flex-col gap-6 pb-6">
+      <div className="flex flex-col gap-6 pb-6 lg:pb-0">
         <ProgressDots total={ONBOARDING_SLIDES.length} current={currentSlideIndex} />
 
-        <Button
-          size="xl"
-          fullWidth
-          onClick={handleNext}
-          className="shadow-soft-lg"
-        >
+        <Button size="xl" fullWidth onClick={handleNext} className="shadow-soft-lg">
           {isLastSlide ? t('getStarted', 'Get Started') : t('next', 'Next')}
         </Button>
       </div>

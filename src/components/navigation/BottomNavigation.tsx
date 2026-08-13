@@ -4,79 +4,71 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Home, Users, ShoppingBag, User, Camera } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { NAV_ITEMS, isNavItemActive } from './navItems';
 import { cn } from '@/lib/utils';
 
+/**
+ * Thumb-reach tab bar for phones and tablets.
+ * Hidden from `lg` up, where `SideNavigation` takes over.
+ */
 export const BottomNavigation: React.FC = () => {
   const pathname = usePathname();
   const { t } = useLanguage();
 
-  // Hide bottom nav on scanner page to give full-screen camera viewport
-  if (pathname === '/scan') {
-    return null;
-  }
-
-  const navItems = [
-    { href: '/home', label: t('navHome', 'Home'), icon: Home },
-    { href: '/community', label: t('navCommunity', 'Community'), icon: Users },
-    { href: '/market', label: t('navMarket', 'Market'), icon: ShoppingBag },
-    { href: '/profile', label: t('navProfile', 'Profile'), icon: User },
-  ];
+  const items = NAV_ITEMS.filter((item) => !item.desktopOnly);
 
   return (
-    <div className="sticky bottom-0 z-40 w-full bg-white/95 backdrop-blur-lg border-t border-slate-200/80 shadow-lg">
-      <div className="flex items-center justify-around px-2 py-2 relative">
-
-        {/* Floating Scanner FAB in Center */}
+    <div className="safe-bottom sticky bottom-0 z-40 w-full border-t border-slate-200/80 bg-white/95 shadow-lg backdrop-blur-lg lg:hidden">
+      <div className="relative mx-auto flex max-w-md items-center justify-around px-2 py-2">
+        {/* Floating scanner action */}
         <Link
           href="/scan"
-          className="absolute -top-6 left-1/2 -translate-x-1/2 flex flex-col items-center group z-50"
-          aria-label="Scan Crop"
+          className="group absolute -top-6 left-1/2 z-50 flex -translate-x-1/2 flex-col items-center"
+          aria-label="Scan crop"
         >
           <motion.div
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.94 }}
-            className="w-14 h-14 rounded-full bg-gradient-to-tr from-agro-600 via-emerald-500 to-agro-400 text-white flex items-center justify-center shadow-soft-lg shadow-agro-600/40 ring-4 ring-white animate-pulse-glow"
+            className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-agro-600 via-emerald-500 to-agro-400 text-white shadow-soft-lg shadow-agro-600/40 ring-4 ring-white"
           >
-            <Camera className="w-7 h-7 stroke-[2.5]" />
+            <Camera className="h-7 w-7 stroke-[2.5]" />
           </motion.div>
-          <span className="text-[10px] font-bold text-agro-700 mt-1 uppercase tracking-wider">
+          <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-agro-700">
             Scan
           </span>
         </Link>
 
-        {navItems.map((item, index) => {
+        {items.map((item, index) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || (item.href === '/home' && pathname === '/');
-
-          // Add extra margin around center FAB
-          const isLeftOfFab = index === 1;
-          const isRightOfFab = index === 2;
+          const isActive = isNavItemActive(pathname, item.href);
 
           return (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive ? 'page' : undefined}
               className={cn(
-                'flex flex-col items-center justify-center py-1.5 px-3 rounded-2xl transition-all duration-200 min-w-[64px]',
-                isLeftOfFab && 'mr-6',
-                isRightOfFab && 'ml-6',
-                isActive ? 'text-agro-700 font-bold' : 'text-slate-500 hover:text-slate-800 font-medium'
+                'flex min-w-[64px] flex-col items-center justify-center rounded-2xl px-3 py-1.5 transition-colors duration-200',
+                // Clear the floating capture button in the middle.
+                index === 1 && 'mr-6',
+                index === 2 && 'ml-6',
+                isActive ? 'font-bold text-agro-700' : 'font-medium text-slate-500 hover:text-slate-800'
               )}
             >
               <div className="relative flex items-center justify-center">
                 {isActive && (
                   <motion.div
-                    layoutId="activePill"
-                    className="absolute inset-0 bg-agro-100/90 rounded-xl -m-1.5"
+                    layoutId="bottomNavActive"
+                    className="absolute -m-1.5 inset-0 rounded-xl bg-agro-100/90"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
-                <Icon className={cn('w-5 h-5 relative z-10', isActive ? 'stroke-[2.5]' : 'stroke-2')} />
+                <Icon className={cn('relative z-10 h-5 w-5', isActive ? 'stroke-[2.5]' : 'stroke-2')} />
               </div>
-              <span className="text-[11px] leading-tight mt-1 relative z-10 tracking-tight">
-                {item.label}
+              <span className="relative z-10 mt-1 text-[11px] leading-tight tracking-tight">
+                {t(item.labelKey, item.defaultLabel)}
               </span>
             </Link>
           );

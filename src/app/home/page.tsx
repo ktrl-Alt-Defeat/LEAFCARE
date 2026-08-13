@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Plus, History, ArrowRight } from 'lucide-react';
-import { Header } from '@/components/navigation/Header';
+import { Page, SectionHeading } from '@/components/layout/Page';
 import { WeatherCard } from '@/components/dashboard/WeatherCard';
 import { DiseaseScanBanner } from '@/components/dashboard/DiseaseScanBanner';
 import { ToolsGrid } from '@/components/dashboard/ToolsGrid';
@@ -15,106 +15,114 @@ import { useLanguage } from '@/context/LanguageContext';
 import { CROPS_DATA } from '@/data/crops';
 import { ToolItem } from '@/data/tools';
 import { Card } from '@/components/ui/Card';
+import { SafeImage } from '@/components/ui/SafeImage';
 
 export default function HomePage() {
-  const { selectedCrops, scanHistory } = useAppState();
-  const { t } = useLanguage();
-  const [activeCropId, setActiveCropId] = useState<string>(selectedCrops[0] || 'rice');
+  const { selectedCrops, scanHistory, userProfile } = useAppState();
+  const { t, language } = useLanguage();
+  const [activeCropId, setActiveCropId] = useState<string | null>(null);
   const [calcModalType, setCalcModalType] = useState<'fertilizer' | 'pesticide' | null>(null);
 
-  const activeCropsList = CROPS_DATA.filter(c => selectedCrops.includes(c.id));
+  const activeCropsList = CROPS_DATA.filter((crop) => selectedCrops.includes(crop.id));
+
+  // Derived rather than stored, so the first crop is correct straight after
+  // the saved crop list hydrates.
+  const activeCrop =
+    activeCropsList.find((crop) => crop.id === activeCropId) ?? activeCropsList[0] ?? null;
+  const activeCropName = activeCrop
+    ? activeCrop.translatedNames[language] || activeCrop.name
+    : null;
 
   const handleToolClick = (tool: ToolItem) => {
-    if (tool.id === 'fertilizer_calc') {
-      setCalcModalType('fertilizer');
-    } else if (tool.id === 'pesticide_calc') {
-      setCalcModalType('pesticide');
-    }
+    if (tool.id === 'fertilizer_calc') setCalcModalType('fertilizer');
+    else if (tool.id === 'pesticide_calc') setCalcModalType('pesticide');
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50/60 pb-20">
-      <Header />
+    // The greeting carries no emoji: the title is truncated, and tall emoji line
+    // boxes get clipped by the overflow that `truncate` applies.
+    <Page
+      title={`Namaste, ${userProfile.name.split(' ')[0]}`}
+      subtitle={t('homeSubtitle', 'Your field at a glance')}
+    >
+      {/* Crop selector */}
+      <div className="no-scrollbar -mx-1 flex items-center gap-2 overflow-x-auto px-1 pb-1">
+        {activeCropsList.map((crop) => (
+          <CropChip
+            key={crop.id}
+            crop={crop}
+            isActive={activeCrop?.id === crop.id}
+            onClick={() => setActiveCropId(crop.id)}
+          />
+        ))}
 
-      <div className="p-4 flex flex-col gap-6 max-w-md mx-auto w-full">
-        {/* Horizontal Crop Chips Selector */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-          {activeCropsList.map(crop => (
-            <CropChip
-              key={crop.id}
-              crop={crop}
-              isActive={activeCropId === crop.id}
-              onClick={() => setActiveCropId(crop.id)}
-            />
-          ))}
-
-          <Link
-            href="/crops"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-2xl text-xs font-bold text-agro-700 bg-agro-50 border border-agro-200/80 hover:bg-agro-100 transition-colors whitespace-nowrap"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Crop</span>
-          </Link>
-        </div>
-
-        {/* Live Weather Card */}
-        <WeatherCard />
-
-        {/* Primary AI Disease Scanner Card */}
-        <DiseaseScanBanner />
-
-        {/* Recent Scans History Section (if any) */}
-        {scanHistory.length > 0 && (
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
-                <History className="w-5 h-5 text-agro-600" />
-                {t('recentScans', 'Recent Scans')}
-              </h3>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              {scanHistory.slice(0, 2).map((scan) => (
-                <Link key={scan.id} href={`/diagnosis?id=${scan.id}`}>
-                  <Card clickable className="flex items-center justify-between p-3.5 border-slate-100">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
-                        {/* eslint-disable-next-html-script-for-img */}
-                        <img
-                          src={scan.capturedImageData}
-                          alt={scan.disease.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-xs font-bold text-slate-900">
-                          {scan.disease.name}
-                        </span>
-                        <span className="text-[11px] text-slate-500 font-medium">
-                          {scan.cropName} • {scan.timestamp}
-                        </span>
-                      </div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-400" />
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Farming Tools Grid */}
-        <ToolsGrid onSelectTool={handleToolClick} />
-
-        {/* Agri Knowledge Library Grid */}
-        <LibraryGrid />
+        <Link
+          href="/crops"
+          className="flex items-center gap-1.5 whitespace-nowrap rounded-2xl border border-agro-200/80 bg-agro-50 px-3 py-2 text-xs font-bold text-agro-700 transition-colors hover:bg-agro-100"
+        >
+          <Plus className="h-4 w-4" />
+          <span>{t('addCrop', 'Add crop')}</span>
+        </Link>
       </div>
 
-      {/* Interactive Fertilizer/Pesticide Calculator Popup */}
-      <CalculatorModal
-        type={calcModalType}
-        onClose={() => setCalcModalType(null)}
-      />
-    </div>
+      {/* Dashboard grid — single column on phones, two tracks from `lg` up so a
+          laptop shows the scanner, weather and history without scrolling. */}
+      <div className="flex flex-col gap-5 lg:grid lg:grid-cols-3 lg:gap-6">
+        <div className="order-1 lg:order-none lg:col-span-2 lg:col-start-1 lg:row-start-1">
+          <DiseaseScanBanner cropName={activeCropName} />
+        </div>
+
+        <aside className="order-2 lg:order-none lg:col-start-3 lg:row-span-2 lg:row-start-1">
+          <div className="flex flex-col gap-5 lg:sticky lg:top-[calc(var(--header-h)+1.25rem)]">
+            <WeatherCard />
+
+            {scanHistory.length > 0 && (
+              <section className="flex flex-col gap-3">
+                <SectionHeading icon={<History className="h-5 w-5 text-agro-600" />}>
+                  {t('recentScans', 'Recent Scans')}
+                </SectionHeading>
+
+                <div className="flex flex-col gap-2">
+                  {scanHistory.slice(0, 4).map((scan) => (
+                    <Link key={scan.id} href={`/diagnosis?id=${scan.id}`}>
+                      <Card
+                        clickable
+                        className="flex items-center justify-between border-slate-100 p-3"
+                      >
+                        <div className="flex min-w-0 items-center gap-3">
+                          <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+                            <SafeImage
+                              src={scan.capturedImageData}
+                              alt={scan.disease.name}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div className="flex min-w-0 flex-col">
+                            <span className="truncate text-xs font-bold text-slate-900">
+                              {scan.disease.name}
+                            </span>
+                            <span className="truncate text-[11px] font-medium text-slate-500">
+                              {scan.cropName} • {scan.timestamp}
+                            </span>
+                          </div>
+                        </div>
+                        <ArrowRight className="ml-2 h-4 w-4 shrink-0 text-slate-400" />
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        </aside>
+
+        <div className="order-3 flex flex-col gap-6 lg:order-none lg:col-span-2 lg:col-start-1 lg:row-start-2">
+          <ToolsGrid onSelectTool={handleToolClick} />
+          <LibraryGrid />
+        </div>
+      </div>
+
+      <CalculatorModal type={calcModalType} onClose={() => setCalcModalType(null)} />
+    </Page>
   );
 }

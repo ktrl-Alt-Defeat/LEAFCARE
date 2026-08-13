@@ -1,15 +1,17 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { LanguageCode, PermissionStatus, ScanResult, UserProfile } from '@/types';
 
 interface AppStateContextType {
+  /** False until localStorage has been read. Guards against redirect flashes. */
+  hydrated: boolean;
   language: LanguageCode;
   setLanguage: (lang: LanguageCode) => void;
   onboardingCompleted: boolean;
   setOnboardingCompleted: (completed: boolean) => void;
   permissions: PermissionStatus;
-  updatePermission: (key: keyof PermissionStatus, status: 'prompt' | 'granted' | 'denied' | 'skipped') => void;
+  updatePermission: (key: keyof PermissionStatus, status: PermissionStatus[keyof PermissionStatus]) => void;
   selectedCrops: string[];
   setSelectedCrops: (crops: string[]) => void;
   toggleCropSelection: (cropId: string) => void;
@@ -35,114 +37,105 @@ const DEFAULT_PERMISSIONS: PermissionStatus = {
   notifications: 'prompt'
 };
 
-const AppStateContext = createContext<AppStateContextType | undefined>(undefined);
+const DEFAULT_CROPS = ['rice', 'tomato', 'wheat'];
+
+/**
+ * Captured frames are stored as data URLs, so an unbounded history fills the
+ * ~5 MB localStorage quota after a handful of scans and every later write fails.
+ */
+const MAX_SCAN_HISTORY = 12;
 
 const STORAGE_KEY = 'leafcare_app_state_v1';
 
-export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<LanguageCode>('en');
-  const [onboardingCompleted, setOnboardingCompletedState] = useState<boolean>(false);
-  const [permissions, setPermissionsState] = useState<PermissionStatus>(DEFAULT_PERMISSIONS);
-  const [selectedCrops, setSelectedCropsState] = useState<string[]>(['rice', 'tomato', 'wheat']);
-  const [scanHistory, setScanHistoryState] = useState<ScanResult[]>([]);
-  const [userProfile, setUserProfileState] = useState<UserProfile>(DEFAULT_PROFILE);
+const AppStateContext = createContext<AppStateContextType | undefined>(undefined);
 
-  // Load from localStorage on mount
+export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [hydrated, setHydrated] = useState(false);
+  const [language, setLanguage] = useState<LanguageCode>('en');
+  const [onboardingCompleted, setOnboardingCompleted] = useState(false);
+  const [permissions, setPermissions] = useState<PermissionStatus>(DEFAULT_PERMISSIONS);
+  const [selectedCrops, setSelectedCropsState] = useState<string[]>(DEFAULT_CROPS);
+  const [scanHistory, setScanHistory] = useState<ScanResult[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile>(DEFAULT_PROFILE);
+
+  // Restore once on mount.
   useEffect(() => {
     try {
-      const savedState = localStorage.getItem(STORAGE_KEY);
-      if (savedState) {
-        const parsed = JSON.parse(savedState);
-        if (parsed.language) setLanguageState(parsed.language);
-        if (typeof parsed.onboardingCompleted === 'boolean') setOnboardingCompletedState(parsed.onboardingCompleted);
-        if (parsed.permissions) setPermissionsState(parsed.permissions);
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.language) setLanguage(parsed.language);
+        if (typeof parsed.onboardingCompleted === 'boolean') {
+          setOnboardingCompleted(parsed.onboardingCompleted);
+        }
+        if (parsed.permissions) setPermissions(parsed.permissions);
         if (Array.isArray(parsed.selectedCrops)) setSelectedCropsState(parsed.selectedCrops);
-        if (Array.isArray(parsed.scanHistory)) setScanHistoryState(parsed.scanHistory);
-        if (parsed.userProfile) setUserProfileState(parsed.userProfile);
+        if (Array.isArray(parsed.scanHistory)) {
+          setScanHistory(parsed.scanHistory.slice(0, MAX_SCAN_HISTORY));
+        }
+        if (parsed.userProfile) setUserProfile(parsed.userProfile);
       }
-    } catch (e) {
-      console.error('Failed to parse saved state from localStorage:', e);
+    } catch (error) {
+      console.error('Failed to read saved app state:', error);
+    } finally {
+      setHydrated(true);
     }
   }, []);
 
-  // Save to localStorage helper
-  const saveState = (newState: Partial<{
-    language: LanguageCode;
-    onboardingCompleted: boolean;
-    permissions: PermissionStatus;
-    selectedCrops: string[];
-    scanHistory: ScanResult[];
-    userProfile: UserProfile;
-  }>) => {
+  // Persist on change. Skipped until hydration so defaults never overwrite
+  // saved data on first paint.
+  useEffect(() => {
+    if (!hydrated) return;
     try {
-      const currentRaw = localStorage.getItem(STORAGE_KEY);
-      const current = currentRaw ? JSON.parse(currentRaw) : {};
-      const updated = {
-        language: newState.language ?? language,
-        onboardingCompleted: newState.onboardingCompleted ?? onboardingCompleted,
-        permissions: newState.permissions ?? permissions,
-        selectedCrops: newState.selectedCrops ?? selectedCrops,
-        scanHistory: newState.scanHistory ?? scanHistory,
-        userProfile: newState.userProfile ?? userProfile,
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    } catch (e) {
-      console.error('Failed to persist app state:', e);
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          language,
+          onboardingCompleted,
+          permissions,
+          selectedCrops,
+          scanHistory,
+          userProfile
+        })
+      );
+    } catch (error) {
+      console.error('Failed to persist app state:', error);
     }
-  };
+  }, [hydrated, language, onboardingCompleted, permissions, selectedCrops, scanHistory, userProfile]);
 
-  const setLanguage = (lang: LanguageCode) => {
-    setLanguageState(lang);
-    saveState({ language: lang });
-  };
+  const updatePermission = useCallback(
+    (key: keyof PermissionStatus, status: PermissionStatus[keyof PermissionStatus]) => {
+      setPermissions((prev) => ({ ...prev, [key]: status }));
+    },
+    []
+  );
 
-  const setOnboardingCompleted = (completed: boolean) => {
-    setOnboardingCompletedState(completed);
-    saveState({ onboardingCompleted: completed });
-  };
+  const toggleCropSelection = useCallback((cropId: string) => {
+    setSelectedCropsState((prev) =>
+      prev.includes(cropId) ? prev.filter((id) => id !== cropId) : [...prev, cropId]
+    );
+  }, []);
 
-  const updatePermission = (key: keyof PermissionStatus, status: 'prompt' | 'granted' | 'denied' | 'skipped') => {
-    const updated = { ...permissions, [key]: status };
-    setPermissionsState(updated);
-    saveState({ permissions: updated });
-  };
+  const addScanResult = useCallback((result: ScanResult) => {
+    setScanHistory((prev) => [result, ...prev].slice(0, MAX_SCAN_HISTORY));
+  }, []);
 
-  const setSelectedCrops = (crops: string[]) => {
-    setSelectedCropsState(crops);
-    saveState({ selectedCrops: crops });
-  };
+  const updateUserProfile = useCallback((update: Partial<UserProfile>) => {
+    setUserProfile((prev) => ({ ...prev, ...update }));
+  }, []);
 
-  const toggleCropSelection = (cropId: string) => {
-    const next = selectedCrops.includes(cropId)
-      ? selectedCrops.filter(id => id !== cropId)
-      : [...selectedCrops, cropId];
-    setSelectedCrops(next);
-  };
+  const resetAllData = useCallback(() => {
+    setLanguage('en');
+    setOnboardingCompleted(false);
+    setPermissions(DEFAULT_PERMISSIONS);
+    setSelectedCropsState(DEFAULT_CROPS);
+    setScanHistory([]);
+    setUserProfile(DEFAULT_PROFILE);
+  }, []);
 
-  const addScanResult = (result: ScanResult) => {
-    const updated = [result, ...scanHistory];
-    setScanHistoryState(updated);
-    saveState({ scanHistory: updated });
-  };
-
-  const updateUserProfile = (profileUpdate: Partial<UserProfile>) => {
-    const updated = { ...userProfile, ...profileUpdate };
-    setUserProfileState(updated);
-    saveState({ userProfile: updated });
-  };
-
-  const resetAllData = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    setLanguageState('en');
-    setOnboardingCompletedState(false);
-    setPermissionsState(DEFAULT_PERMISSIONS);
-    setSelectedCropsState(['rice', 'tomato', 'wheat']);
-    setScanHistoryState([]);
-    setUserProfileState(DEFAULT_PROFILE);
-  };
-
-  return (
-    <AppStateContext.Provider value={{
+  const value = useMemo(
+    () => ({
+      hydrated,
       language,
       setLanguage,
       onboardingCompleted,
@@ -150,17 +143,31 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       permissions,
       updatePermission,
       selectedCrops,
-      setSelectedCrops,
+      setSelectedCrops: setSelectedCropsState,
       toggleCropSelection,
       scanHistory,
       addScanResult,
       userProfile,
       updateUserProfile,
       resetAllData
-    }}>
-      {children}
-    </AppStateContext.Provider>
+    }),
+    [
+      hydrated,
+      language,
+      onboardingCompleted,
+      permissions,
+      updatePermission,
+      selectedCrops,
+      toggleCropSelection,
+      scanHistory,
+      addScanResult,
+      userProfile,
+      updateUserProfile,
+      resetAllData
+    ]
   );
+
+  return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 };
 
 export const useAppState = () => {

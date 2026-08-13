@@ -1,24 +1,38 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Search, Plus } from 'lucide-react';
-import { Header } from '@/components/navigation/Header';
+import React, { useMemo, useState } from 'react';
+import { Plus, MessagesSquare } from 'lucide-react';
+import { Page } from '@/components/layout/Page';
 import { PostCard } from '@/components/community/PostCard';
 import { CreatePostModal } from '@/components/community/CreatePostModal';
+import { SearchInput } from '@/components/ui/SearchInput';
+import { FilterChips } from '@/components/ui/FilterChips';
 import { MOCK_COMMUNITY_POSTS } from '@/data/community';
 import { CommunityPost } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 
-const CATEGORIES = ['All', 'Disease Help', 'Crop Advice', 'Weather', 'Fertilizer', 'General Farming'];
+const CATEGORIES = [
+  'All',
+  'Disease Help',
+  'Crop Advice',
+  'Weather',
+  'Fertilizer',
+  'General Farming',
+] as const;
 
 export default function CommunityPage() {
   const { t } = useLanguage();
   const [posts, setPosts] = useState<CommunityPost[]>(MOCK_COMMUNITY_POSTS);
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleAddPost = (newPostData: { title: string; content: string; cropName: string; category: string }) => {
+  const handleAddPost = (newPostData: {
+    title: string;
+    content: string;
+    cropName: string;
+    category: string;
+  }) => {
     const newPost: CommunityPost = {
       id: `post_${Date.now()}`,
       authorName: 'Farmer (You)',
@@ -26,84 +40,77 @@ export default function CommunityPage() {
       authorAvatar: '👨‍🌾',
       timestamp: 'Just now',
       cropName: newPostData.cropName,
-      category: newPostData.category as never,
+      category: newPostData.category as CommunityPost['category'],
       title: newPostData.title,
       content: newPostData.content,
       likes: 0,
       repliesCount: 0,
-      isLiked: false
+      isLiked: false,
     };
-    setPosts([newPost, ...posts]);
+    setPosts((prev) => [newPost, ...prev]);
   };
 
-  const filteredPosts = posts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredPosts = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+    return posts.filter((post) => {
+      const matchesSearch =
+        !query ||
+        post.title.toLowerCase().includes(query) ||
+        post.content.toLowerCase().includes(query);
+      const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [posts, searchTerm, activeCategory]);
+
+  const askButton = (
+    <button
+      onClick={() => setIsModalOpen(true)}
+      className="flex shrink-0 items-center gap-1.5 rounded-full bg-agro-600 px-3.5 py-2 text-xs font-bold text-white shadow-soft-sm transition-colors hover:bg-agro-700"
+    >
+      <Plus className="h-4 w-4" />
+      <span>Ask a question</span>
+    </button>
+  );
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50/60 pb-20">
-      <Header />
+    <Page
+      title={t('communityHeader', 'Farming Community')}
+      subtitle="Questions and answers from farmers nearby"
+      titleAction={askButton}
+    >
+      <div className="sticky top-[var(--header-h)] z-30 -mx-4 flex flex-col gap-3 bg-[#F6F8F6]/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:flex-row lg:items-center lg:justify-between xl:-mx-8 xl:px-8">
+        <SearchInput
+          value={searchTerm}
+          onChange={setSearchTerm}
+          placeholder="Search community questions…"
+          className="lg:max-w-sm lg:flex-1"
+        />
+        <FilterChips options={CATEGORIES} value={activeCategory} onChange={setActiveCategory} />
+      </div>
 
-      <div className="p-4 flex flex-col gap-4 max-w-md mx-auto w-full">
-        {/* Title */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-            {t('communityHeader', 'Farming Community')}
-          </h1>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-agro-600 text-white text-xs font-bold shadow-soft-sm hover:bg-agro-700"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Ask</span>
-          </button>
-        </div>
-
-        {/* Search */}
-        <div className="relative">
-          <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search community questions..."
-            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-agro-500"
-          />
-        </div>
-
-        {/* Categories */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${
-                activeCategory === cat
-                  ? 'bg-agro-600 text-white shadow-soft-sm'
-                  : 'bg-white text-slate-600 border border-slate-200'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Post Feed */}
-        <div className="flex flex-col gap-3">
-          {filteredPosts.map(post => (
+      {filteredPosts.length > 0 ? (
+        // A single readable column on phones; two balanced columns once a laptop
+        // has the width, so the feed doesn't become one very long strip.
+        <div className="grid gap-3 lg:grid-cols-2 lg:items-start lg:gap-4">
+          {filteredPosts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>
-      </div>
+      ) : (
+        <div className="flex flex-col items-center gap-2 rounded-3xl border border-dashed border-slate-300 bg-white/60 px-6 py-16 text-center">
+          <MessagesSquare className="h-8 w-8 text-slate-400" />
+          <p className="text-sm font-bold text-slate-700">No questions here yet</p>
+          <p className="max-w-xs text-xs font-medium text-slate-500">
+            Be the first to ask about this topic — farmers nearby get notified.
+          </p>
+        </div>
+      )}
 
-      {/* Modal */}
       <CreatePostModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmitPost={handleAddPost}
       />
-    </div>
+    </Page>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Zap, ZapOff } from 'lucide-react';
 import { useCropScanner } from '@/hooks/useCropScanner';
@@ -10,6 +10,9 @@ import { ScanAnalysisAnimation } from './ScanAnalysisAnimation';
 import { useAppState } from '@/context/AppStateContext';
 import { MOCK_DISEASES } from '@/data/diseases';
 
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1592417817098-8f3d6ef23a63?q=80&w=800&auto=format&fit=crop';
+
 export const CameraScanner: React.FC = () => {
   const router = useRouter();
   const { selectedCrops, addScanResult } = useAppState();
@@ -17,138 +20,119 @@ export const CameraScanner: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [stream, setStream] = useState<MediaStream | null>(null);
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
-  const [flashOn, setFlashOn] = useState<boolean>(false);
+  const [flashOn, setFlashOn] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
 
-  const {
-    guidanceInfo,
-    currentState,
-    analysisStepIndex,
-    triggerCapture,
-    setScannerState
-  } = useCropScanner();
+  const { guidanceInfo, currentState, analysisStepIndex, triggerCapture } = useCropScanner();
 
-  // Start HTML5 Camera Stream
   useEffect(() => {
-    let currentStream: MediaStream | null = null;
+    let activeStream: MediaStream | null = null;
+    let cancelled = false;
 
     const startCamera = async () => {
       setCameraError(null);
       try {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          setCameraError('Camera access is not supported on this browser device.');
+        if (!navigator.mediaDevices?.getUserMedia) {
+          setCameraError('Camera access is not supported by this browser.');
           return;
         }
 
-        const newStream = await navigator.mediaDevices.getUserMedia({
+        const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: facingMode },
             width: { ideal: 1280 },
-            height: { ideal: 720 }
-          }
+            height: { ideal: 720 },
+          },
         });
 
-        currentStream = newStream;
-        setStream(newStream);
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = newStream;
-          videoRef.current.play();
+        // The effect may have been cleaned up while getUserMedia was pending.
+        if (cancelled) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
         }
-      } catch (err: unknown) {
-        console.warn('Camera stream error:', err);
-        setCameraError('Camera stream unavailable. You can upload a photo from your gallery.');
+
+        activeStream = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play().catch(() => {});
+        }
+      } catch (error) {
+        console.warn('Camera stream error:', error);
+        setCameraError('Camera unavailable. You can upload a photo instead.');
       }
     };
 
     startCamera();
 
-    // Clean up tracks on unmount
     return () => {
-      if (currentStream) {
-        currentStream.getTracks().forEach(track => track.stop());
-      }
+      cancelled = true;
+      activeStream?.getTracks().forEach((track) => track.stop());
     };
   }, [facingMode]);
 
-  // Capture image frame onto canvas
-  const handleCapture = () => {
-    let imageDataUrl = 'https://images.unsplash.com/photo-1592417817098-8f3d6ef23a63?q=80&w=800&auto=format&fit=crop';
+  const completeScan = useCallback(
+    (imageDataUrl: string) => {
+      triggerCapture(() => {
+        const primaryCrop = selectedCrops[0] || 'tomato';
+        const diseaseData = MOCK_DISEASES[primaryCrop] || MOCK_DISEASES.tomato;
 
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      canvas.width = video.videoWidth || 640;
-      canvas.height = video.videoHeight || 480;
+        const result = {
+          id: `scan_${Date.now()}`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          cropId: primaryCrop,
+          cropName: diseaseData.cropName,
+          disease: diseaseData,
+          capturedImageData: imageDataUrl,
+        };
+
+        addScanResult(result);
+        router.push(`/diagnosis?id=${result.id}`);
+      });
+    },
+    [triggerCapture, selectedCrops, addScanResult, router]
+  );
+
+  const handleCapture = () => {
+    let imageDataUrl = FALLBACK_IMAGE;
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (video && canvas && video.videoWidth) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        imageDataUrl = canvas.toDataURL('image/jpeg');
+        // Compressed — full-quality data URLs quickly exhaust localStorage.
+        imageDataUrl = canvas.toDataURL('image/jpeg', 0.7);
       }
     }
 
     setCapturedImage(imageDataUrl);
-
-    // Run simulated AI analysis sequence
-    triggerCapture(() => {
-      // Pick disease based on primary selected crop or default
-      const primaryCrop = selectedCrops[0] || 'tomato';
-      const diseaseData = MOCK_DISEASES[primaryCrop] || MOCK_DISEASES.tomato;
-
-      const result = {
-        id: `scan_${Date.now()}`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        cropId: primaryCrop,
-        cropName: diseaseData.cropName,
-        disease: diseaseData,
-        capturedImageData: imageDataUrl
-      };
-
-      addScanResult(result);
-      router.push(`/diagnosis?id=${result.id}`);
-    });
+    completeScan(imageDataUrl);
   };
 
-  // Flip rear / front camera
-  const handleFlipCamera = () => {
-    setFacingMode(prev => prev === 'environment' ? 'user' : 'environment');
+  const handleGalleryUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (loadEvent) => {
+      const imageUrl = loadEvent.target?.result;
+      if (typeof imageUrl === 'string') {
+        setCapturedImage(imageUrl);
+        completeScan(imageUrl);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
-  // Gallery Image Upload Fallback
-  const handleGalleryUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          const imgUrl = event.target.result as string;
-          setCapturedImage(imgUrl);
-          triggerCapture(() => {
-            const primaryCrop = selectedCrops[0] || 'tomato';
-            const diseaseData = MOCK_DISEASES[primaryCrop] || MOCK_DISEASES.tomato;
-            const result = {
-              id: `scan_${Date.now()}`,
-              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              cropId: primaryCrop,
-              cropName: diseaseData.cropName,
-              disease: diseaseData,
-              capturedImageData: imgUrl
-            };
-            addScanResult(result);
-            router.push(`/diagnosis?id=${result.id}`);
-          });
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const isAnalyzing = currentState === 'analyzing';
 
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden flex flex-col justify-between select-none">
-      {/* Hidden File Input & Canvas */}
+    <div className="relative flex h-dvh w-full select-none flex-col overflow-hidden bg-slate-950 lg:items-center lg:justify-center lg:gap-5 lg:py-8">
       <input
         type="file"
         ref={fileInputRef}
@@ -158,90 +142,86 @@ export const CameraScanner: React.FC = () => {
       />
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* Top Header Bar */}
-      <div className="absolute top-0 inset-x-0 z-30 flex items-center justify-between p-4 bg-gradient-to-b from-slate-950/80 to-transparent">
+      {/* Top bar — overlaid on phones, a normal row above the stage on laptops. */}
+      <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between bg-gradient-to-b from-slate-950/80 to-transparent p-4 lg:static lg:w-full lg:max-w-[26rem] lg:bg-none lg:p-0">
         <button
           onClick={() => router.back()}
-          className="w-10 h-10 rounded-full bg-slate-900/80 backdrop-blur-md text-white flex items-center justify-center border border-white/20 active:scale-95"
-          aria-label="Back"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-slate-900/80 text-white backdrop-blur-md transition-transform active:scale-95"
+          aria-label="Go back"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="h-5 w-5" />
         </button>
 
-        <span className="text-xs font-bold text-white uppercase tracking-widest bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+        <span className="rounded-full border border-white/20 bg-slate-900/80 px-3 py-1 text-xs font-bold uppercase tracking-widest text-white backdrop-blur-md">
           Leaf Scanner
         </span>
 
         <button
-          onClick={() => setFlashOn(!flashOn)}
-          className="w-10 h-10 rounded-full bg-slate-900/80 backdrop-blur-md text-white flex items-center justify-center border border-white/20 active:scale-95"
-          aria-label="Toggle Flash"
+          onClick={() => setFlashOn((prev) => !prev)}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-slate-900/80 text-white backdrop-blur-md transition-transform active:scale-95"
+          aria-label="Toggle flash"
+          aria-pressed={flashOn}
         >
-          {flashOn ? <Zap className="w-5 h-5 text-amber-400 fill-amber-400" /> : <ZapOff className="w-5 h-5" />}
+          {flashOn ? (
+            <Zap className="h-5 w-5 fill-amber-400 text-amber-400" />
+          ) : (
+            <ZapOff className="h-5 w-5" />
+          )}
         </button>
       </div>
 
-      {/* Camera Video Viewport or Error Fallback */}
-      <div className="relative w-full h-full flex items-center justify-center bg-slate-950">
+      {/* Capture stage. Full bleed on phones; a framed portrait panel on laptops,
+          where a stretched full-width video looked distorted and unusable. */}
+      <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden bg-slate-950 lg:aspect-[3/4] lg:max-h-[68vh] lg:w-full lg:max-w-[26rem] lg:flex-none lg:rounded-[2rem] lg:border lg:border-white/15 lg:shadow-2xl">
         {cameraError ? (
-          <div className="flex flex-col items-center text-center px-6 max-w-sm text-white">
-            <div className="w-20 h-20 rounded-full bg-agro-900/80 border border-agro-500/40 flex items-center justify-center text-4xl mb-4">
+          <div className="flex max-w-sm flex-col items-center px-6 text-center text-white">
+            <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full border border-agro-500/40 bg-agro-900/80 text-4xl">
               🌿
             </div>
-            <h3 className="text-xl font-black mb-2">Camera Unavailable</h3>
-            <p className="text-slate-300 text-sm mb-6 leading-relaxed">
-              {cameraError}
-            </p>
+            <h2 className="mb-2 text-xl font-black">Camera unavailable</h2>
+            <p className="mb-6 text-sm leading-relaxed text-slate-300">{cameraError}</p>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-6 py-3 rounded-2xl bg-agro-600 font-bold text-white shadow-soft-lg active:scale-95"
+              className="rounded-2xl bg-agro-600 px-6 py-3 font-bold text-white shadow-soft-lg transition-transform active:scale-95"
             >
-              Upload Photo from Gallery
+              Upload photo instead
             </button>
           </div>
         ) : (
-          <video
-            ref={videoRef}
-            playsInline
-            muted
-            className="w-full h-full object-cover"
-          />
+          <video ref={videoRef} playsInline muted className="h-full w-full object-cover" />
         )}
 
-        {/* Center Rectangular Scan Frame */}
-        {!cameraError && currentState !== 'analyzing' && (
-          <div className="absolute w-[280px] h-[340px] border-2 border-agro-400/90 rounded-3xl pointer-events-none z-20 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
-            <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-agro-400 rounded-tl-2xl" />
-            <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-agro-400 rounded-tr-2xl" />
-            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-agro-400 rounded-bl-2xl" />
-            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-agro-400 rounded-br-2xl" />
-            
-            <span className="absolute bottom-4 left-0 right-0 text-center text-xs font-bold text-white bg-slate-900/70 backdrop-blur-sm py-1 px-3 mx-6 rounded-full">
-              Position leaf inside frame
-            </span>
-          </div>
+        {!cameraError && !isAnalyzing && (
+          <>
+            <div className="pointer-events-none absolute z-20 aspect-[5/6] w-[74%] max-w-[280px] rounded-3xl border-2 border-agro-400/90 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
+              <span className="absolute left-0 top-0 h-8 w-8 rounded-tl-2xl border-l-4 border-t-4 border-agro-400" />
+              <span className="absolute right-0 top-0 h-8 w-8 rounded-tr-2xl border-r-4 border-t-4 border-agro-400" />
+              <span className="absolute bottom-0 left-0 h-8 w-8 rounded-bl-2xl border-b-4 border-l-4 border-agro-400" />
+              <span className="absolute bottom-0 right-0 h-8 w-8 rounded-br-2xl border-b-4 border-r-4 border-agro-400" />
+
+              <span className="absolute inset-x-6 bottom-4 rounded-full bg-slate-900/70 px-3 py-1 text-center text-xs font-bold text-white backdrop-blur-sm">
+                Position leaf inside frame
+              </span>
+            </div>
+
+            <SmartGuidanceOverlay guidance={guidanceInfo} />
+          </>
         )}
       </div>
 
-      {/* Smart Computer Vision Guidance Overlay */}
-      {!cameraError && currentState !== 'analyzing' && (
-        <SmartGuidanceOverlay guidance={guidanceInfo} />
-      )}
-
-      {/* Camera Controls */}
-      {currentState !== 'analyzing' && (
+      {/* Controls */}
+      {!isAnalyzing && (
         <ScanControls
+          className="absolute inset-x-0 bottom-0 z-30 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent px-6 pb-8 pt-4 lg:static lg:w-full lg:max-w-[26rem] lg:bg-none lg:p-0"
           onCapture={handleCapture}
-          onFlipCamera={handleFlipCamera}
+          onFlipCamera={() => setFacingMode((prev) => (prev === 'environment' ? 'user' : 'environment'))}
           onGalleryClick={() => fileInputRef.current?.click()}
-          onToggleFlash={() => setFlashOn(!flashOn)}
-          flashOn={flashOn}
           captureReady={guidanceInfo.captureReady}
+          disabled={!!cameraError}
         />
       )}
 
-      {/* AI Scanning & Analysis Sequence Overlay */}
-      {currentState === 'analyzing' && (
+      {isAnalyzing && (
         <ScanAnalysisAnimation
           capturedImage={capturedImage}
           currentStepIndex={analysisStepIndex}

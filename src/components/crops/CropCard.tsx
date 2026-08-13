@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { Crop } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+import { cn } from '@/lib/utils';
 
 export interface CropCardProps {
   crop: Crop;
@@ -12,50 +13,54 @@ export interface CropCardProps {
   onToggle: (cropId: string) => void;
 }
 
-export const CropCard: React.FC<CropCardProps> = ({
-  crop,
-  selected,
-  onToggle
-}) => {
+export const CropCard: React.FC<CropCardProps> = ({ crop, selected, onToggle }) => {
   const { language } = useLanguage();
   const displayName = crop.translatedNames[language] || crop.name;
 
   return (
-    <motion.div
+    <motion.button
+      type="button"
+      role="checkbox"
+      aria-checked={selected}
       whileTap={{ scale: 0.95 }}
       whileHover={{ y: -2 }}
       onClick={() => onToggle(crop.id)}
-      className={`relative flex flex-col items-center justify-between p-4 rounded-3xl cursor-pointer transition-all duration-200 border-2 bg-white ${
+      className={cn(
+        'relative flex h-full flex-col items-center justify-start rounded-2xl border-2 bg-white p-3 transition-colors duration-200 sm:rounded-3xl sm:p-4',
         selected
           ? 'border-agro-600 bg-agro-50/40 shadow-soft-md ring-2 ring-agro-500/20'
-          : 'border-slate-100 hover:border-agro-200 shadow-sm hover:shadow-soft-sm'
-      }`}
+          : 'border-slate-100 shadow-sm hover:border-agro-200 hover:shadow-soft-sm'
+      )}
     >
-      {/* Selection Check Badge */}
-      <div
-        className={`absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+      <span
+        className={cn(
+          'absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full transition-all sm:right-3 sm:top-3 sm:h-6 sm:w-6',
           selected
-            ? 'bg-agro-600 text-white scale-100'
-            : 'border border-slate-300 bg-slate-50 text-transparent scale-90'
-        }`}
+            ? 'scale-100 bg-agro-600 text-white'
+            : 'scale-90 border border-slate-300 bg-slate-50 text-transparent'
+        )}
       >
-        <Check className="w-3.5 h-3.5 stroke-[3]" />
-      </div>
+        <Check className="h-3 w-3 stroke-[3] sm:h-3.5 sm:w-3.5" />
+      </span>
 
-      {/* Circular Crop Illustration Container */}
-      <div className={`w-16 h-16 rounded-full flex items-center justify-center text-3xl mb-3 shadow-inner ${crop.color}`}>
-        <span role="img" aria-label={crop.name}>{crop.icon}</span>
-      </div>
+      <span
+        className={cn(
+          'mb-2 flex h-12 w-12 items-center justify-center rounded-full text-2xl shadow-inner sm:mb-3 sm:h-16 sm:w-16 sm:text-3xl',
+          crop.color
+        )}
+      >
+        <span role="img" aria-hidden="true">
+          {crop.icon}
+        </span>
+      </span>
 
-      {/* Crop Name */}
-      <span className="text-sm font-bold text-slate-900 text-center leading-tight">
+      <span className="line-clamp-2 text-center text-xs font-bold leading-tight text-slate-900 sm:text-sm">
         {displayName}
       </span>
 
-      {/* Secondary Category Tag */}
-      <span className="text-[10px] text-slate-500 font-medium mt-1 uppercase tracking-wider">
+      <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-slate-500">
         {crop.category}
       </span>
-    </motion.div>
+    </motion.button>
   );
 };

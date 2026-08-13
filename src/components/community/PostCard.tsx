@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Heart, MessageSquare, MapPin, Tag } from 'lucide-react';
 import { CommunityPost } from '@/types';
 import { Card } from '@/components/ui/Card';
+import { SafeImage } from '@/components/ui/SafeImage';
 
 export interface PostCardProps {
   post: CommunityPost;
@@ -24,7 +25,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
   };
 
   return (
-    <Card className="flex flex-col gap-3 border-slate-100 p-4">
+    <Card className="flex h-full flex-col gap-3 border-slate-100 p-4">
       {/* Author Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -50,29 +51,28 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
       </div>
 
       {/* Title & Body */}
-      <div>
-        <h3 className="text-sm font-bold text-slate-900 leading-snug mb-1.5">
+      <div className="flex-1">
+        <h3 className="mb-1.5 text-sm font-bold leading-snug text-slate-900">
           {post.title}
         </h3>
-        <p className="text-xs text-slate-600 leading-relaxed">
+        <p className="text-xs leading-relaxed text-slate-600">
           {post.content}
         </p>
       </div>
 
       {/* Optional Post Image */}
       {post.imageUrl && (
-        <div className="relative w-full h-44 rounded-2xl overflow-hidden mt-1 shadow-sm border border-slate-100">
-          {/* eslint-disable-next-html-script-for-img */}
-          <img
+        <div className="relative mt-1 h-44 w-full overflow-hidden rounded-2xl border border-slate-100 shadow-sm">
+          <SafeImage
             src={post.imageUrl}
             alt={post.title}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         </div>
       )}
 
       {/* Actions Footer */}
-      <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500 font-semibold">
+      <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-2 text-xs font-semibold text-slate-500">
         <div className="flex items-center gap-1.5">
           <Tag className="w-3.5 h-3.5 text-agro-600" />
           <span>{post.category}</span>

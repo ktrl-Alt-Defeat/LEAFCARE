@@ -23,7 +23,7 @@ export const SmartGuidanceOverlay: React.FC<SmartGuidanceOverlayProps> = ({ guid
   };
 
   return (
-    <div className="absolute inset-x-0 top-16 z-30 flex flex-col items-center px-4 pointer-events-none">
+    <div className="pointer-events-none absolute inset-x-0 top-16 z-30 flex flex-col items-center px-4 lg:top-5">
       {/* Guidance Message Box */}
       <motion.div
         key={guidance.state}

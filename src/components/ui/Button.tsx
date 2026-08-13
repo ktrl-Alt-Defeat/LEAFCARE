@@ -4,7 +4,10 @@ import React from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-export interface ButtonProps extends HTMLMotionProps<'button'> {
+// `children` is narrowed to ReactNode: framer's own type also allows MotionValue,
+// which cannot be rendered inside the label span below.
+export interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
+  children?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   fullWidth?: boolean;

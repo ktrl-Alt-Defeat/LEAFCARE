@@ -54,6 +54,8 @@ export default function PermissionsPage() {
       onAllow={handleAllow}
       onSkip={handleSkip}
       loading={loading}
+      step={currentStepIdx + 1}
+      totalSteps={STEPS.length}
     />
   );
 }

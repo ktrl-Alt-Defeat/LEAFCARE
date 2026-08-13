@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, ShieldAlert, Sun, Sprout, Bug, HeartHandshake } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { SectionHeading } from '@/components/layout/Page';
 
 export const LIBRARY_ITEMS = [
   {
@@ -52,36 +53,32 @@ export const LIBRARY_ITEMS = [
 
 export const LibraryGrid: React.FC = () => {
   return (
-    <div className="flex flex-col gap-3">
-      <h3 className="text-lg font-black text-slate-900 tracking-tight">
-        Agri Library & Knowledge Base
-      </h3>
+    <section className="flex flex-col gap-3">
+      <SectionHeading>Agri library &amp; knowledge base</SectionHeading>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {LIBRARY_ITEMS.map((item) => {
           const Icon = item.icon;
           return (
-            <motion.div key={item.id} whileTap={{ scale: 0.96 }}>
+            <motion.div key={item.id} whileTap={{ scale: 0.96 }} className="h-full">
               <Card
                 clickable
-                className="flex flex-col h-full justify-between p-4 bg-white border border-slate-100 hover:border-agro-200"
+                className="hover-lift flex h-full flex-col border border-slate-100 bg-white p-4 hover:border-agro-200"
               >
-                <div>
-                  <div className={`w-10 h-10 rounded-2xl ${item.color} flex items-center justify-center mb-3 shadow-inner`}>
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <h4 className="text-sm font-bold text-slate-900 leading-tight mb-1">
-                    {item.title}
-                  </h4>
-                  <p className="text-xs text-slate-500 leading-normal line-clamp-2">
-                    {item.desc}
-                  </p>
+                <div
+                  className={`mb-3 flex h-10 w-10 items-center justify-center rounded-2xl shadow-inner ${item.color}`}
+                >
+                  <Icon className="h-5 w-5" />
                 </div>
+                <h3 className="mb-1 text-sm font-bold leading-tight text-slate-900">
+                  {item.title}
+                </h3>
+                <p className="line-clamp-2 text-xs leading-normal text-slate-500">{item.desc}</p>
               </Card>
             </motion.div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 };

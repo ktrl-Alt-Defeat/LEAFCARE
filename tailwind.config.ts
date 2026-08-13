@@ -8,6 +8,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: '420px',
+        // Laptops are often short rather than narrow — these let layouts
+        // react to available height, not just width.
+        'h-sm': { raw: '(min-height: 700px)' },
+        'h-md': { raw: '(min-height: 820px)' },
+      },
       colors: {
         agro: {
           50: '#F0FDF4',
@@ -26,13 +33,21 @@ const config: Config = {
           50: '#FAF8F5',
           100: '#F4EFE6',
           200: '#E6DBCB',
-          500: '#8B5CF6',
+          300: '#D3C0A3',
+          400: '#B99A69',
+          500: '#A16207',
+          600: '#92400E',
           700: '#78350F',
+          800: '#5C2A0C',
           900: '#451A03',
-        }
+        },
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'Inter', 'system-ui', 'sans-serif'],
+      },
+      maxWidth: {
+        content: '1360px',
+        prose: '68ch',
       },
       boxShadow: {
         'soft-sm': '0 2px 8px -2px rgba(22, 163, 74, 0.08), 0 1px 4px -1px rgba(0, 0, 0, 0.04)',
@@ -44,6 +59,7 @@ const config: Config = {
         'scan-line': 'scanLine 2.5s ease-in-out infinite',
         'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 3s ease-in-out infinite',
+        'fade-up': 'fadeUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both',
       },
       keyframes: {
         scanLine: {
@@ -57,8 +73,12 @@ const config: Config = {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-6px)' },
-        }
-      }
+        },
+        fadeUp: {
+          from: { opacity: '0', transform: 'translateY(8px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
     },
   },
   plugins: [],

@@ -2,27 +2,32 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Leaf } from 'lucide-react';
 import { useAppState } from '@/context/AppStateContext';
 
 export default function RootPage() {
   const router = useRouter();
-  const { onboardingCompleted } = useAppState();
+  const { hydrated, onboardingCompleted } = useAppState();
 
   useEffect(() => {
-    if (onboardingCompleted) {
-      router.replace('/home');
-    } else {
-      router.replace('/language');
-    }
-  }, [onboardingCompleted, router]);
+    // Waiting for hydration stops returning users being bounced to the
+    // language picker for a frame before the saved state loads.
+    if (!hydrated) return;
+    router.replace(onboardingCompleted ? '/home' : '/language');
+  }, [hydrated, onboardingCompleted, router]);
 
   return (
-    <div className="flex-1 flex items-center justify-center min-h-screen bg-agro-50">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-16 h-16 rounded-3xl bg-agro-600 text-white flex items-center justify-center text-3xl shadow-soft-lg animate-bounce">
-          🌿
-        </div>
-        <span className="text-sm font-bold text-agro-800">Loading LeafCare...</span>
+    <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-gradient-to-b from-agro-50 via-white to-agro-50/60">
+      <div className="flex h-16 w-16 animate-float items-center justify-center rounded-3xl bg-gradient-to-tr from-agro-600 to-emerald-400 text-white shadow-soft-lg">
+        <Leaf className="h-8 w-8 fill-white/20" />
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-xl font-black tracking-tight text-slate-900">
+          Leaf<span className="text-agro-600">Care</span>
+        </span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-agro-700">
+          Starting up…
+        </span>
       </div>
     </div>
   );

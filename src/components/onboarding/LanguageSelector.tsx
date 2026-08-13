@@ -6,6 +6,7 @@ import { Check, Leaf } from 'lucide-react';
 import { SUPPORTED_LANGUAGES } from '@/data/languages';
 import { LanguageCode } from '@/types';
 import { Button } from '@/components/ui/Button';
+import { cn } from '@/lib/utils';
 
 export interface LanguageSelectorProps {
   selectedLanguage: LanguageCode;
@@ -16,35 +17,25 @@ export interface LanguageSelectorProps {
 export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   selectedLanguage,
   onSelectLanguage,
-  onContinue
+  onContinue,
 }) => {
   return (
-    <div className="flex flex-col min-h-screen justify-between p-6 bg-gradient-to-b from-agro-50/60 via-white to-white">
-      {/* Header section */}
-      <div className="flex flex-col items-center text-center pt-6 pb-4">
-        {/* Brand Emblem */}
+    <div className="onboarding-stage">
+      <div className="flex flex-col items-center pb-4 pt-6 text-center lg:items-start lg:pt-0 lg:text-left">
+        {/* The brand mark is already shown in the laptop side panel. */}
         <motion.div
           initial={{ scale: 0, rotate: -20 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-          className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-agro-600 via-emerald-500 to-green-400 text-white flex items-center justify-center shadow-soft-lg shadow-agro-600/30 mb-4"
+          className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-tr from-agro-600 via-emerald-500 to-green-400 text-white shadow-soft-lg shadow-agro-600/30 lg:hidden"
         >
-          <Leaf className="w-9 h-9 fill-white/20" />
+          <Leaf className="h-9 w-9 fill-white/20" />
         </motion.div>
-
-        <motion.span
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-xs font-bold text-agro-700 uppercase tracking-widest bg-agro-100/80 px-3 py-1 rounded-full mb-2"
-        >
-          AgroCare Platform
-        </motion.span>
 
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-3xl font-black text-slate-900 tracking-tight"
+          className="text-3xl font-black tracking-tight text-slate-900"
         >
           Welcome!
         </motion.h1>
@@ -52,67 +43,66 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="text-slate-600 font-medium text-base mt-1"
+          transition={{ delay: 0.1 }}
+          className="mt-1 text-base font-medium text-slate-600"
         >
           Select your preferred language
         </motion.p>
       </div>
 
-      {/* Vertical Language Cards List */}
-      <div className="flex flex-col gap-3 my-4">
+      {/* Two columns once there is room, so all six languages stay in view
+          instead of pushing the Continue button off a short laptop screen. */}
+      <div className="my-4 grid gap-2.5 lg:my-0 lg:grid-cols-2">
         {SUPPORTED_LANGUAGES.map((lang, index) => {
           const isSelected = selectedLanguage === lang.code;
 
           return (
-            <motion.div
+            <motion.button
               key={lang.code}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 + index * 0.05 }}
+              type="button"
+              role="radio"
+              aria-checked={isSelected}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 + index * 0.04 }}
               onClick={() => onSelectLanguage(lang.code)}
-              className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all duration-200 cursor-pointer bg-white ${
+              className={cn(
+                'flex items-center justify-between gap-3 rounded-2xl border-2 bg-white p-3.5 text-left transition-colors duration-200',
                 isSelected
-                  ? 'border-agro-600 bg-agro-50/40 shadow-soft-md scale-[1.01]'
-                  : 'border-slate-200/80 hover:border-agro-300 hover:bg-slate-50/60 shadow-sm'
-              }`}
+                  ? 'border-agro-600 bg-agro-50/40 shadow-soft-md'
+                  : 'border-slate-200/80 shadow-sm hover:border-agro-300 hover:bg-slate-50/60'
+              )}
             >
-              <div className="flex items-center gap-3.5">
-                <span className="text-2xl select-none" role="img" aria-label={lang.englishName}>
+              <span className="flex min-w-0 items-center gap-3">
+                <span className="select-none text-2xl" role="img" aria-hidden="true">
                   {lang.flagSymbol || '🇮🇳'}
                 </span>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-slate-900 leading-tight">
-                      {lang.nativeName}
-                    </span>
-                    <span className="text-xs text-slate-500 font-medium">
-                      ({lang.englishName})
-                    </span>
-                  </div>
-                  <span className="text-xs text-slate-600 font-normal mt-0.5">
-                    {lang.description}
+                <span className="flex min-w-0 flex-col">
+                  <span className="truncate text-base font-bold leading-tight text-slate-900">
+                    {lang.nativeName}
                   </span>
-                </div>
-              </div>
+                  <span className="truncate text-xs font-medium text-slate-500">
+                    {lang.englishName}
+                  </span>
+                </span>
+              </span>
 
-              {/* Radio Indicator */}
-              <div
-                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+              <span
+                className={cn(
+                  'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
                   isSelected
                     ? 'border-agro-600 bg-agro-600 text-white'
                     : 'border-slate-300 bg-white'
-                }`}
+                )}
               >
-                {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-              </div>
-            </motion.div>
+                {isSelected && <Check className="h-3.5 w-3.5 stroke-[3]" />}
+              </span>
+            </motion.button>
           );
         })}
       </div>
 
-      {/* Bottom Actions */}
-      <div className="flex flex-col gap-3 pt-2 pb-6">
+      <div className="flex flex-col gap-3 pb-6 pt-2 lg:pb-0">
         <Button
           size="xl"
           fullWidth
@@ -123,10 +113,10 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           Continue
         </Button>
 
-        <p className="text-center text-xs text-slate-500 leading-relaxed px-4">
+        <p className="px-4 text-center text-xs leading-relaxed text-slate-500">
           I agree to the{' '}
-          <span className="underline font-medium text-slate-700">Terms of Use</span> and{' '}
-          <span className="underline font-medium text-slate-700">Privacy Policy</span>.
+          <span className="font-medium text-slate-700 underline">Terms of Use</span> and{' '}
+          <span className="font-medium text-slate-700 underline">Privacy Policy</span>.
         </p>
       </div>
     </div>

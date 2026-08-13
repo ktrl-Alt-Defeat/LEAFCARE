@@ -2,58 +2,200 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   Design tokens
+   ========================================================================== */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --surface-page: #F6F8F6;
+    --text-strong: #0F172A;
+
+    /* Chrome heights — used to offset sticky regions and scroll padding. */
+    --header-h: 60px;
+    --bottom-nav-h: 68px;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Keep anchored content clear of the sticky header. */
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    background-color: #F8FAFC;
-    color: #0F172A;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--surface-page);
+    color: var(--text-strong);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Chrome (nav, chips, buttons) should not be selectable — but body copy
+     must stay selectable, which matters on a laptop where people copy text. */
+  button,
+  [role='button'],
+  nav,
+  label {
     user-select: none;
   }
-}
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #F1F5F9;
-}
-::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
-}
+  /* A single, consistent focus treatment for keyboard users. */
+  :focus-visible {
+    outline: 2px solid theme('colors.agro.600');
+    outline-offset: 2px;
+    border-radius: 0.5rem;
+  }
 
-/* Mobile viewport simulator container for desktop */
-.app-container {
-  min-height: 100vh;
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  background-color: #FFFFFF;
-  position: relative;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-}
+  input,
+  textarea,
+  select {
+    color: var(--text-strong);
+  }
 
-@media (min-width: 768px) {
-  body {
-    background-color: #05130A;
-    background-image: radial-gradient(circle at 50% 0%, #14532D 0%, #05130A 75%);
+  input::placeholder,
+  textarea::placeholder {
+    color: theme('colors.slate.400');
+  }
+
+  img {
+    max-width: 100%;
   }
 }
 
-/* Shimmer scanning line */
+/* ==========================================================================
+   App shell — phone-width column on mobile, full desktop layout on laptops
+   ========================================================================== */
+@layer components {
+  /* The scrolling pane that holds page content.
+     Mobile: the document scrolls. Laptop: this pane scrolls on its own so the
+     sidebar and header stay put and the page never feels like a long web page. */
+  .app-scroll-pane {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .app-scroll-pane {
+      height: 100dvh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scroll-padding-top: calc(var(--header-h) + 1rem);
+    }
+  }
+
+  /* Standard page gutter + max width. Content stays readable on a 1080p
+     laptop instead of stretching edge to edge. */
+  .page-shell {
+    width: 100%;
+    max-width: theme('maxWidth.content');
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .page-shell {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .page-shell {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Onboarding screens: a centred card instead of a full-height stretch,
+     which is what made them look empty and unbalanced on a laptop. */
+  .onboarding-stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100dvh;
+    width: 100%;
+    max-width: 30rem;
+    margin-inline: auto;
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .onboarding-stage {
+      justify-content: center;
+      gap: 1.5rem;
+      min-height: auto;
+      max-width: 40rem;
+      padding: 2.5rem;
+    }
+  }
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+@layer utilities {
+  /* Used by every horizontal chip row — it was referenced throughout the app
+     but never actually defined, so scrollbars leaked into the UI on desktop. */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Fades the ends of a horizontally scrolling row so it reads as scrollable. */
+  .scroll-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+  }
+
+  .hover-lift {
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease;
+  }
+
+  @media (hover: hover) {
+    .hover-lift:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+/* ==========================================================================
+   Scrollbars — thin and unobtrusive, since laptops always show them
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+  background-clip: content-box;
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
 @keyframes laserScan {
   0% {
     top: 5%;
@@ -73,7 +215,6 @@
   animation: laserScan 2.2s ease-in-out infinite;
 }
 
-/* Pulse animation */
 @keyframes ringPulse {
   0% {
     transform: scale(0.95);
@@ -91,4 +232,19 @@
 
 .animate-ring-pulse {
   animation: ringPulse 2s infinite;
+}
+
+/* Respect the OS "reduce motion" setting — the app leans heavily on motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

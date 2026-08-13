@@ -13,29 +13,41 @@ export interface ModalProps {
   className?: string;
 }
 
-export const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  title,
-  children,
-  className
-}) => {
+/** Id of the laptop scroll container, which also has to be frozen while open. */
+export const APP_SCROLL_ID = 'app-scroll';
+
+export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, className }) => {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
+    if (!isOpen) return;
+
+    const pane = document.getElementById(APP_SCROLL_ID);
+    const previousBody = document.body.style.overflow;
+    const previousPane = pane?.style.overflow;
+
+    document.body.style.overflow = 'hidden';
+    if (pane) pane.style.overflow = 'hidden';
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
     };
-  }, [isOpen]);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousBody;
+      if (pane) pane.style.overflow = previousPane ?? '';
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-          {/* Backdrop */}
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={title}
+          className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4"
+        >
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -44,31 +56,30 @@ export const Modal: React.FC<ModalProps> = ({
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
           />
 
-          {/* Modal Container */}
           <motion.div
-            initial={{ y: '100%', opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: '100%', opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            // A short rise reads as a sheet on phones and as a gentle lift on a
+            // laptop, where a full slide from the bottom edge felt heavy.
+            initial={{ y: 32, opacity: 0, scale: 0.98 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 24, opacity: 0, scale: 0.98 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
             className={cn(
-              'relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 max-h-[85vh] overflow-y-auto',
+              'relative z-10 max-h-[88dvh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-white p-5 shadow-2xl sm:max-h-[85dvh] sm:rounded-3xl sm:p-6',
               className
             )}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
-              {title && <h3 className="text-xl font-bold text-slate-900">{title}</h3>}
+            <div className="sticky top-0 z-10 -mx-5 -mt-5 mb-4 flex items-center justify-between gap-3 border-b border-slate-100 bg-white/95 px-5 py-4 backdrop-blur-sm sm:-mx-6 sm:-mt-6 sm:px-6">
+              {title && <h2 className="truncate text-lg font-black text-slate-900">{title}</h2>}
               <button
                 onClick={onClose}
-                className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors ml-auto"
-                aria-label="Close modal"
+                className="ml-auto shrink-0 rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+                aria-label="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Content */}
-            <div>{children}</div>
+            {children}
           </motion.div>
         </div>
       )}

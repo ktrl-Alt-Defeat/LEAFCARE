@@ -1,70 +1,56 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Search } from 'lucide-react';
-import { Header } from '@/components/navigation/Header';
+import React, { useMemo, useState } from 'react';
+import { PackageSearch } from 'lucide-react';
+import { Page } from '@/components/layout/Page';
 import { ProductCard } from '@/components/market/ProductCard';
 import { ProductDetailModal } from '@/components/market/ProductDetailModal';
+import { SearchInput } from '@/components/ui/SearchInput';
+import { FilterChips } from '@/components/ui/FilterChips';
 import { MOCK_PRODUCTS } from '@/data/products';
 import { MarketProduct } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 
-const CATEGORIES = ['All', 'Seeds', 'Crop Protection', 'Fertilizers', 'Equipment', 'Tools'];
+const CATEGORIES = ['All', 'Seeds', 'Crop Protection', 'Fertilizers', 'Equipment', 'Tools'] as const;
 
 export default function MarketPage() {
   const { t } = useLanguage();
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<MarketProduct | null>(null);
 
-  const filteredProducts = MOCK_PRODUCTS.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || product.seller.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredProducts = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+    return MOCK_PRODUCTS.filter((product) => {
+      const matchesSearch =
+        !query ||
+        product.name.toLowerCase().includes(query) ||
+        product.seller.toLowerCase().includes(query);
+      const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [searchTerm, activeCategory]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50/60 pb-20">
-      <Header />
+    <Page
+      title={t('marketHeader', 'Agri Marketplace')}
+      subtitle={`${filteredProducts.length} ${filteredProducts.length === 1 ? 'listing' : 'listings'} from verified sellers`}
+    >
+      {/* Filter bar — sticks under the header so laptop users keep the controls
+          in view while scrolling a long grid. */}
+      <div className="sticky top-[var(--header-h)] z-30 -mx-4 flex flex-col gap-3 bg-[#F6F8F6]/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:flex-row lg:items-center lg:justify-between xl:-mx-8 xl:px-8">
+        <SearchInput
+          value={searchTerm}
+          onChange={setSearchTerm}
+          placeholder="Search seeds, pesticides, equipment…"
+          className="lg:max-w-sm lg:flex-1"
+        />
+        <FilterChips options={CATEGORIES} value={activeCategory} onChange={setActiveCategory} />
+      </div>
 
-      <div className="p-4 flex flex-col gap-4 max-w-md mx-auto w-full">
-        {/* Title */}
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-          {t('marketHeader', 'Agri Marketplace')}
-        </h1>
-
-        {/* Search */}
-        <div className="relative">
-          <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search seeds, pesticides, equipment..."
-            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-agro-500"
-          />
-        </div>
-
-        {/* Categories */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${
-                activeCategory === cat
-                  ? 'bg-agro-600 text-white shadow-soft-sm'
-                  : 'bg-white text-slate-600 border border-slate-200'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Product Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          {filteredProducts.map(product => (
+      {filteredProducts.length > 0 ? (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5">
+          {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -72,12 +58,17 @@ export default function MarketPage() {
             />
           ))}
         </div>
-      </div>
+      ) : (
+        <div className="flex flex-col items-center gap-2 rounded-3xl border border-dashed border-slate-300 bg-white/60 px-6 py-16 text-center">
+          <PackageSearch className="h-8 w-8 text-slate-400" />
+          <p className="text-sm font-bold text-slate-700">No products found</p>
+          <p className="max-w-xs text-xs font-medium text-slate-500">
+            Try a different search term or clear the category filter.
+          </p>
+        </div>
+      )}
 
-      <ProductDetailModal
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-      />
-    </div>
+      <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+    </Page>
   );
 }
