@@ -70,6 +70,36 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     resetApp: 'Reset App & Onboarding',
     calcFertilizer: 'Fertilizer Calculator',
     calcPesticide: 'Pesticide Calculator',
+    addToUseIt: 'Add to Use It',
+    addToUseItSub: 'A quick tour of everything LeafCare does',
+    tourHeading: 'Welcome to LeafCare',
+    tourBack: 'Back',
+    tourOpen: 'Open',
+    startExploring: 'Start exploring',
+    tourWelcomeTitle: 'Your pocket crop doctor',
+    tourWelcomeDesc:
+      'LeafCare spots crop diseases from a single photo and tells you exactly what to do next — plus local weather, farming guides and a marketplace, all in your language.',
+    tourScanTitle: 'Scan a leaf',
+    tourScanDesc:
+      'Point your camera at an affected leaf. The AI identifies the disease in seconds, so you can act before it spreads across the field.',
+    tourPlanTitle: 'Get a treatment plan',
+    tourPlanDesc:
+      'Every diagnosis comes with symptoms, causes and a step-by-step action plan — organic and chemical options side by side.',
+    tourWeatherTitle: 'Know when to spray',
+    tourWeatherDesc:
+      'Live weather for your village shows rain, wind and UV, and tells you whether right now is a safe window to spray.',
+    tourCatalogTitle: 'Look up any crop',
+    tourCatalogDesc:
+      'Reference sheets for 35 crops cover soil and pH, spacing, nutrient doses and which crops to plant together.',
+    tourToolsTitle: 'Calculate your inputs',
+    tourToolsDesc:
+      'The fertilizer calculator works out exactly how many bags of urea, DAP and potash your land needs — no guesswork, no waste.',
+    tourCommunityTitle: 'Ask other farmers',
+    tourCommunityDesc:
+      'Post a question to farmers growing the same crops nearby, and share what has worked on your own farm.',
+    tourMarketTitle: 'Buy what you need',
+    tourMarketDesc:
+      'Browse seeds, crop protection and equipment from verified local sellers, with prices and ratings up front.',
   },
   ta: {
     welcome: 'வணக்கம்!',
@@ -140,6 +170,36 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     resetApp: 'செயலியை மீட்டமைக்கவும்',
     calcFertilizer: 'உர கணக்கிடுப்பான்',
     calcPesticide: 'பூச்சிக்கொல்லி கணக்கிடுப்பான்',
+    addToUseIt: 'பயன்படுத்தத் தொடங்குங்கள்',
+    addToUseItSub: 'LeafCare செய்யும் அனைத்தையும் விரைவாகப் பாருங்கள்',
+    tourHeading: 'LeafCare-க்கு வரவேற்கிறோம்',
+    tourBack: 'பின்செல்',
+    tourOpen: 'திற',
+    startExploring: 'பயன்படுத்தத் தொடங்கு',
+    tourWelcomeTitle: 'உங்கள் பையிலேயே ஒரு பயிர் மருத்துவர்',
+    tourWelcomeDesc:
+      'ஒரே புகைப்படத்தில் பயிர் நோயைக் கண்டறிந்து, அடுத்து என்ன செய்ய வேண்டும் என்பதை LeafCare சொல்கிறது. இதனுடன் உள்ளூர் வானிலை, பயிர் வழிகாட்டிகள், சந்தை — அனைத்தும் உங்கள் மொழியில்.',
+    tourScanTitle: 'இலையை ஸ்கேன் செய்யுங்கள்',
+    tourScanDesc:
+      'பாதிக்கப்பட்ட இலையை நோக்கி கேமராவைக் காட்டுங்கள். சில வினாடிகளில் நோயை AI கண்டறியும்; வயல் முழுவதும் பரவும் முன்பே நடவடிக்கை எடுக்கலாம்.',
+    tourPlanTitle: 'சிகிச்சைத் திட்டம் பெறுங்கள்',
+    tourPlanDesc:
+      'ஒவ்வொரு கண்டறிதலுடனும் அறிகுறிகள், காரணங்கள் மற்றும் படிப்படியான செயல் திட்டம் — இயற்கை மற்றும் ரசாயன வழிகள் இரண்டும் அருகருகே.',
+    tourWeatherTitle: 'எப்போது தெளிக்கலாம் என்று அறியுங்கள்',
+    tourWeatherDesc:
+      'உங்கள் ஊரின் நேரலை வானிலை மழை, காற்று, UV ஆகியவற்றைக் காட்டி, இப்போது மருந்து தெளிப்பது பாதுகாப்பானதா என்று சொல்கிறது.',
+    tourCatalogTitle: 'எந்தப் பயிரையும் தேடுங்கள்',
+    tourCatalogDesc:
+      '35 பயிர்களுக்கான குறிப்பேடுகளில் மண், pH, இடைவெளி, ஊட்டச்சத்து அளவு மற்றும் எந்தப் பயிர்களை சேர்த்து பயிரிடலாம் என்ற விவரங்கள் உள்ளன.',
+    tourToolsTitle: 'உங்கள் இடுபொருட்களைக் கணக்கிடுங்கள்',
+    tourToolsDesc:
+      'உங்கள் நிலத்திற்கு எத்தனை மூட்டை யூரியா, DAP, பொட்டாஷ் தேவை என்பதை உரக் கணக்கிடுப்பான் துல்லியமாகக் கூறும் — யூகமும் இல்லை, வீணும் இல்லை.',
+    tourCommunityTitle: 'மற்ற விவசாயிகளிடம் கேளுங்கள்',
+    tourCommunityDesc:
+      'அருகில் அதே பயிர்களை பயிரிடும் விவசாயிகளிடம் கேள்வி கேளுங்கள்; உங்கள் நிலத்தில் பலன் தந்ததையும் பகிருங்கள்.',
+    tourMarketTitle: 'தேவையானதை வாங்குங்கள்',
+    tourMarketDesc:
+      'சரிபார்க்கப்பட்ட உள்ளூர் விற்பனையாளர்களிடமிருந்து விதைகள், பயிர் பாதுகாப்பு பொருட்கள், கருவிகளை விலை மற்றும் மதிப்பீடுகளுடன் பாருங்கள்.',
   },
   hi: {
     welcome: 'नमस्ते!',
@@ -210,6 +270,36 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     resetApp: 'ऐप रीसेट करें',
     calcFertilizer: 'खाद कैलकुलेटर',
     calcPesticide: 'कीटनाशक कैलकुलेटर',
+    addToUseIt: 'इस्तेमाल करना शुरू करें',
+    addToUseItSub: 'LeafCare क्या-क्या करता है, एक झलक में देखें',
+    tourHeading: 'LeafCare में आपका स्वागत है',
+    tourBack: 'पीछे',
+    tourOpen: 'खोलें',
+    startExploring: 'शुरू करें',
+    tourWelcomeTitle: 'आपकी जेब में फसल डॉक्टर',
+    tourWelcomeDesc:
+      'LeafCare एक ही फोटो से फसल की बीमारी पहचानता है और बताता है कि आगे क्या करना है। साथ में स्थानीय मौसम, खेती की जानकारी और बाज़ार — सब आपकी भाषा में।',
+    tourScanTitle: 'पत्ते को स्कैन करें',
+    tourScanDesc:
+      'प्रभावित पत्ते पर कैमरा दिखाएँ। AI कुछ ही सेकंड में बीमारी पहचान लेता है, ताकि पूरे खेत में फैलने से पहले आप कदम उठा सकें।',
+    tourPlanTitle: 'इलाज की योजना पाएँ',
+    tourPlanDesc:
+      'हर जाँच के साथ लक्षण, कारण और चरण-दर-चरण कार्य योजना मिलती है — जैविक और रासायनिक दोनों विकल्प साथ-साथ।',
+    tourWeatherTitle: 'छिड़काव का सही समय जानें',
+    tourWeatherDesc:
+      'आपके गाँव का लाइव मौसम बारिश, हवा और UV दिखाता है, और बताता है कि अभी छिड़काव करना सुरक्षित है या नहीं।',
+    tourCatalogTitle: 'कोई भी फसल देखें',
+    tourCatalogDesc:
+      '35 फसलों की जानकारी में मिट्टी और pH, दूरी, पोषक तत्वों की मात्रा और कौन-सी फसलें साथ लगाएँ, सब शामिल है।',
+    tourToolsTitle: 'अपनी खाद की मात्रा निकालें',
+    tourToolsDesc:
+      'खाद कैलकुलेटर बताता है कि आपकी ज़मीन के लिए यूरिया, DAP और पोटाश की कितनी बोरियाँ चाहिए — न अंदाज़ा, न बर्बादी।',
+    tourCommunityTitle: 'दूसरे किसानों से पूछें',
+    tourCommunityDesc:
+      'आस-पास वही फसल उगाने वाले किसानों से सवाल पूछें, और अपने खेत में जो काम आया वह साझा करें।',
+    tourMarketTitle: 'ज़रूरत का सामान खरीदें',
+    tourMarketDesc:
+      'सत्यापित स्थानीय विक्रेताओं से बीज, फसल सुरक्षा उत्पाद और उपकरण देखें — कीमत और रेटिंग सामने।',
   },
   te: {
     welcome: 'స్వాగతం!',
@@ -280,6 +370,36 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     resetApp: 'యాప్ రీసెట్ చేయండి',
     calcFertilizer: 'ఎరువుల క్యాలిక్యులేటర్',
     calcPesticide: 'పురుగుమందుల క్యాలిక్యులేటర్',
+    addToUseIt: 'వాడటం మొదలుపెట్టండి',
+    addToUseItSub: 'LeafCare ఏమేమి చేస్తుందో త్వరగా చూడండి',
+    tourHeading: 'LeafCare కు స్వాగతం',
+    tourBack: 'వెనుకకు',
+    tourOpen: 'తెరవండి',
+    startExploring: 'మొదలుపెట్టండి',
+    tourWelcomeTitle: 'మీ జేబులోనే పంట డాక్టర్',
+    tourWelcomeDesc:
+      'ఒక్క ఫోటోతో పంట వ్యాధిని LeafCare గుర్తించి, తర్వాత ఏమి చేయాలో చెబుతుంది. దీనితో పాటు స్థానిక వాతావరణం, సాగు మార్గదర్శకాలు, మార్కెట్ — అన్నీ మీ భాషలో.',
+    tourScanTitle: 'ఆకును స్కాన్ చేయండి',
+    tourScanDesc:
+      'తెగులు సోకిన ఆకు వైపు కెమెరా చూపండి. కొన్ని సెకన్లలో AI వ్యాధిని గుర్తిస్తుంది; పొలం అంతటా వ్యాపించక ముందే చర్య తీసుకోవచ్చు.',
+    tourPlanTitle: 'చికిత్స ప్రణాళిక పొందండి',
+    tourPlanDesc:
+      'ప్రతి నిర్ధారణతో లక్షణాలు, కారణాలు, దశలవారీ కార్యాచరణ — సేంద్రియ మరియు రసాయన మార్గాలు రెండూ పక్కపక్కనే.',
+    tourWeatherTitle: 'ఎప్పుడు పిచికారీ చేయాలో తెలుసుకోండి',
+    tourWeatherDesc:
+      'మీ ఊరి ప్రత్యక్ష వాతావరణం వర్షం, గాలి, UV చూపిస్తూ, ఇప్పుడు పిచికారీ చేయడం సురక్షితమా కాదా అని చెబుతుంది.',
+    tourCatalogTitle: 'ఏ పంట గురించైనా చూడండి',
+    tourCatalogDesc:
+      '35 పంటల వివరాలలో నేల, pH, మొక్కల మధ్య దూరం, పోషకాల మోతాదు, ఏ పంటలు కలిపి వేయాలి అనే సమాచారం ఉంది.',
+    tourToolsTitle: 'మీ ఎరువులను లెక్కించండి',
+    tourToolsDesc:
+      'మీ భూమికి ఎన్ని బస్తాల యూరియా, DAP, పొటాష్ కావాలో ఎరువుల క్యాలిక్యులేటర్ కచ్చితంగా చెబుతుంది — అంచనాలు లేవు, వృథా లేదు.',
+    tourCommunityTitle: 'ఇతర రైతులను అడగండి',
+    tourCommunityDesc:
+      'దగ్గరలో అదే పంటలు పండించే రైతులను ప్రశ్న అడగండి, మీ పొలంలో ఫలితమిచ్చిన విషయాలను పంచుకోండి.',
+    tourMarketTitle: 'కావలసినవి కొనండి',
+    tourMarketDesc:
+      'ధృవీకరించిన స్థానిక విక్రేతల నుండి విత్తనాలు, పంట రక్షణ ఉత్పత్తులు, పరికరాలను ధరలు మరియు రేటింగ్‌లతో చూడండి.',
   },
   ml: {
     welcome: 'സ്വാഗതം!',
@@ -350,6 +470,36 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     resetApp: 'ആപ്പ് റീസെറ്റ് ചെയ്യുക',
     calcFertilizer: 'വള കാൽക്കുലേറ്റർ',
     calcPesticide: 'കീടനാശിനി കാൽക്കുലേറ്റർ',
+    addToUseIt: 'ഉപയോഗിച്ചു തുടങ്ങുക',
+    addToUseItSub: 'LeafCare എന്തെല്ലാം ചെയ്യുന്നു എന്ന് വേഗം കാണുക',
+    tourHeading: 'LeafCare ലേക്ക് സ്വാഗതം',
+    tourBack: 'പിന്നോട്ട്',
+    tourOpen: 'തുറക്കുക',
+    startExploring: 'തുടങ്ങുക',
+    tourWelcomeTitle: 'നിങ്ങളുടെ പോക്കറ്റിലെ വിള ഡോക്ടർ',
+    tourWelcomeDesc:
+      'ഒരൊറ്റ ഫോട്ടോയിൽ നിന്ന് വിളരോഗം കണ്ടെത്തി അടുത്തതായി എന്തു ചെയ്യണമെന്ന് LeafCare പറയുന്നു. ഒപ്പം പ്രാദേശിക കാലാവസ്ഥ, കൃഷി വഴികാട്ടികൾ, വിപണി — എല്ലാം നിങ്ങളുടെ ഭാഷയിൽ.',
+    tourScanTitle: 'ഇല സ്കാൻ ചെയ്യുക',
+    tourScanDesc:
+      'രോഗം ബാധിച്ച ഇലയിലേക്ക് ക്യാമറ ചൂണ്ടുക. സെക്കൻഡുകൾക്കുള്ളിൽ AI രോഗം തിരിച്ചറിയും; വയലാകെ പടരും മുൻപ് നടപടിയെടുക്കാം.',
+    tourPlanTitle: 'ചികിത്സാ പദ്ധതി നേടുക',
+    tourPlanDesc:
+      'ഓരോ നിർണയത്തിനൊപ്പവും ലക്ഷണങ്ങൾ, കാരണങ്ങൾ, ഘട്ടം ഘട്ടമായുള്ള കർമ്മ പദ്ധതി — ജൈവ, രാസ മാർഗങ്ങൾ രണ്ടും ഒരുമിച്ച്.',
+    tourWeatherTitle: 'എപ്പോൾ തളിക്കണമെന്ന് അറിയുക',
+    tourWeatherDesc:
+      'നിങ്ങളുടെ ഗ്രാമത്തിലെ തത്സമയ കാലാവസ്ഥ മഴ, കാറ്റ്, UV കാണിക്കുകയും ഇപ്പോൾ മരുന്ന് തളിക്കുന്നത് സുരക്ഷിതമാണോ എന്ന് പറയുകയും ചെയ്യുന്നു.',
+    tourCatalogTitle: 'ഏത് വിളയും തിരയുക',
+    tourCatalogDesc:
+      '35 വിളകളുടെ വിവരണത്തിൽ മണ്ണ്, pH, അകലം, പോഷക അളവ്, ഒരുമിച്ച് നടാവുന്ന വിളകൾ എന്നിവ ഉൾപ്പെടുന്നു.',
+    tourToolsTitle: 'വളത്തിന്റെ അളവ് കണക്കാക്കുക',
+    tourToolsDesc:
+      'നിങ്ങളുടെ കൃഷിഭൂമിക്ക് എത്ര ചാക്ക് യൂറിയ, DAP, പൊട്ടാഷ് വേണമെന്ന് വളം കാൽക്കുലേറ്റർ കൃത്യമായി പറയും — ഊഹമില്ല, പാഴാക്കലില്ല.',
+    tourCommunityTitle: 'മറ്റ് കർഷകരോട് ചോദിക്കുക',
+    tourCommunityDesc:
+      'അടുത്ത് അതേ വിളകൾ കൃഷി ചെയ്യുന്നവരോട് ചോദ്യം ചോദിക്കുക, നിങ്ങളുടെ കൃഷിയിടത്തിൽ ഫലിച്ചത് പങ്കുവയ്ക്കുക.',
+    tourMarketTitle: 'വേണ്ടത് വാങ്ങുക',
+    tourMarketDesc:
+      'സ്ഥിരീകരിച്ച പ്രാദേശിക വിൽപ്പനക്കാരിൽ നിന്ന് വിത്ത്, വിള സംരക്ഷണ ഉൽപ്പന്നങ്ങൾ, ഉപകരണങ്ങൾ വിലയും റേറ്റിംഗും സഹിതം കാണുക.',
   },
   kn: {
     welcome: 'స్వాగత!',
@@ -420,5 +570,35 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     resetApp: 'ಆ್ಯಪ್ ರಿಸೆಟ್ ಮಾಡಿ',
     calcFertilizer: 'ಗೊಬ್ಬರ ಕ್ಯಾಲ್ಕುಲೇಟರ್',
     calcPesticide: 'ಕೀಟನಾಶಕ ಕ್ಯಾಲ್ಕುಲೇಟರ್',
+    addToUseIt: 'ಬಳಸಲು ಪ್ರಾರಂಭಿಸಿ',
+    addToUseItSub: 'LeafCare ಏನೆಲ್ಲಾ ಮಾಡುತ್ತದೆ ಎಂಬುದನ್ನು ಬೇಗ ನೋಡಿ',
+    tourHeading: 'LeafCare ಗೆ ಸ್ವಾಗತ',
+    tourBack: 'ಹಿಂದೆ',
+    tourOpen: 'ತೆರೆಯಿರಿ',
+    startExploring: 'ಪ್ರಾರಂಭಿಸಿ',
+    tourWelcomeTitle: 'ನಿಮ್ಮ ಜೇಬಿನಲ್ಲಿಯೇ ಬೆಳೆ ವೈದ್ಯ',
+    tourWelcomeDesc:
+      'ಒಂದೇ ಫೋಟೋದಿಂದ ಬೆಳೆ ರೋಗವನ್ನು ಗುರುತಿಸಿ ಮುಂದೇನು ಮಾಡಬೇಕೆಂದು LeafCare ಹೇಳುತ್ತದೆ. ಜೊತೆಗೆ ಸ್ಥಳೀಯ ಹವಾಮಾನ, ಕೃಷಿ ಮಾರ್ಗದರ್ಶಿಗಳು, ಮಾರುಕಟ್ಟೆ — ಎಲ್ಲವೂ ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ.',
+    tourScanTitle: 'ಎಲೆಯನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ',
+    tourScanDesc:
+      'ರೋಗ ಬಾಧಿತ ಎಲೆಯತ್ತ ಕ್ಯಾಮೆರಾ ತೋರಿಸಿ. ಕೆಲವೇ ಸೆಕೆಂಡುಗಳಲ್ಲಿ AI ರೋಗವನ್ನು ಗುರುತಿಸುತ್ತದೆ; ಹೊಲದಾದ್ಯಂತ ಹರಡುವ ಮೊದಲೇ ಕ್ರಮ ಕೈಗೊಳ್ಳಬಹುದು.',
+    tourPlanTitle: 'ಚಿಕಿತ್ಸಾ ಯೋಜನೆ ಪಡೆಯಿರಿ',
+    tourPlanDesc:
+      'ಪ್ರತಿ ಪತ್ತೆಯೊಂದಿಗೆ ಲಕ್ಷಣಗಳು, ಕಾರಣಗಳು ಮತ್ತು ಹಂತ ಹಂತದ ಕಾರ್ಯ ಯೋಜನೆ — ಸಾವಯವ ಮತ್ತು ರಾಸಾಯನಿಕ ಆಯ್ಕೆಗಳು ಎರಡೂ ಜೊತೆಜೊತೆಗೆ.',
+    tourWeatherTitle: 'ಯಾವಾಗ ಸಿಂಪಡಿಸಬೇಕೆಂದು ತಿಳಿಯಿರಿ',
+    tourWeatherDesc:
+      'ನಿಮ್ಮ ಊರಿನ ನೇರ ಹವಾಮಾನ ಮಳೆ, ಗಾಳಿ, UV ತೋರಿಸಿ, ಈಗ ಸಿಂಪಡಣೆ ಸುರಕ್ಷಿತವೇ ಎಂದು ಹೇಳುತ್ತದೆ.',
+    tourCatalogTitle: 'ಯಾವುದೇ ಬೆಳೆಯನ್ನು ಹುಡುಕಿ',
+    tourCatalogDesc:
+      '35 ಬೆಳೆಗಳ ಮಾಹಿತಿಯಲ್ಲಿ ಮಣ್ಣು, pH, ಅಂತರ, ಪೋಷಕಾಂಶ ಪ್ರಮಾಣ ಮತ್ತು ಯಾವ ಬೆಳೆಗಳನ್ನು ಜೊತೆಯಾಗಿ ಬೆಳೆಯಬಹುದು ಎಂಬುದಿದೆ.',
+    tourToolsTitle: 'ನಿಮ್ಮ ಗೊಬ್ಬರ ಲೆಕ್ಕ ಹಾಕಿ',
+    tourToolsDesc:
+      'ನಿಮ್ಮ ಜಮೀನಿಗೆ ಎಷ್ಟು ಚೀಲ ಯೂರಿಯಾ, DAP, ಪೊಟ್ಯಾಷ್ ಬೇಕು ಎಂದು ಗೊಬ್ಬರ ಕ್ಯಾಲ್ಕುಲೇಟರ್ ನಿಖರವಾಗಿ ಹೇಳುತ್ತದೆ — ಊಹೆ ಇಲ್ಲ, ವ್ಯರ್ಥ ಇಲ್ಲ.',
+    tourCommunityTitle: 'ಇತರ ರೈತರನ್ನು ಕೇಳಿ',
+    tourCommunityDesc:
+      'ಹತ್ತಿರದಲ್ಲಿ ಅದೇ ಬೆಳೆ ಬೆಳೆಯುವ ರೈತರಿಗೆ ಪ್ರಶ್ನೆ ಕೇಳಿ, ನಿಮ್ಮ ಹೊಲದಲ್ಲಿ ಫಲ ನೀಡಿದ್ದನ್ನು ಹಂಚಿಕೊಳ್ಳಿ.',
+    tourMarketTitle: 'ಬೇಕಾದದ್ದನ್ನು ಖರೀದಿಸಿ',
+    tourMarketDesc:
+      'ಪರಿಶೀಲಿತ ಸ್ಥಳೀಯ ಮಾರಾಟಗಾರರಿಂದ ಬೀಜ, ಬೆಳೆ ಸಂರಕ್ಷಣಾ ಉತ್ಪನ್ನ ಮತ್ತು ಉಪಕರಣಗಳನ್ನು ಬೆಲೆ ಹಾಗೂ ರೇಟಿಂಗ್‌ನೊಂದಿಗೆ ನೋಡಿ.',
   }
 };

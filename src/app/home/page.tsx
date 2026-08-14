@@ -10,6 +10,7 @@ import { ToolsGrid } from '@/components/dashboard/ToolsGrid';
 import { LibraryGrid } from '@/components/dashboard/LibraryGrid';
 import { CalculatorModal } from '@/components/dashboard/CalculatorModal';
 import { CropChip } from '@/components/crops/CropChip';
+import { AddToUseItButton } from '@/components/tour/AddToUseItButton';
 import { useAppState } from '@/context/AppStateContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { CROPS_DATA } from '@/data/crops';
@@ -75,6 +76,9 @@ export default function HomePage() {
         <aside className="order-2 lg:order-none lg:col-start-3 lg:row-span-2 lg:row-start-1">
           <div className="flex flex-col gap-5 lg:sticky lg:top-[calc(var(--header-h)+1.25rem)]">
             <WeatherCard />
+
+            {/* Sits directly under the weather section, per the dashboard layout. */}
+            <AddToUseItButton />
 
             {scanHistory.length > 0 && (
               <section className="flex flex-col gap-3">
