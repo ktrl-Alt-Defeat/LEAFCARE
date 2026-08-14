@@ -28,6 +28,9 @@ const envSchema = z.object({
   DATABASE_URL: z
     .string({ required_error: 'DATABASE_URL is required' })
     .min(1, 'DATABASE_URL cannot be empty'),
+  DIRECT_URL: z
+    .string({ required_error: 'DIRECT_URL is required' })
+    .min(1, 'DIRECT_URL cannot be empty'),
 });
 
 /**
