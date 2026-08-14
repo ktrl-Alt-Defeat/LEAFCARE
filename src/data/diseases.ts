@@ -17,7 +17,7 @@ export const MOCK_DISEASES: Record<string, Disease> = {
     },
     confidence: 94,
     severity: 'moderate',
-    imageUrl: 'https://images.unsplash.com/photo-1592417817098-8f3d6ef23a63?q=80&w=800&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=800&auto=format&fit=crop',
     overview: 'Early blight is a common fungal disease of tomatoes caused by Alternaria solani. It causes concentric ring dark brown spots on older leaves, lower leaf yellowing, and foliage loss.',
     symptoms: [
       'Concentric dark brown circular spots with target-like rings on mature bottom leaves.',

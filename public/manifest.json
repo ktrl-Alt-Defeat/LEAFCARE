@@ -1,0 +1,27 @@
+{
+  "name": "LeafCare — AI Crop Disease Detection",
+  "short_name": "LeafCare",
+  "description": "AI-powered crop disease detection, localized weather forecasts, and farming guidance for farmers.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F8F6",
+  "theme_color": "#16A34A",
+  "lang": "en",
+  "categories": ["agriculture", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

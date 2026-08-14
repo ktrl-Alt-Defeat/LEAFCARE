@@ -10,8 +10,9 @@ import { ScanAnalysisAnimation } from './ScanAnalysisAnimation';
 import { useAppState } from '@/context/AppStateContext';
 import { MOCK_DISEASES } from '@/data/diseases';
 
-const FALLBACK_IMAGE =
-  'https://images.unsplash.com/photo-1592417817098-8f3d6ef23a63?q=80&w=800&auto=format&fit=crop';
+/** Torch is not in the standard DOM typings, though most mobile browsers expose it. */
+type TorchCapabilities = MediaTrackCapabilities & { torch?: boolean };
+type TorchConstraint = MediaTrackConstraintSet & { torch?: boolean };
 
 export const CameraScanner: React.FC = () => {
   const router = useRouter();
@@ -20,8 +21,11 @@ export const CameraScanner: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const videoTrackRef = useRef<MediaStreamTrack | null>(null);
+
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
   const [flashOn, setFlashOn] = useState(false);
+  const [torchSupported, setTorchSupported] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
 
@@ -54,6 +58,14 @@ export const CameraScanner: React.FC = () => {
         }
 
         activeStream = stream;
+        const [videoTrack] = stream.getVideoTracks();
+        videoTrackRef.current = videoTrack ?? null;
+
+        // Only offer the flash control when this camera actually has a torch.
+        const capabilities = videoTrack?.getCapabilities?.() as TorchCapabilities | undefined;
+        setTorchSupported(Boolean(capabilities?.torch));
+        setFlashOn(false);
+
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.play().catch(() => {});
@@ -68,9 +80,25 @@ export const CameraScanner: React.FC = () => {
 
     return () => {
       cancelled = true;
+      videoTrackRef.current = null;
       activeStream?.getTracks().forEach((track) => track.stop());
     };
   }, [facingMode]);
+
+  /** Drives the hardware torch — previously this only flipped an icon. */
+  const toggleTorch = async () => {
+    const track = videoTrackRef.current;
+    if (!track || !torchSupported) return;
+
+    const next = !flashOn;
+    try {
+      await track.applyConstraints({ advanced: [{ torch: next } as TorchConstraint] });
+      setFlashOn(next);
+    } catch (error) {
+      console.warn('Torch unavailable on this device:', error);
+      setTorchSupported(false);
+    }
+  };
 
   const completeScan = useCallback(
     (imageDataUrl: string) => {
@@ -95,7 +123,9 @@ export const CameraScanner: React.FC = () => {
   );
 
   const handleCapture = () => {
-    let imageDataUrl = FALLBACK_IMAGE;
+    // Left empty when the frame cannot be grabbed. Substituting a stock photo
+    // here would attach someone else's crop to the farmer's own diagnosis.
+    let imageDataUrl = '';
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -110,7 +140,7 @@ export const CameraScanner: React.FC = () => {
       }
     }
 
-    setCapturedImage(imageDataUrl);
+    setCapturedImage(imageDataUrl || null);
     completeScan(imageDataUrl);
   };
 
@@ -156,18 +186,23 @@ export const CameraScanner: React.FC = () => {
           Leaf Scanner
         </span>
 
-        <button
-          onClick={() => setFlashOn((prev) => !prev)}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-slate-900/80 text-white backdrop-blur-md transition-transform active:scale-95"
-          aria-label="Toggle flash"
-          aria-pressed={flashOn}
-        >
-          {flashOn ? (
-            <Zap className="h-5 w-5 fill-amber-400 text-amber-400" />
-          ) : (
-            <ZapOff className="h-5 w-5" />
-          )}
-        </button>
+        {torchSupported ? (
+          <button
+            onClick={toggleTorch}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-slate-900/80 text-white backdrop-blur-md transition-transform active:scale-95"
+            aria-label="Toggle flash"
+            aria-pressed={flashOn}
+          >
+            {flashOn ? (
+              <Zap className="h-5 w-5 fill-amber-400 text-amber-400" />
+            ) : (
+              <ZapOff className="h-5 w-5" />
+            )}
+          </button>
+        ) : (
+          // Keeps the title bar balanced when the device has no torch.
+          <span className="h-10 w-10" aria-hidden="true" />
+        )}
       </div>
 
       {/* Capture stage. Full bleed on phones; a framed portrait panel on laptops,

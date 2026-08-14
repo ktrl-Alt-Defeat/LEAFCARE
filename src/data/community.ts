@@ -11,7 +11,7 @@ export const MOCK_COMMUNITY_POSTS: CommunityPost[] = [
     category: 'Disease Help',
     title: 'Yellow spots appearing on bottom tomato leaves after heavy rain. Is this early blight?',
     content: 'Friends, after last night rain my 40-day tomato crop is showing round yellow spots with dark rings on lower leaves. LeafCare scanner suggested early blight. Has anyone used Neem oil + Mancozeb spray? What is the best dose?',
-    imageUrl: 'https://images.unsplash.com/photo-1592417817098-8f3d6ef23a63?q=80&w=600&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=600&auto=format&fit=crop',
     likes: 24,
     repliesCount: 8,
     isLiked: false

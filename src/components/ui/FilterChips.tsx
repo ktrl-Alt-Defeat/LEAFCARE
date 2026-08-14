@@ -8,6 +8,8 @@ export interface FilterChipsProps {
   value: string;
   onChange: (option: string) => void;
   className?: string;
+  /** Describes the filter group to screen readers. */
+  label?: string;
 }
 
 /**
@@ -19,9 +21,13 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
   value,
   onChange,
   className,
+  label = 'Filter by category',
 }) => (
+  // A group of toggles, not tabs: `role="tab"` promises an associated tabpanel
+  // that does not exist here, which misleads screen readers.
   <div
-    role="tablist"
+    role="group"
+    aria-label={label}
     className={cn(
       'no-scrollbar -mx-1 flex items-center gap-2 overflow-x-auto px-1 pb-1 md:flex-wrap md:overflow-visible md:pb-0',
       className
@@ -32,8 +38,8 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
       return (
         <button
           key={option}
-          role="tab"
-          aria-selected={isActive}
+          type="button"
+          aria-pressed={isActive}
           onClick={() => onChange(option)}
           className={cn(
             'whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors',

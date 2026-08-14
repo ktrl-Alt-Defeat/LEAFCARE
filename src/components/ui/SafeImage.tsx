@@ -41,7 +41,9 @@ export const SafeImage: React.FC<SafeImageProps> = ({
     checkLoaded();
   }, [src, checkLoaded]);
 
-  if (failed) {
+  // A blank src would otherwise resolve against the page URL and render the
+  // document as a broken image.
+  if (failed || !src.trim()) {
     return (
       <div
         role="img"

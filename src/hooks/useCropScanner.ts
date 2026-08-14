@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-export type ScannerState = 
+export type ScannerState =
   | 'initializing'
   | 'pointing'
   | 'closer'
@@ -80,77 +80,119 @@ export const ANALYSIS_STEPS = [
   'Preparing recommended remedies...'
 ];
 
+const CAPTURE_FREEZE_MS = 600;
+const STEP_INTERVAL_MS = 500;
+const HANDOFF_DELAY_MS = 400;
+
 export const useCropScanner = () => {
   const [currentState, setCurrentState] = useState<ScannerState>('pointing');
   const [analysisStepIndex, setAnalysisStepIndex] = useState<number>(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Auto-progress simulated CV guidance state when camera is open
+  const guidanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const freezeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handoffTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  /** Blocks a second capture while one is already running. */
+  const isCapturingRef = useRef(false);
+
+  const clearAnalysisTimers = useCallback(() => {
+    if (freezeTimerRef.current) clearTimeout(freezeTimerRef.current);
+    if (handoffTimerRef.current) clearTimeout(handoffTimerRef.current);
+    if (stepIntervalRef.current) clearInterval(stepIntervalRef.current);
+    freezeTimerRef.current = null;
+    handoffTimerRef.current = null;
+    stepIntervalRef.current = null;
+  }, []);
+
+  // Auto-progress the simulated computer-vision guidance while framing.
   useEffect(() => {
     if (currentState === 'capturing' || currentState === 'analyzing' || currentState === 'initializing') {
       return;
     }
 
     const steps: ScannerState[] = ['pointing', 'closer', 'centering', 'holding', 'ready'];
-    let idx = steps.indexOf(currentState);
+    const index = steps.indexOf(currentState);
 
-    if (idx >= 0 && idx < steps.length - 1) {
-      const duration = idx === 3 ? 1400 : 1800; // Hold steady state slightly shorter
-      timerRef.current = setTimeout(() => {
-        setCurrentState(steps[idx + 1]);
-      }, duration);
+    if (index >= 0 && index < steps.length - 1) {
+      const duration = index === 3 ? 1400 : 1800; // Hold-steady state is shorter.
+      guidanceTimerRef.current = setTimeout(() => setCurrentState(steps[index + 1]), duration);
     }
 
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (guidanceTimerRef.current) clearTimeout(guidanceTimerRef.current);
     };
   }, [currentState]);
 
-  const triggerCapture = (onComplete: () => void) => {
-    setCurrentState('capturing');
-    
-    // Simulate capture frame freeze -> AI analysis sequence
-    setTimeout(() => {
-      setCurrentState('analyzing');
-      setAnalysisStepIndex(0);
+  // Leaving the scanner mid-analysis must not fire the completion callback,
+  // which would navigate away and save a scan the user abandoned.
+  useEffect(() => {
+    return () => {
+      isCapturingRef.current = false;
+      clearAnalysisTimers();
+    };
+  }, [clearAnalysisTimers]);
 
-      // Cycle through 5 AI analysis steps over 2.5s
-      const interval = setInterval(() => {
-        setAnalysisStepIndex((prev) => {
-          if (prev < ANALYSIS_STEPS.length - 1) {
-            return prev + 1;
+  const triggerCapture = useCallback(
+    (onComplete: () => void) => {
+      if (isCapturingRef.current) return;
+      isCapturingRef.current = true;
+
+      clearAnalysisTimers();
+      setCurrentState('capturing');
+
+      freezeTimerRef.current = setTimeout(() => {
+        setCurrentState('analyzing');
+        setAnalysisStepIndex(0);
+
+        // The step counter is tracked outside React state so that finishing the
+        // sequence never depends on side effects inside a state updater — those
+        // can run more than once and would complete the scan twice.
+        let step = 0;
+
+        stepIntervalRef.current = setInterval(() => {
+          step += 1;
+
+          if (step < ANALYSIS_STEPS.length) {
+            setAnalysisStepIndex(step);
+            return;
           }
-          clearInterval(interval);
-          setTimeout(() => {
+
+          if (stepIntervalRef.current) clearInterval(stepIntervalRef.current);
+          stepIntervalRef.current = null;
+
+          handoffTimerRef.current = setTimeout(() => {
+            isCapturingRef.current = false;
             onComplete();
-          }, 400);
-          return prev;
-        });
-      }, 500);
+          }, HANDOFF_DELAY_MS);
+        }, STEP_INTERVAL_MS);
+      }, CAPTURE_FREEZE_MS);
+    },
+    [clearAnalysisTimers]
+  );
 
-    }, 600);
-  };
-
-  const resetScanner = () => {
+  const resetScanner = useCallback(() => {
+    clearAnalysisTimers();
+    isCapturingRef.current = false;
     setCurrentState('pointing');
     setAnalysisStepIndex(0);
-  };
+  }, [clearAnalysisTimers]);
 
   const guidanceInfo: ScannerGuidance = {
     state: currentState,
     ...GUIDANCE_STEPS[currentState],
-    progressPercentage: currentState === 'analyzing' 
-      ? Math.round(((analysisStepIndex + 1) / ANALYSIS_STEPS.length) * 100)
-      : currentState === 'ready' ? 100 : 60
+    progressPercentage:
+      currentState === 'analyzing'
+        ? Math.round(((analysisStepIndex + 1) / ANALYSIS_STEPS.length) * 100)
+        : currentState === 'ready'
+        ? 100
+        : 60
   };
 
   return {
     guidanceInfo,
     currentState,
     analysisStepIndex,
-    currentAnalysisText: ANALYSIS_STEPS[analysisStepIndex] || ANALYSIS_STEPS[0],
     triggerCapture,
-    resetScanner,
-    setScannerState: setCurrentState
+    resetScanner
   };
 };

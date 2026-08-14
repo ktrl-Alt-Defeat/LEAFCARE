@@ -17,8 +17,18 @@ import { SafeImage } from '@/components/ui/SafeImage';
 function DiagnosisContent() {
   const searchParams = useSearchParams();
   const scanId = searchParams.get('id');
-  const { scanHistory, selectedCrops } = useAppState();
+  const { hydrated, scanHistory, selectedCrops } = useAppState();
   const { language } = useLanguage();
+
+  // Saved scans live in localStorage. Rendering before they load would briefly
+  // show the sample disease instead of the scan the user actually opened.
+  if (!hydrated) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center">
+        <div className="text-sm font-bold text-slate-600">Loading diagnosis…</div>
+      </div>
+    );
+  }
 
   const currentScan = scanHistory.find((scan) => scan.id === scanId) || scanHistory[0];
 
