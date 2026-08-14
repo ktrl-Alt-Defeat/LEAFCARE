@@ -304,7 +304,7 @@ export const WeatherCard: React.FC = () => {
   if (!data) return <WeatherSkeleton />;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div data-tour="weather" className="flex flex-col gap-4">
       <CurrentConditions data={data} onRefresh={refresh} />
       {data.daily.length > 0 && <ForecastStrip daily={data.daily} />}
     </div>

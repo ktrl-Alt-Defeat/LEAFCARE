@@ -49,7 +49,10 @@ export default function MarketPage() {
       </div>
 
       {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5">
+        <div
+          data-tour="market"
+          className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5"
+        >
           {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
