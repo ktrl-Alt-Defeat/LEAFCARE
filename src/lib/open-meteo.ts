@@ -49,8 +49,12 @@ export interface OpenMeteoForecastResponse {
     relative_humidity_2m: number[];
     precipitation_probability: number[];
     precipitation: number[];
+    rain: number[];
     weather_code: number[];
     wind_speed_10m: number[];
+    wind_direction_10m: number[];
+    wind_gusts_10m: number[];
+    is_day: number[];
     uv_index: number[];
   };
   daily: {
@@ -130,7 +134,12 @@ export interface HourlyForecastEntry {
   humidity: number;
   precipitationProbability: number;
   precipitation: number;
+  rain: number;
   windSpeed: number;
+  windDirection: number;
+  windDirectionLabel: string;
+  windGusts: number;
+  isDay: boolean;
   uvIndex: number;
   condition: WeatherCondition;
 }
@@ -375,8 +384,12 @@ export const fetchForecast = async (
         'relative_humidity_2m',
         'precipitation_probability',
         'precipitation',
+        'rain',
         'weather_code',
         'wind_speed_10m',
+        'wind_direction_10m',
+        'wind_gusts_10m',
+        'is_day',
         'uv_index',
       ].join(','),
       daily: [
@@ -423,9 +436,14 @@ const toHourlyEntries = (forecast: OpenMeteoForecastResponse): HourlyForecastEnt
     humidity: hourly.relative_humidity_2m[index],
     precipitationProbability: hourly.precipitation_probability[index] ?? 0,
     precipitation: hourly.precipitation[index] ?? 0,
+    rain: hourly.rain?.[index] ?? 0,
     windSpeed: hourly.wind_speed_10m[index],
+    windDirection: hourly.wind_direction_10m?.[index] ?? 0,
+    windDirectionLabel: describeWindDirection(hourly.wind_direction_10m?.[index] ?? 0),
+    windGusts: hourly.wind_gusts_10m?.[index] ?? 0,
+    isDay: (hourly.is_day?.[index] ?? 1) === 1,
     uvIndex: hourly.uv_index[index] ?? 0,
-    condition: describeWeatherCode(hourly.weather_code[index]),
+    condition: describeWeatherCode(hourly.weather_code[index], (hourly.is_day?.[index] ?? 1) === 1),
   }));
 };
 
