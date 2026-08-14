@@ -50,7 +50,10 @@ export default function CatalogPage() {
       </div>
 
       {filteredCrops.length > 0 ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div
+          data-tour="catalog"
+          className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        >
           {filteredCrops.map((crop) => {
             const displayName = crop.translatedNames[language] || crop.name;
             const hasSheet = Boolean(CROP_AGRONOMY[crop.id]);

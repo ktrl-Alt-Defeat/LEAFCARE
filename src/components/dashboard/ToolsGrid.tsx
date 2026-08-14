@@ -12,7 +12,7 @@ export interface ToolsGridProps {
 
 export const ToolsGrid: React.FC<ToolsGridProps> = ({ onSelectTool }) => {
   return (
-    <section className="flex flex-col gap-3">
+    <section data-tour="tools" className="flex flex-col gap-3">
       <SectionHeading>Farming tools &amp; calculators</SectionHeading>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-3">

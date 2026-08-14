@@ -10,7 +10,7 @@ import { ToolsGrid } from '@/components/dashboard/ToolsGrid';
 import { LibraryGrid } from '@/components/dashboard/LibraryGrid';
 import { CalculatorModal } from '@/components/dashboard/CalculatorModal';
 import { CropChip } from '@/components/crops/CropChip';
-import { AddToUseItButton } from '@/components/tour/AddToUseItButton';
+import { HowToUseButton } from '@/components/tour/HowToUseButton';
 import { useAppState } from '@/context/AppStateContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { CROPS_DATA } from '@/data/crops';
@@ -47,7 +47,10 @@ export default function HomePage() {
       subtitle={t('homeSubtitle', 'Your field at a glance')}
     >
       {/* Crop selector */}
-      <div className="no-scrollbar -mx-1 flex items-center gap-2 overflow-x-auto px-1 pb-1">
+      <div
+        data-tour="my-crops"
+        className="no-scrollbar -mx-1 flex items-center gap-2 overflow-x-auto px-1 pb-1"
+      >
         {activeCropsList.map((crop) => (
           <CropChip
             key={crop.id}
@@ -69,7 +72,10 @@ export default function HomePage() {
       {/* Dashboard grid — single column on phones, two tracks from `lg` up so a
           laptop shows the scanner, weather and history without scrolling. */}
       <div className="flex flex-col gap-5 lg:grid lg:grid-cols-3 lg:gap-6">
-        <div className="order-1 lg:order-none lg:col-span-2 lg:col-start-1 lg:row-start-1">
+        <div
+          data-tour="scan"
+          className="order-1 lg:order-none lg:col-span-2 lg:col-start-1 lg:row-start-1"
+        >
           <DiseaseScanBanner cropName={activeCropName} />
         </div>
 
@@ -78,7 +84,7 @@ export default function HomePage() {
             <WeatherCard />
 
             {/* Sits directly under the weather section, per the dashboard layout. */}
-            <AddToUseItButton />
+            <HowToUseButton />
 
             {scanHistory.length > 0 && (
               <section className="flex flex-col gap-3">

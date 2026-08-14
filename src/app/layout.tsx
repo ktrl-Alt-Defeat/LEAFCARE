@@ -3,6 +3,8 @@ import './globals.css';
 import { AppStateProvider } from '@/context/AppStateContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { AppShell } from '@/components/layout/AppShell';
+import { TourProvider } from '@/context/TourContext';
+import { GuidedTour } from '@/components/tour/GuidedTour';
 
 export const metadata: Metadata = {
   title: 'LeafCare — AI Crop Disease Detection',
@@ -34,7 +36,12 @@ export default function RootLayout({
       <body>
         <AppStateProvider>
           <LanguageProvider>
-            <AppShell>{children}</AppShell>
+            {/* The tour sits outside AppShell so its state survives the route
+                changes it performs while walking the user through the app. */}
+            <TourProvider>
+              <AppShell>{children}</AppShell>
+              <GuidedTour />
+            </TourProvider>
           </LanguageProvider>
         </AppStateProvider>
       </body>

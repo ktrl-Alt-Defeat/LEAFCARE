@@ -91,7 +91,10 @@ export default function CommunityPage() {
       {filteredPosts.length > 0 ? (
         // A single readable column on phones; two balanced columns once a laptop
         // has the width, so the feed doesn't become one very long strip.
-        <div className="grid gap-3 lg:grid-cols-2 lg:items-start lg:gap-4">
+        <div
+          data-tour="community"
+          className="grid gap-3 lg:grid-cols-2 lg:items-start lg:gap-4"
+        >
           {filteredPosts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
