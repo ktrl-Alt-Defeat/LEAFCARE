@@ -61,6 +61,9 @@ export const connectDatabase = async (): Promise<void> => {
     logger.info('🐘 Connected to PostgreSQL database via Prisma ORM');
   } catch (error) {
     logger.error('❌ Failed to connect to PostgreSQL database:', error);
+    // Rethrow so the caller can decide what to do. Swallowing this made the
+    // "start in offline mode" branch in server.ts unreachable.
+    throw error;
   }
 };
 

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { cropService } from './crop.service.js';
 import { parseQueryParams } from '../../utils/query-parser.js';
 import { sendSuccess } from '../../utils/api-response.js';
+import type { crop_season, crop_life_cycle } from '@prisma/client';
 
 export class CropController {
   /**
@@ -12,8 +13,8 @@ export class CropController {
       const queryParams = parseQueryParams(req.query);
       const result = await cropService.getCrops({
         ...queryParams,
-        season: req.query.season as any,
-        life_cycle: req.query.life_cycle as any,
+        season: req.query.season as crop_season | undefined,
+        life_cycle: req.query.life_cycle as crop_life_cycle | undefined,
       });
 
       sendSuccess({

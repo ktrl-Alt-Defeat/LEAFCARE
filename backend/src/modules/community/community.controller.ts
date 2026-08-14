@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { communityService } from './community.service.js';
 import { parseQueryParams } from '../../utils/query-parser.js';
 import { sendSuccess } from '../../utils/api-response.js';
+import type { post_category } from '@prisma/client';
 
 export class CommunityController {
   /**
@@ -30,7 +31,7 @@ export class CommunityController {
       const queryParams = parseQueryParams(req.query);
       const result = await communityService.getPosts({
         ...queryParams,
-        category: req.query.category as any,
+        category: req.query.category as post_category | undefined,
         crop_id: typeof req.query.crop_id === 'string' ? req.query.crop_id : undefined,
       });
 

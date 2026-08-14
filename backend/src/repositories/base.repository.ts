@@ -109,7 +109,12 @@ export abstract class BaseRepository<T, CreateInput, UpdateInput> {
   }
 
   /**
-   * Soft delete a record by ID (sets deleted_at = now())
+   * Soft delete a record by ID (sets deleted_at = now()).
+   *
+   * Only valid for models that actually declare `deleted_at`: users,
+   * prediction_history, posts, comments and products. Calling it on any other
+   * model throws a Prisma validation error at runtime — the delegate is typed
+   * `any`, so TypeScript cannot catch the mistake for you.
    */
   async softDelete(id: string): Promise<T> {
     return this.model.update({

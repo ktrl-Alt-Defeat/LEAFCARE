@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { marketplaceService } from './marketplace.service.js';
 import { parseQueryParams } from '../../utils/query-parser.js';
 import { sendSuccess } from '../../utils/api-response.js';
+import type { product_category } from '@prisma/client';
 
 export class MarketplaceController {
   /**
@@ -34,7 +35,7 @@ export class MarketplaceController {
 
       const result = await marketplaceService.getProducts({
         ...queryParams,
-        category: req.query.category as any,
+        category: req.query.category as product_category | undefined,
         is_organic,
         min_price: !isNaN(min_price!) ? min_price : undefined,
         max_price: !isNaN(max_price!) ? max_price : undefined,

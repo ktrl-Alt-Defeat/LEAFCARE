@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { diseaseService } from './disease.service.js';
 import { parseQueryParams } from '../../utils/query-parser.js';
 import { sendSuccess } from '../../utils/api-response.js';
+import type { disease_severity, pathogen_type } from '@prisma/client';
 
 export class DiseaseController {
   /**
@@ -12,8 +13,8 @@ export class DiseaseController {
       const queryParams = parseQueryParams(req.query);
       const result = await diseaseService.getDiseases({
         ...queryParams,
-        severity: req.query.severity as any,
-        pathogen_type: req.query.pathogen_type as any,
+        severity: req.query.severity as disease_severity | undefined,
+        pathogen_type: req.query.pathogen_type as pathogen_type | undefined,
       });
 
       sendSuccess({
