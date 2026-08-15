@@ -13,7 +13,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useAppState } from '@/context/AppStateContext';
 import { cn } from '@/lib/utils';
 
-const CATEGORIES = ['All', 'Vegetables', 'Cereals', 'Fruits', 'Herbs', 'Cash Crops'] as const;
+const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Cereals', 'Cash Crops'] as const;
 
 export default function CatalogPage() {
   const { language, t } = useLanguage();
@@ -68,13 +68,22 @@ export default function CatalogPage() {
                   <div className="flex items-start gap-3">
                     <span
                       className={cn(
-                        'flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-3xl shadow-inner',
+                        'relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl shadow-inner',
                         crop.color
                       )}
                     >
-                      <span role="img" aria-hidden="true">
-                        {crop.icon}
-                      </span>
+                      {crop.image ? (
+                        <img
+                          src={crop.image}
+                          alt={displayName}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span role="img" aria-hidden="true" className="text-3xl">
+                          {crop.icon}
+                        </span>
+                      )}
                     </span>
 
                     <div className="flex min-w-0 flex-1 flex-col">

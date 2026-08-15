@@ -21,6 +21,7 @@ export interface Crop {
   translatedNames: Record<LanguageCode, string>;
   category: 'Cereals' | 'Vegetables' | 'Fruits' | 'Herbs' | 'Cash Crops';
   icon: string;
+  image?: string;
   color: string;
   description: string;
 }

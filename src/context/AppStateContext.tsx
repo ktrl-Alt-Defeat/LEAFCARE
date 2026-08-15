@@ -2,6 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { LanguageCode, PermissionStatus, ScanResult, UserProfile } from '@/types';
+import { CROPS_DATA } from '@/data/crops';
 
 interface AppStateContextType {
   /** False until localStorage has been read. Guards against redirect flashes. */
@@ -37,7 +38,7 @@ const DEFAULT_PERMISSIONS: PermissionStatus = {
   notifications: 'prompt'
 };
 
-const DEFAULT_CROPS = ['rice', 'tomato', 'wheat'];
+const DEFAULT_CROPS = ['tomato', 'potato', 'corn'];
 
 /**
  * Captured frames are stored as data URLs, so an unbounded history fills the
@@ -69,7 +70,11 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           setOnboardingCompleted(parsed.onboardingCompleted);
         }
         if (parsed.permissions) setPermissions(parsed.permissions);
-        if (Array.isArray(parsed.selectedCrops)) setSelectedCropsState(parsed.selectedCrops);
+        if (Array.isArray(parsed.selectedCrops)) {
+          const validIds = new Set(CROPS_DATA.map((c) => c.id));
+          const sanitized = parsed.selectedCrops.filter((id: string) => validIds.has(id));
+          setSelectedCropsState(sanitized.length > 0 ? sanitized : DEFAULT_CROPS);
+        }
         if (Array.isArray(parsed.scanHistory)) {
           setScanHistory(parsed.scanHistory.slice(0, MAX_SCAN_HISTORY));
         }

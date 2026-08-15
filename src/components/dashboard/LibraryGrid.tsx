@@ -6,10 +6,11 @@ import { motion } from 'framer-motion';
 import {
   BookOpen,
   ShieldAlert,
-  Sun,
+  CloudSun,
   Sprout,
   Bug,
-  HeartHandshake,
+  Lightbulb,
+  FlaskConical,
   type LucideIcon
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -46,7 +47,7 @@ export const LIBRARY_ITEMS: LibraryItem[] = [
     id: 'cultivation_tips',
     title: 'Cultivation Tips',
     desc: 'Seasonal land preparation & organic soil fertility',
-    icon: BookOpen,
+    icon: Lightbulb,
     color: 'bg-amber-100 text-amber-700'
   },
   {
@@ -60,14 +61,14 @@ export const LIBRARY_ITEMS: LibraryItem[] = [
     id: 'weather_guide',
     title: 'Weather Guide',
     desc: 'Monsoon predictions & frost warning guidance',
-    icon: Sun,
+    icon: CloudSun,
     color: 'bg-sky-100 text-sky-700'
   },
   {
     id: 'fertilizer_guide',
     title: 'Fertilizer Guide',
     desc: 'NPK ratios, bio-fertilizers & micro-nutrients',
-    icon: HeartHandshake,
+    icon: FlaskConical,
     color: 'bg-teal-100 text-teal-700'
   }
 ];

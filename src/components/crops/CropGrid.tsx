@@ -13,7 +13,7 @@ export interface CropGridProps {
   onToggleCrop: (cropId: string) => void;
 }
 
-const CATEGORIES = ['All', 'Vegetables', 'Cereals', 'Fruits', 'Herbs', 'Cash Crops'] as const;
+const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Cereals', 'Cash Crops'] as const;
 
 export const CropGrid: React.FC<CropGridProps> = ({ selectedCrops, onToggleCrop }) => {
   const [searchTerm, setSearchTerm] = useState('');

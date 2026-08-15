@@ -25,8 +25,16 @@ export const DiseaseScanBanner: React.FC<DiseaseScanBannerProps> = ({ cropName }
   return (
     <motion.div
       whileHover={{ y: -2 }}
-      className="relative h-full overflow-hidden rounded-3xl border border-agro-700/50 bg-gradient-to-br from-agro-900 via-agro-800 to-emerald-950 p-5 text-white shadow-soft-lg sm:p-6 lg:p-7"
+      className="relative h-full overflow-hidden rounded-3xl border border-agro-700/50 bg-agro-950 p-5 text-white shadow-soft-lg sm:p-6 lg:p-7"
     >
+      {/* Background farmer photo */}
+      <img
+        src="/farmer-scanner.jpg"
+        alt="Farmer checking crop in field"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right sm:object-center opacity-80"
+      />
+      {/* Gradient overlay for contrast */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-950/95 via-agro-950/80 to-transparent sm:via-agro-950/65" />
       <div className="pointer-events-none absolute right-0 top-0 h-52 w-52 rounded-full bg-agro-500/20 blur-3xl" />
 
       {/* On laptops the copy and the action sit side by side instead of stacking
