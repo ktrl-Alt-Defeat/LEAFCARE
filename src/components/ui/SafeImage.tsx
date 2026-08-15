@@ -34,6 +34,8 @@ export const SafeImage: React.FC<SafeImageProps> = ({
   }, []);
 
   useEffect(() => {
+    // Clears the previous source's failure state when the image URL changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFailed(false);
   }, [src]);
 

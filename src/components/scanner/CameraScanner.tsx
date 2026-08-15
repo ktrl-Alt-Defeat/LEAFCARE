@@ -8,15 +8,75 @@ import { SmartGuidanceOverlay } from './SmartGuidanceOverlay';
 import { ScanControls } from './ScanControls';
 import { ScanAnalysisAnimation } from './ScanAnalysisAnimation';
 import { useAppState } from '@/context/AppStateContext';
-import { MOCK_DISEASES } from '@/data/diseases';
+import { useCrop } from '@/hooks/useLeafCareData';
+import { Disease } from '@/types';
 
 /** Torch is not in the standard DOM typings, though most mobile browsers expose it. */
 type TorchCapabilities = MediaTrackCapabilities & { torch?: boolean };
 type TorchConstraint = MediaTrackConstraintSet & { torch?: boolean };
 
+/** Flattened result from `/api/scan`. */
+interface ScanAnalysis {
+  plant: { name?: string; scientificName?: string; confidence?: number } | null;
+  crop: { name: string; supported: boolean };
+  disease: { name: string; confidence: number } | null;
+  message?: string;
+}
+
+/**
+ * Shown when the model names a disease the crop's library has no entry for —
+ * the farmer still sees the identification and its confidence, with the
+ * guidance sections empty rather than filled with another disease's advice.
+ */
+const EMPTY_DISEASE: Disease = {
+  id: '',
+  cropId: '',
+  cropName: '',
+  name: '',
+  scientificName: '',
+  translatedNames: { en: '', ta: '', hi: '', te: '', ml: '', kn: '' },
+  confidence: 0,
+  severity: 'moderate',
+  imageUrl: '',
+  overview: '',
+  symptoms: [],
+  causes: [],
+  favorableConditions: [],
+  immediateSteps: [],
+  organicTreatment: [],
+  chemicalTreatment: [],
+  preventionTips: [],
+  disclaimer:
+    'Guidance is advisory. Confirm with your local agricultural officer before applying chemicals.',
+};
+
+const simplify = (value: string): string => value.toLowerCase().replace(/[^a-z]/g, '');
+
+/**
+ * Links a model label such as "Early Blight" to the library entry for the same
+ * disease, whose name may carry the crop ("Tomato Early Blight"). Compared on
+ * letters alone so spacing and punctuation differences do not block a match.
+ */
+const matchDisease = (predicted: string, library: Disease[]): Disease | null => {
+  const target = simplify(predicted);
+  if (!target) return null;
+
+  return (
+    library.find((entry) => {
+      const name = simplify(entry.name);
+      return name === target || name.includes(target) || target.includes(name);
+    }) ?? null
+  );
+};
+
 export const CameraScanner: React.FC = () => {
   const router = useRouter();
   const { selectedCrops, addScanResult } = useAppState();
+  const primaryCrop = selectedCrops[0] || 'tomato';
+  // Fetched as soon as the scanner opens so the guidance library is ready by
+  // the time the model returns a label.
+  const { diseases: cropDiseases } = useCrop(primaryCrop);
+  const [scanError, setScanError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -102,16 +162,52 @@ export const CameraScanner: React.FC = () => {
 
   const completeScan = useCallback(
     (imageDataUrl: string) => {
-      triggerCapture(() => {
-        const primaryCrop = selectedCrops[0] || 'tomato';
-        const diseaseData = MOCK_DISEASES[primaryCrop] || MOCK_DISEASES.tomato;
+      // Inference is started here rather than inside the callback so it runs
+      // during the analysis animation instead of after it. On a cold CPU
+      // deployment the model can take far longer than the animation.
+      const analysis = fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageDataUrl }),
+      })
+        .then(async (response) => {
+          const payload = await response.json();
+          if (!response.ok) throw new Error(payload?.error ?? 'Analysis failed.');
+          return payload as ScanAnalysis;
+        })
+        .catch((cause: unknown) => {
+          console.warn('Scan analysis failed:', cause);
+          setScanError(
+            cause instanceof Error ? cause.message : 'Could not analyse this photo.'
+          );
+          return null;
+        });
+
+      triggerCapture(async () => {
+        const outcome = await analysis;
+
+        // Without a prediction there is nothing honest to show, so no scan is
+        // saved; the diagnosis screen explains the empty state.
+        if (!outcome?.disease) {
+          if (outcome?.message) console.info('Analysis note:', outcome.message);
+          router.push('/diagnosis');
+          return;
+        }
+
+        // The model supplies the label and confidence; the crop's disease
+        // library supplies symptoms and treatment for that label.
+        const reference = matchDisease(outcome.disease.name, cropDiseases);
 
         const result = {
           id: `scan_${Date.now()}`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           cropId: primaryCrop,
-          cropName: diseaseData.cropName,
-          disease: diseaseData,
+          cropName: outcome.crop.name || reference?.cropName || '',
+          disease: {
+            ...(reference ?? EMPTY_DISEASE),
+            name: reference?.name ?? outcome.disease.name,
+            confidence: Math.round(outcome.disease.confidence * 100),
+          },
           capturedImageData: imageDataUrl,
         };
 
@@ -119,7 +215,7 @@ export const CameraScanner: React.FC = () => {
         router.push(`/diagnosis?id=${result.id}`);
       });
     },
-    [triggerCapture, selectedCrops, addScanResult, router]
+    [triggerCapture, primaryCrop, cropDiseases, addScanResult, router]
   );
 
   const handleCapture = () => {
@@ -243,6 +339,24 @@ export const CameraScanner: React.FC = () => {
           </>
         )}
       </div>
+
+      {/* Analysis failure — shown over the live camera so the farmer can simply
+          retake the photo rather than being sent to an empty diagnosis. */}
+      {scanError && !isAnalyzing && (
+        <div
+          role="alert"
+          className="absolute inset-x-4 top-20 z-40 flex flex-col gap-1 rounded-2xl border border-red-400/40 bg-red-950/90 px-4 py-3 text-white backdrop-blur-md"
+        >
+          <span className="text-xs font-black">Could not analyse that photo</span>
+          <span className="text-[11px] font-medium text-red-200">{scanError}</span>
+          <button
+            onClick={() => setScanError(null)}
+            className="mt-1 self-start rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold transition-colors hover:bg-white/25"
+          >
+            Try again
+          </button>
+        </div>
+      )}
 
       {/* Controls */}
       {!isAnalyzing && (

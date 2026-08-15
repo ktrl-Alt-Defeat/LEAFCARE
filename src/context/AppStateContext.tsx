@@ -2,7 +2,6 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { LanguageCode, PermissionStatus, ScanResult, UserProfile } from '@/types';
-import { CROPS_DATA } from '@/data/crops';
 
 interface AppStateContextType {
   /** False until localStorage has been read. Guards against redirect flashes. */
@@ -38,7 +37,8 @@ const DEFAULT_PERMISSIONS: PermissionStatus = {
   notifications: 'prompt'
 };
 
-const DEFAULT_CROPS = ['tomato', 'potato', 'corn'];
+/** Slugs the backend serves; the crop screens resolve these to full records. */
+const DEFAULT_CROPS = ['tomato', 'potato', 'rice'];
 
 /**
  * Captured frames are stored as data URLs, so an unbounded history fills the
@@ -65,15 +65,21 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
+        // localStorage is unavailable during SSR, so restoring it in an effect
+        // after mount is the only hydration-safe option.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (parsed.language) setLanguage(parsed.language);
         if (typeof parsed.onboardingCompleted === 'boolean') {
           setOnboardingCompleted(parsed.onboardingCompleted);
         }
         if (parsed.permissions) setPermissions(parsed.permissions);
         if (Array.isArray(parsed.selectedCrops)) {
-          const validIds = new Set(CROPS_DATA.map((c) => c.id));
-          const sanitized = parsed.selectedCrops.filter((id: string) => validIds.has(id));
-          setSelectedCropsState(sanitized.length > 0 ? sanitized : DEFAULT_CROPS);
+          // The valid set now lives in the backend, so saved ids are kept as-is;
+          // the crop screens simply do not render slugs the catalogue lacks.
+          const saved = parsed.selectedCrops.filter(
+            (id: unknown): id is string => typeof id === 'string' && id.length > 0,
+          );
+          setSelectedCropsState(saved.length > 0 ? saved : DEFAULT_CROPS);
         }
         if (Array.isArray(parsed.scanHistory)) {
           setScanHistory(parsed.scanHistory.slice(0, MAX_SCAN_HISTORY));

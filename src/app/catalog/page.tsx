@@ -7,10 +7,9 @@ import { Page } from '@/components/layout/Page';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { FilterChips } from '@/components/ui/FilterChips';
 import { Card } from '@/components/ui/Card';
-import { CROPS_DATA } from '@/data/crops';
-import { CROP_AGRONOMY } from '@/data/cropDetails';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAppState } from '@/context/AppStateContext';
+import { useCrops } from '@/hooks/useLeafCareData';
 import { cn } from '@/lib/utils';
 
 const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Cereals', 'Cash Crops'] as const;
@@ -18,27 +17,30 @@ const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Cereals', 'Cash Crops'] as c
 export default function CatalogPage() {
   const { language, t } = useLanguage();
   const { selectedCrops } = useAppState();
+  const { crops, status, error } = useCrops();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('All');
 
+  // Filtering stays client-side: the catalogue is small enough to hold in
+  // memory, and this keeps typing responsive without a request per keystroke.
   const filteredCrops = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
-    return CROPS_DATA.filter((crop) => {
+    return crops.filter((crop) => {
       const displayName = (crop.translatedNames[language] || crop.name).toLowerCase();
       const matchesSearch =
         !query || displayName.includes(query) || crop.name.toLowerCase().includes(query);
       const matchesCategory = activeCategory === 'All' || crop.category === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, activeCategory, language]);
+  }, [crops, searchTerm, activeCategory, language]);
 
-  const sheetCount = Object.keys(CROP_AGRONOMY).length;
+  const subtitle =
+    status === 'loading'
+      ? 'Loading the crop catalog…'
+      : `${crops.length} ${crops.length === 1 ? 'crop' : 'crops'} with full agronomy sheets`;
 
   return (
-    <Page
-      title={t('cropsCatalog', 'Crops Catalog')}
-      subtitle={`${CROPS_DATA.length} crops · ${sheetCount} full agronomy sheets`}
-    >
+    <Page title={t('cropsCatalog', 'Crops Catalog')} subtitle={subtitle}>
       <div className="sticky top-[var(--header-h)] z-30 -mx-4 flex flex-col gap-3 bg-[#F6F8F6]/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:flex-row lg:items-center lg:justify-between xl:-mx-8 xl:px-8">
         <SearchInput
           value={searchTerm}
@@ -49,14 +51,25 @@ export default function CatalogPage() {
         <FilterChips options={CATEGORIES} value={activeCategory} onChange={setActiveCategory} />
       </div>
 
-      {filteredCrops.length > 0 ? (
+      {status === 'error' ? (
+        <div className="flex flex-col items-center gap-2 rounded-3xl border border-dashed border-red-300 bg-red-50/60 px-6 py-16 text-center">
+          <Sprout className="h-8 w-8 text-red-400" />
+          <p className="text-sm font-bold text-red-700">Could not load the crop catalog</p>
+          <p className="max-w-xs text-xs font-medium text-red-600">{error}</p>
+        </div>
+      ) : status === 'loading' ? (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 6 }, (_, index) => (
+            <div key={index} className="h-40 animate-pulse rounded-3xl bg-slate-200/60" />
+          ))}
+        </div>
+      ) : filteredCrops.length > 0 ? (
         <div
           data-tour="catalog"
           className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
           {filteredCrops.map((crop) => {
             const displayName = crop.translatedNames[language] || crop.name;
-            const hasSheet = Boolean(CROP_AGRONOMY[crop.id]);
             const isMine = selectedCrops.includes(crop.id);
 
             return (
@@ -110,16 +123,10 @@ export default function CatalogPage() {
                   </p>
 
                   <div className="flex flex-wrap items-center gap-1.5 border-t border-slate-100 pt-2.5">
-                    {hasSheet ? (
-                      <span className="flex items-center gap-1 rounded-full bg-agro-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-agro-700">
-                        <FileText className="h-3 w-3" />
-                        Full sheet
-                      </span>
-                    ) : (
-                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                        Sheet soon
-                      </span>
-                    )}
+                    <span className="flex items-center gap-1 rounded-full bg-agro-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-agro-700">
+                      <FileText className="h-3 w-3" />
+                      Full sheet
+                    </span>
 
                     {isMine && (
                       <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">

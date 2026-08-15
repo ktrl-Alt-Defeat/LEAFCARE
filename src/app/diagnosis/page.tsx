@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, Share2, Camera } from 'lucide-react';
 import { useAppState } from '@/context/AppStateContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { MOCK_DISEASES } from '@/data/diseases';
+import { useCrop } from '@/hooks/useLeafCareData';
 import { ConfidenceMeter } from '@/components/diagnosis/ConfidenceMeter';
 import { SymptomsCard } from '@/components/diagnosis/SymptomsCard';
 import { ActionCard } from '@/components/diagnosis/ActionCard';
@@ -20,9 +20,18 @@ function DiagnosisContent() {
   const { hydrated, scanHistory, selectedCrops } = useAppState();
   const { language } = useLanguage();
 
+  const currentScan = hydrated
+    ? scanHistory.find((scan) => scan.id === scanId) || scanHistory[0]
+    : undefined;
+
+  // With no saved scan to show, the reference entry for the farmer's main crop
+  // stands in. Fetched from the backend, so it stays in step with the library.
+  const primaryCrop = selectedCrops[0] || 'tomato';
+  const { diseases, status } = useCrop(hydrated && !currentScan ? primaryCrop : null);
+
   // Saved scans live in localStorage. Rendering before they load would briefly
-  // show the sample disease instead of the scan the user actually opened.
-  if (!hydrated) {
+  // show the reference disease instead of the scan the user actually opened.
+  if (!hydrated || (!currentScan && status === 'loading')) {
     return (
       <div className="flex min-h-dvh items-center justify-center">
         <div className="text-sm font-bold text-slate-600">Loading diagnosis…</div>
@@ -30,10 +39,22 @@ function DiagnosisContent() {
     );
   }
 
-  const currentScan = scanHistory.find((scan) => scan.id === scanId) || scanHistory[0];
+  const disease = currentScan?.disease ?? diseases[0] ?? null;
 
-  const primaryCrop = selectedCrops[0] || 'tomato';
-  const disease = currentScan?.disease || MOCK_DISEASES[primaryCrop] || MOCK_DISEASES.tomato;
+  if (!disease) {
+    return (
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-3 px-6 text-center">
+        <p className="text-sm font-bold text-slate-700">No diagnosis to show yet</p>
+        <p className="max-w-xs text-xs font-medium text-slate-500">
+          Scan a leaf to get a diagnosis, or pick a crop the disease library covers.
+        </p>
+        <Link href="/scan">
+          <Button icon={<Camera className="h-5 w-5" />}>Scan a crop</Button>
+        </Link>
+      </div>
+    );
+  }
+
   const capturedImage = currentScan?.capturedImageData || disease.imageUrl;
   const diseaseTitle = disease.translatedNames[language] || disease.name;
 

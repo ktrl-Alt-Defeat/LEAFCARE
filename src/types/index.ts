@@ -99,7 +99,14 @@ export interface CommunityPost {
   authorAvatar: string;
   timestamp: string;
   cropName: string;
-  category: 'Disease Help' | 'Crop Advice' | 'Weather' | 'Fertilizer' | 'General Farming';
+  category:
+    | 'Disease Help'
+    | 'Crop Advice'
+    | 'Weather'
+    | 'Fertilizer'
+    | 'Irrigation'
+    | 'Marketplace'
+    | 'General Farming';
   title: string;
   content: string;
   imageUrl?: string;

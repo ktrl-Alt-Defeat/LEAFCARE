@@ -13,7 +13,7 @@ import { CropChip } from '@/components/crops/CropChip';
 import { HowToUseButton } from '@/components/tour/HowToUseButton';
 import { useAppState } from '@/context/AppStateContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { CROPS_DATA } from '@/data/crops';
+import { useCrops } from '@/hooks/useLeafCareData';
 import { ToolItem } from '@/data/tools';
 import { Card } from '@/components/ui/Card';
 import { SafeImage } from '@/components/ui/SafeImage';
@@ -24,7 +24,8 @@ export default function HomePage() {
   const [activeCropId, setActiveCropId] = useState<string | null>(null);
   const [calcModalType, setCalcModalType] = useState<'fertilizer' | 'pesticide' | null>(null);
 
-  const activeCropsList = CROPS_DATA.filter((crop) => selectedCrops.includes(crop.id));
+  const { crops } = useCrops();
+  const activeCropsList = crops.filter((crop) => selectedCrops.includes(crop.id));
 
   // Derived rather than stored, so the first crop is correct straight after
   // the saved crop list hydrates.

@@ -49,6 +49,9 @@ export const useGeolocation = () => {
     if (!hydrated) return;
 
     if (permissions.location === 'granted') {
+      // Subscribes to the browser geolocation API; its result cannot be
+      // derived during render.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       locate();
     } else {
       setStatus('unavailable');

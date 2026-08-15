@@ -31,8 +31,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // `data-scroll-behavior` tells Next the smooth scrolling in globals.css is
+  // intentional, so it suppresses it during route transitions only.
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body>
         <AppStateProvider>
           <LanguageProvider>

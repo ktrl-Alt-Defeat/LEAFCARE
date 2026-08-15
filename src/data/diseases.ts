@@ -1,4 +1,4 @@
-import { Disease, LanguageCode } from '@/types';
+import { Disease } from '@/types';
 
 export const MOCK_DISEASES: Record<string, Disease> = {
   tomato: {

@@ -104,7 +104,7 @@ export const usePermissions = () => {
       updatePermission('notifications', 'denied');
       setLoading(false);
       return false;
-    } catch (e) {
+    } catch {
       updatePermission('notifications', 'denied');
       setLoading(false);
       return false;

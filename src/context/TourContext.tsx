@@ -66,6 +66,9 @@ export const TourProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // overlay on top of them would trap the user.
   useEffect(() => {
     if (isActive && (pathname === '/scan' || pathname === '/language')) {
+      // Reacting to the router's pathname, which is external state React
+      // cannot derive during render.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsActive(false);
     }
   }, [isActive, pathname]);

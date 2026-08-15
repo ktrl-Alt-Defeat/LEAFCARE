@@ -3,8 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Check, Plus, Thermometer, Waves, RefreshCw, FileText, Camera } from 'lucide-react';
-import { CROPS_DATA } from '@/data/crops';
-import { getCropAgronomy } from '@/data/cropDetails';
+import { Crop, CropAgronomy } from '@/types';
 import { useAppState } from '@/context/AppStateContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { AgronomySheet } from './AgronomySheet';
@@ -30,14 +29,16 @@ const QuickStat: React.FC<{ label: string; value: string; icon: React.ReactNode 
   </div>
 );
 
-export const CropDetail: React.FC<{ cropId: string }> = ({ cropId }) => {
+/**
+ * Presentational only — the crop and its agronomy sheet are fetched on the
+ * server by the catalog route, so this renders without a client round-trip.
+ */
+export const CropDetail: React.FC<{ crop: Crop; agronomy: CropAgronomy | null }> = ({
+  crop,
+  agronomy,
+}) => {
   const { language } = useLanguage();
   const { selectedCrops, toggleCropSelection } = useAppState();
-
-  const crop = CROPS_DATA.find((entry) => entry.id === cropId);
-  const agronomy = getCropAgronomy(cropId);
-
-  if (!crop) return null;
 
   const displayName = crop.translatedNames[language] || crop.name;
   const isSelected = selectedCrops.includes(crop.id);

@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-  BookOpen,
   ShieldAlert,
   CloudSun,
   Sprout,
@@ -30,8 +29,10 @@ export interface LibraryItem {
 export const LIBRARY_ITEMS: LibraryItem[] = [
   {
     id: 'crops_guide',
+    // Count intentionally omitted — the catalogue is served by the backend and
+    // a hardcoded number goes stale the moment a crop is added.
     title: 'Crops Catalog',
-    desc: '35 supported crops with full agronomy reference sheets',
+    desc: 'Supported crops with full agronomy reference sheets',
     icon: Sprout,
     color: 'bg-emerald-100 text-emerald-700',
     href: '/catalog'
@@ -41,14 +42,16 @@ export const LIBRARY_ITEMS: LibraryItem[] = [
     title: 'Pests & Diseases',
     desc: 'Visual identification guide for common farm pathogens',
     icon: Bug,
-    color: 'bg-rose-100 text-rose-700'
+    color: 'bg-rose-100 text-rose-700',
+    href: '/knowledge'
   },
   {
     id: 'cultivation_tips',
     title: 'Cultivation Tips',
     desc: 'Seasonal land preparation & organic soil fertility',
     icon: Lightbulb,
-    color: 'bg-amber-100 text-amber-700'
+    color: 'bg-amber-100 text-amber-700',
+    href: '/knowledge'
   },
   {
     id: 'disease_alerts',

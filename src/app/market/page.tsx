@@ -7,21 +7,22 @@ import { ProductCard } from '@/components/market/ProductCard';
 import { ProductDetailModal } from '@/components/market/ProductDetailModal';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { FilterChips } from '@/components/ui/FilterChips';
-import { MOCK_PRODUCTS } from '@/data/products';
 import { MarketProduct } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+import { useProducts } from '@/hooks/useLeafCareData';
 
 const CATEGORIES = ['All', 'Seeds', 'Crop Protection', 'Fertilizers', 'Equipment', 'Tools'] as const;
 
 export default function MarketPage() {
   const { t } = useLanguage();
+  const { products, status, error } = useProducts();
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<MarketProduct | null>(null);
 
   const filteredProducts = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
-    return MOCK_PRODUCTS.filter((product) => {
+    return products.filter((product) => {
       const matchesSearch =
         !query ||
         product.name.toLowerCase().includes(query) ||
@@ -29,12 +30,16 @@ export default function MarketPage() {
       const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, activeCategory]);
+  }, [products, searchTerm, activeCategory]);
 
   return (
     <Page
       title={t('marketHeader', 'Agri Marketplace')}
-      subtitle={`${filteredProducts.length} ${filteredProducts.length === 1 ? 'listing' : 'listings'} from verified sellers`}
+      subtitle={
+        status === 'loading'
+          ? 'Loading listings…'
+          : `${filteredProducts.length} ${filteredProducts.length === 1 ? 'listing' : 'listings'} from verified sellers`
+      }
     >
       {/* Filter bar — sticks under the header so laptop users keep the controls
           in view while scrolling a long grid. */}
@@ -48,7 +53,19 @@ export default function MarketPage() {
         <FilterChips options={CATEGORIES} value={activeCategory} onChange={setActiveCategory} />
       </div>
 
-      {filteredProducts.length > 0 ? (
+      {status === 'error' ? (
+        <div className="flex flex-col items-center gap-2 rounded-3xl border border-dashed border-red-300 bg-red-50/60 px-6 py-16 text-center">
+          <PackageSearch className="h-8 w-8 text-red-400" />
+          <p className="text-sm font-bold text-red-700">Could not load the marketplace</p>
+          <p className="max-w-xs text-xs font-medium text-red-600">{error}</p>
+        </div>
+      ) : status === 'loading' ? (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5">
+          {Array.from({ length: 8 }, (_, index) => (
+            <div key={index} className="h-56 animate-pulse rounded-3xl bg-slate-200/60" />
+          ))}
+        </div>
+      ) : filteredProducts.length > 0 ? (
         <div
           data-tour="market"
           className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5"
