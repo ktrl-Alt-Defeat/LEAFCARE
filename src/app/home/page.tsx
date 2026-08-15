@@ -9,6 +9,8 @@ import { DiseaseScanBanner } from '@/components/dashboard/DiseaseScanBanner';
 import { ToolsGrid } from '@/components/dashboard/ToolsGrid';
 import { LibraryGrid } from '@/components/dashboard/LibraryGrid';
 import { CalculatorModal } from '@/components/dashboard/CalculatorModal';
+import { SprayWeatherRadar } from '@/components/dashboard/SprayWeatherRadar';
+import { Modal } from '@/components/ui/Modal';
 import { CropChip } from '@/components/crops/CropChip';
 import { HowToUseButton } from '@/components/tour/HowToUseButton';
 import { useAppState } from '@/context/AppStateContext';
@@ -23,6 +25,7 @@ export default function HomePage() {
   const { t, language } = useLanguage();
   const [activeCropId, setActiveCropId] = useState<string | null>(null);
   const [calcModalType, setCalcModalType] = useState<'fertilizer' | 'pesticide' | null>(null);
+  const [showSprayRadar, setShowSprayRadar] = useState(false);
 
   const activeCropsList = CROPS_DATA.filter((crop) => selectedCrops.includes(crop.id));
 
@@ -37,6 +40,7 @@ export default function HomePage() {
   const handleToolClick = (tool: ToolItem) => {
     if (tool.id === 'fertilizer_calc') setCalcModalType('fertilizer');
     else if (tool.id === 'pesticide_calc') setCalcModalType('pesticide');
+    else if (tool.id === 'weather_radar') setShowSprayRadar(true);
   };
 
   return (
@@ -133,6 +137,14 @@ export default function HomePage() {
       </div>
 
       <CalculatorModal type={calcModalType} onClose={() => setCalcModalType(null)} />
+
+      <Modal
+        isOpen={showSprayRadar}
+        onClose={() => setShowSprayRadar(false)}
+        title="🌦️ Spray Weather Radar"
+      >
+        <SprayWeatherRadar />
+      </Modal>
     </Page>
   );
 }
