@@ -15,6 +15,9 @@ export interface PermissionStatus {
   notifications: 'prompt' | 'granted' | 'denied' | 'skipped';
 }
 
+/** Indian cropping seasons, as the backend models them. */
+export type CropSeason = 'kharif' | 'rabi' | 'zaid' | 'perennial';
+
 export interface Crop {
   id: string;
   name: string;
@@ -24,6 +27,8 @@ export interface Crop {
   image?: string;
   color: string;
   description: string;
+  /** Drives the sowing calendar. Empty when the backend has no season rows. */
+  seasons: CropSeason[];
 }
 
 /** Agronomy reference sheet shown in the crops catalog. */

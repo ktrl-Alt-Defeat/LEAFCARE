@@ -22,8 +22,8 @@ export const TOOLS_DATA: ToolItem[] = [
     name: 'Pesticide Dosage',
     category: 'Calculators',
     icon: '🧴',
-    description: 'Calculate required pesticide volume per spray tank.',
-    comingSoon: true
+    description: 'Work out tank mixes from the label rate, spray volume and area.',
+    isInteractive: true
   },
   {
     id: 'crop_doctor',
@@ -38,16 +38,16 @@ export const TOOLS_DATA: ToolItem[] = [
     name: 'Spray Weather Radar',
     category: 'Weather',
     icon: '📡',
-    description: 'Best time of day to spray based on wind and rain forecast.',
-    comingSoon: true
+    description: 'Hour-by-hour spray windows from Delta T, wind and rain risk.',
+    isInteractive: true
   },
   {
     id: 'planting_calendar',
     name: 'Sowing Calendar',
     category: 'Guides',
     icon: '🗓️',
-    description: 'Optimal sowing & harvesting dates for your state.',
-    comingSoon: true
+    description: 'Sowing and harvest windows for each of your crop seasons.',
+    isInteractive: true
   },
   {
     id: 'yield_calculator',

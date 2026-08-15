@@ -13,6 +13,7 @@ import {
   CommunityPost,
   Crop,
   CropAgronomy,
+  CropSeason,
   Disease,
   LanguageCode,
   LanguageOption,
@@ -100,6 +101,9 @@ export const mapCrop = (raw: ApiCrop): Crop => {
     image: raw.image_url ?? presentation.image,
     color: presentation.color,
     description: raw.description ?? '',
+    seasons: (raw.seasons ?? []).filter((season): season is CropSeason =>
+      ['kharif', 'rabi', 'zaid', 'perennial'].includes(season),
+    ),
   };
 };
 
