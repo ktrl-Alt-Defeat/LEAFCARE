@@ -63,11 +63,12 @@ export const CalculatorModal: React.FC<CalculatorModalProps> = ({ type, onClose 
             onChange={(e) => setCropType(e.target.value)}
             className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800"
           >
-            <option value="Rice">Rice (Paddy)</option>
             <option value="Tomato">Tomato</option>
-            <option value="Wheat">Wheat</option>
-            <option value="Cotton">Cotton</option>
-            <option value="Chili">Chili</option>
+            <option value="Corn">Corn (Maize)</option>
+            <option value="Potato">Potato</option>
+            <option value="Soybean">Soybean</option>
+            <option value="Grape">Grape</option>
+            <option value="Apple">Apple</option>
           </select>
         </div>
 

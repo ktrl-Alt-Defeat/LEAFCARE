@@ -81,13 +81,21 @@ export const CropDetail: React.FC<{ cropId: string }> = ({ cropId }) => {
             <div className="flex items-center gap-4">
               <span
                 className={cn(
-                  'flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl text-5xl shadow-inner',
+                  'relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-3xl shadow-inner',
                   crop.color
                 )}
               >
-                <span role="img" aria-hidden="true">
-                  {crop.icon}
-                </span>
+                {crop.image ? (
+                  <img
+                    src={crop.image}
+                    alt={displayName}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span role="img" aria-hidden="true" className="text-5xl">
+                    {crop.icon}
+                  </span>
+                )}
               </span>
 
               <div className="flex min-w-0 flex-col">

@@ -13,7 +13,7 @@ export const TOOLS_DATA: ToolItem[] = [
     id: 'fertilizer_calc',
     name: 'Fertilizer Calculator',
     category: 'Calculators',
-    icon: '🧪',
+    icon: '🌱',
     description: 'Calculate precise N-P-K fertilizer bags needed for your land size.',
     isInteractive: true
   },
@@ -21,7 +21,7 @@ export const TOOLS_DATA: ToolItem[] = [
     id: 'pesticide_calc',
     name: 'Pesticide Dosage',
     category: 'Calculators',
-    icon: '💦',
+    icon: '🧴',
     description: 'Calculate required pesticide volume per spray tank.',
     comingSoon: true
   },
@@ -29,7 +29,7 @@ export const TOOLS_DATA: ToolItem[] = [
     id: 'crop_doctor',
     name: 'Crop Doctor AI',
     category: 'AI Assist',
-    icon: '🩺',
+    icon: '🤖',
     description: 'Interactive voice & text assistant for immediate plant help.',
     comingSoon: true
   },
@@ -37,7 +37,7 @@ export const TOOLS_DATA: ToolItem[] = [
     id: 'weather_radar',
     name: 'Spray Weather Radar',
     category: 'Weather',
-    icon: '🌧️',
+    icon: '📡',
     description: 'Best time of day to spray based on wind and rain forecast.',
     comingSoon: true
   },
@@ -45,7 +45,7 @@ export const TOOLS_DATA: ToolItem[] = [
     id: 'planting_calendar',
     name: 'Sowing Calendar',
     category: 'Guides',
-    icon: '📅',
+    icon: '🗓️',
     description: 'Optimal sowing & harvesting dates for your state.',
     comingSoon: true
   },
@@ -53,7 +53,7 @@ export const TOOLS_DATA: ToolItem[] = [
     id: 'yield_calculator',
     name: 'Yield Estimator',
     category: 'Calculators',
-    icon: '🌾',
+    icon: '📊',
     description: 'Estimate crop yield per acre and expected market return.',
     comingSoon: true
   }

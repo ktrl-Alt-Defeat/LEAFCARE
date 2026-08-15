@@ -260,6 +260,29 @@ export const CROP_AGRONOMY: Record<string, CropAgronomy> = {
     companions: { good: ['Garlic', 'Chives'], bad: ['Apple', 'Potato'] }
   },
 
+  orange: {
+    cropId: 'orange',
+    growing: {
+      temperature: '20–30 °C',
+      exposure: 'Full sun',
+      rainfall: '1,000–1,500 mm/year',
+      watering: 'Moderate–High'
+    },
+    soil: { type: 'Sandy loam', ph: '5.5–7.0' },
+    cultivation: {
+      lifeCycle: 'Perennial',
+      labour: 'Medium',
+      plantingMethod: 'Grafted / transplanted',
+      rowSpacing: '5–7 m',
+      plantSpacing: '4–6 m'
+    },
+    nutrients: { nitrogen: '200 g/tree', phosphorus: '100 g/tree', potassium: '200 g/tree' },
+    companions: {
+      good: ['Garlic', 'Marigold', 'Basil'],
+      bad: ['Crops competing heavily for nutrients']
+    }
+  },
+
   citrus: {
     cropId: 'citrus',
     growing: {
