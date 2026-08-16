@@ -16,6 +16,18 @@ export const API_BASE_URL = (process.env.LEAFCARE_API_URL ?? DEFAULT_API_URL).re
 export const API_V1_URL = `${API_BASE_URL}/api/v1`;
 
 /**
+ * Shared secret for the backend's admin and seller write endpoints.
+ *
+ * Read server-side only and deliberately NOT prefixed with `NEXT_PUBLIC_`: if
+ * this reached the browser the guard would be worthless, since anyone could
+ * read it out of the bundle and write to the knowledge base directly.
+ */
+export const ADMIN_KEY = process.env.LEAFCARE_ADMIN_KEY ?? '';
+
+/** Header the backend expects the secret in. */
+export const ADMIN_KEY_HEADER = 'x-leafcare-admin-key';
+
+/**
  * Cache windows in seconds. Reference data (languages, crops, diseases) is
  * effectively static; community and marketplace change throughout the day.
  */

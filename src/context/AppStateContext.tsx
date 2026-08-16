@@ -1,13 +1,16 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { LanguageCode, PermissionStatus, ScanResult, UserProfile } from '@/types';
+import { LanguageCode, PermissionStatus, ScanResult, UserProfile, UserRole } from '@/types';
 
 interface AppStateContextType {
   /** False until localStorage has been read. Guards against redirect flashes. */
   hydrated: boolean;
   language: LanguageCode;
   setLanguage: (lang: LanguageCode) => void;
+  /** Chosen during onboarding, right after language. */
+  role: UserRole;
+  setRole: (role: UserRole) => void;
   onboardingCompleted: boolean;
   setOnboardingCompleted: (completed: boolean) => void;
   permissions: PermissionStatus;
@@ -53,6 +56,7 @@ const AppStateContext = createContext<AppStateContextType | undefined>(undefined
 export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [hydrated, setHydrated] = useState(false);
   const [language, setLanguage] = useState<LanguageCode>('en');
+  const [role, setRole] = useState<UserRole>('farmer');
   const [onboardingCompleted, setOnboardingCompleted] = useState(false);
   const [permissions, setPermissions] = useState<PermissionStatus>(DEFAULT_PERMISSIONS);
   const [selectedCrops, setSelectedCropsState] = useState<string[]>(DEFAULT_CROPS);
@@ -69,6 +73,9 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         // after mount is the only hydration-safe option.
         // eslint-disable-next-line react-hooks/set-state-in-effect
         if (parsed.language) setLanguage(parsed.language);
+        if (parsed.role === 'farmer' || parsed.role === 'seller' || parsed.role === 'admin') {
+          setRole(parsed.role);
+        }
         if (typeof parsed.onboardingCompleted === 'boolean') {
           setOnboardingCompleted(parsed.onboardingCompleted);
         }
@@ -102,6 +109,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         STORAGE_KEY,
         JSON.stringify({
           language,
+          role,
           onboardingCompleted,
           permissions,
           selectedCrops,
@@ -112,7 +120,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     } catch (error) {
       console.error('Failed to persist app state:', error);
     }
-  }, [hydrated, language, onboardingCompleted, permissions, selectedCrops, scanHistory, userProfile]);
+  }, [hydrated, language, role, onboardingCompleted, permissions, selectedCrops, scanHistory, userProfile]);
 
   const updatePermission = useCallback(
     (key: keyof PermissionStatus, status: PermissionStatus[keyof PermissionStatus]) => {
@@ -137,6 +145,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const resetAllData = useCallback(() => {
     setLanguage('en');
+    setRole('farmer');
     setOnboardingCompleted(false);
     setPermissions(DEFAULT_PERMISSIONS);
     setSelectedCropsState(DEFAULT_CROPS);
@@ -149,6 +158,8 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       hydrated,
       language,
       setLanguage,
+      role,
+      setRole,
       onboardingCompleted,
       setOnboardingCompleted,
       permissions,
@@ -165,6 +176,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     [
       hydrated,
       language,
+      role,
       onboardingCompleted,
       permissions,
       updatePermission,

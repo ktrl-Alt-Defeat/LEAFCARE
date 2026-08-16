@@ -8,7 +8,7 @@ import { Camera, Sparkles } from 'lucide-react';
 import { BrandLockup } from '@/components/ui/BrandMark';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAppState } from '@/context/AppStateContext';
-import { NAV_ITEMS, isNavItemActive } from './navItems';
+import { navItemsForRole, isNavItemActive } from './navItems';
 import { cn } from '@/lib/utils';
 
 /**
@@ -19,7 +19,7 @@ import { cn } from '@/lib/utils';
 export const SideNavigation: React.FC = () => {
   const pathname = usePathname();
   const { t } = useLanguage();
-  const { userProfile, scanHistory } = useAppState();
+  const { userProfile, scanHistory, role } = useAppState();
 
   return (
     <aside className="hidden lg:flex lg:h-dvh lg:w-60 xl:w-64 shrink-0 flex-col gap-6 border-r border-slate-200/80 bg-white px-4 py-5">
@@ -48,7 +48,7 @@ export const SideNavigation: React.FC = () => {
           Menu
         </span>
 
-        {NAV_ITEMS.map((item) => {
+        {navItemsForRole(role).map((item) => {
           const Icon = item.icon;
           const isActive = isNavItemActive(pathname, item.href);
 
