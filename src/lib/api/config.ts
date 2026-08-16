@@ -9,8 +9,23 @@
 
 const DEFAULT_API_URL = 'http://localhost:5000';
 
-/** Backend root, e.g. `http://localhost:5000`. Override with `LEAFCARE_API_URL`. */
-export const API_BASE_URL = (process.env.LEAFCARE_API_URL ?? DEFAULT_API_URL).replace(/\/+$/, '');
+/**
+ * Backend root, e.g. `https://leafcare-backend.onrender.com`.
+ *
+ * `NEXT_PUBLIC_API_URL` is accepted as a fallback because it is the name most
+ * people reach for, and having the app silently fall back to localhost because
+ * the variable was spelled differently is a confusing failure: every request
+ * then dies with `ECONNREFUSED`, which surfaces as a bare "fetch failed".
+ *
+ * Only the value is shared — this module is still server-only, and the URL is
+ * never read in the browser.
+ */
+const configuredUrl = process.env.LEAFCARE_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? '';
+
+export const API_BASE_URL = (configuredUrl || DEFAULT_API_URL).replace(/\/+$/, '');
+
+/** True when no backend URL was configured and the localhost default is in use. */
+export const USING_DEFAULT_API_URL = configuredUrl.trim() === '';
 
 /** Versioned API root that every request is built from. */
 export const API_V1_URL = `${API_BASE_URL}/api/v1`;

@@ -62,14 +62,37 @@ export const backendWrite = async (
   }
 };
 
+/**
+ * Pulls a human-readable string out of a backend error payload.
+ *
+ * The backend nests errors as `{ success: false, error: { code, message } }`,
+ * so `error` is an object, not a string. Returning it verbatim would put an
+ * object into the dashboards' error state, which React cannot render as a
+ * child — a failed save would crash the page instead of explaining itself.
+ */
+export const errorMessageFrom = (body: unknown, fallback: string): string => {
+  if (typeof body !== 'object' || body === null) return fallback;
+
+  const payload = body as { message?: unknown; error?: unknown };
+
+  if (typeof payload.message === 'string') return payload.message;
+  if (typeof payload.error === 'string') return payload.error;
+
+  if (typeof payload.error === 'object' && payload.error !== null) {
+    const nested = (payload.error as { message?: unknown }).message;
+    if (typeof nested === 'string') return nested;
+  }
+
+  return fallback;
+};
+
 /** Turns a WriteResult into the response shape the dashboards expect. */
 export const writeResponse = (result: WriteResult, dataKey: string): NextResponse => {
   if (!result.ok) {
-    const message =
-      (result.body as { message?: string; error?: string } | undefined)?.message ??
-      (result.body as { error?: string } | undefined)?.error ??
-      'The change could not be saved.';
-    return NextResponse.json({ error: message }, { status: result.status });
+    return NextResponse.json(
+      { error: errorMessageFrom(result.body, 'The change could not be saved.') },
+      { status: result.status },
+    );
   }
 
   const data = (result.body as { data?: unknown } | undefined)?.data;
