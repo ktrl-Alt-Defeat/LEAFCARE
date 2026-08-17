@@ -5,6 +5,7 @@ import { Heart, MessageSquare, MapPin, Tag } from 'lucide-react';
 import { CommunityPost } from '@/types';
 import { Card } from '@/components/ui/Card';
 import { SafeImage } from '@/components/ui/SafeImage';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 
 export interface PostCardProps {
   post: CommunityPost;
@@ -51,13 +52,23 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
       </div>
 
       {/* Title & Body */}
-      <div className="flex-1">
-        <h3 className="mb-1.5 text-sm font-bold leading-snug text-slate-900">
-          {post.title}
-        </h3>
-        <p className="text-xs leading-relaxed text-slate-600">
-          {post.content}
-        </p>
+      <div className="flex flex-1 items-start gap-2">
+        <div className="min-w-0 flex-1">
+          <h3 className="mb-1.5 text-sm font-bold leading-snug text-slate-900">
+            {post.title}
+          </h3>
+          <p className="text-xs leading-relaxed text-slate-600">
+            {post.content}
+          </p>
+        </div>
+
+        {/* Attributed, because a post read aloud out of context sounds like
+            advice from the app rather than from another farmer. */}
+        <SpeakButton
+          tone="subtle"
+          label={post.title}
+          text={[`${post.authorName} from ${post.authorLocation} asks`, post.title, post.content]}
+        />
       </div>
 
       {/* Optional Post Image */}

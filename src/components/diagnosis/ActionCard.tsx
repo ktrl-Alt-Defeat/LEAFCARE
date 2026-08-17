@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Leaf, Syringe } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 
 export interface ActionCardProps {
   immediateSteps: string[];
@@ -17,6 +18,14 @@ export const ActionCard: React.FC<ActionCardProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'immediate' | 'organic' | 'chemical'>('immediate');
 
+  // The card shows one tab at a time, so reading it aloud follows the same
+  // rule: what you can see is what you hear, numbered the way it is displayed.
+  const spokenPlan = {
+    immediate: { title: 'Immediate steps', steps: immediateSteps },
+    organic: { title: 'Organic treatment', steps: organicTreatment },
+    chemical: { title: 'Chemical treatment', steps: chemicalTreatment },
+  }[activeTab];
+
   return (
     <Card className="flex flex-col gap-4 border-agro-200/80 bg-gradient-to-b from-agro-50/30 to-white">
       <div className="flex items-center justify-between">
@@ -26,6 +35,14 @@ export const ActionCard: React.FC<ActionCardProps> = ({
             Recommended Action Plan
           </h3>
         </div>
+
+        <SpeakButton
+          label={spokenPlan.title.toLowerCase()}
+          text={[
+            `Recommended action plan. ${spokenPlan.title}`,
+            ...spokenPlan.steps.map((step, index) => `Step ${index + 1}. ${step}`),
+          ]}
+        />
       </div>
 
       {/* Tabs */}

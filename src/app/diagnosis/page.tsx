@@ -13,6 +13,7 @@ import { ActionCard } from '@/components/diagnosis/ActionCard';
 import { PreventionCard } from '@/components/diagnosis/PreventionCard';
 import { Button } from '@/components/ui/Button';
 import { SafeImage } from '@/components/ui/SafeImage';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 
 function DiagnosisContent() {
   const searchParams = useSearchParams();
@@ -115,23 +116,41 @@ function DiagnosisContent() {
             </div>
           </div>
 
-          <div className="flex flex-col">
-            <span className="text-xs font-bold uppercase tracking-widest text-agro-700">
-              Identified pathogen
-            </span>
-            <h1 className="text-2xl font-black leading-tight tracking-tight text-slate-900">
-              {diseaseTitle}
-            </h1>
-            <span className="mt-0.5 text-xs font-semibold italic text-slate-500">
-              {disease.scientificName}
-            </span>
+          <div className="flex items-start gap-3">
+            <div className="flex min-w-0 flex-col">
+              <span className="text-xs font-bold uppercase tracking-widest text-agro-700">
+                Identified pathogen
+              </span>
+              <h1 className="text-2xl font-black leading-tight tracking-tight text-slate-900">
+                {diseaseTitle}
+              </h1>
+              <span className="mt-0.5 text-xs font-semibold italic text-slate-500">
+                {disease.scientificName}
+              </span>
+            </div>
+
+            {/* The headline result: the crop, the diagnosis and how sure it is. */}
+            <SpeakButton
+              className="ml-auto mt-1"
+              size="md"
+              label="diagnosis summary"
+              text={[
+                `Diagnosis for your ${disease.cropName} crop`,
+                diseaseTitle,
+                `Scientific name, ${disease.scientificName}`,
+                `Confidence ${Math.round(disease.confidence)} percent, severity ${disease.severity}`,
+              ]}
+            />
           </div>
 
           <ConfidenceMeter confidence={disease.confidence} severity={disease.severity} />
 
-          <p className="max-w-prose rounded-2xl border border-slate-100 bg-white p-4 text-xs font-medium leading-relaxed text-slate-600 shadow-sm">
-            {disease.overview}
-          </p>
+          <div className="flex max-w-prose items-start gap-2 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+            <p className="text-xs font-medium leading-relaxed text-slate-600">
+              {disease.overview}
+            </p>
+            <SpeakButton tone="subtle" label="overview" text={disease.overview} />
+          </div>
 
           <Link href="/scan" className="hidden lg:block">
             <Button size="lg" fullWidth icon={<Camera className="h-5 w-5" />}>

@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/Card';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { FilterChips } from '@/components/ui/FilterChips';
 import { SafeImage } from '@/components/ui/SafeImage';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import { useLanguage } from '@/context/LanguageContext';
 import { useKnowledgeArticles } from '@/hooks/useLeafCareData';
 
@@ -79,11 +80,22 @@ export default function KnowledgePage() {
                 />
               )}
 
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-agro-700">
-                  {article.categoryName}
-                </span>
-                <h3 className="text-sm font-black leading-snug text-slate-900">{article.title}</h3>
+              <div className="flex items-start gap-2">
+                <div className="flex min-w-0 flex-col gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-agro-700">
+                    {article.categoryName}
+                  </span>
+                  <h3 className="text-sm font-black leading-snug text-slate-900">{article.title}</h3>
+                </div>
+
+                {/* One button for the whole article — a guide read in three
+                    pieces is a guide nobody listens to the end of. */}
+                <SpeakButton
+                  className="ml-auto"
+                  size="md"
+                  label={article.title}
+                  text={[article.title, article.summary, article.body]}
+                />
               </div>
 
               {article.summary && (

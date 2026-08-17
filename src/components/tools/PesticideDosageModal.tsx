@@ -5,6 +5,7 @@ import { AlertTriangle, Droplets } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import {
   DoseBasis,
   SPRAYERS,
@@ -155,6 +156,22 @@ export const PesticideDosageModal: React.FC<{ isOpen: boolean; onClose: () => vo
           <h4 className="mb-3 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-agro-800">
             <Droplets className="h-3.5 w-3.5" />
             Mixing plan
+            {/* Read at the tank, hands wet, phone in a pocket — this one earns
+                its place more than any other button in the app. */}
+            <SpeakButton
+              className="ml-auto"
+              label="mixing plan"
+              text={[
+                'Mixing plan',
+                `Total water ${result.totalWaterLitres} litres`,
+                `Total product ${result.totalProduct} ${unit}`,
+                `${result.fullTanks} full ${result.fullTanks === 1 ? 'tank' : 'tanks'} of ${tankLitres} litres, ${result.productPerTank} ${unit} in each`,
+                result.partTankLitres > 0 &&
+                  `Final part tank of ${result.partTankLitres} litres takes ${result.productPartTank} ${unit}`,
+                `Working strength ${result.concentrationPerLitre} ${unit} per litre`,
+                warning,
+              ]}
+            />
           </h4>
 
           <div className="grid grid-cols-2 gap-2.5 text-center">
@@ -210,10 +227,17 @@ export const PesticideDosageModal: React.FC<{ isOpen: boolean; onClose: () => vo
           </div>
         )}
 
-        <p className="text-[11px] leading-relaxed text-slate-500">
-          Always follow the product label and your local agricultural officer. Wear protective
-          equipment and observe the pre-harvest interval before picking.
-        </p>
+        <div className="flex items-start gap-2">
+          <p className="text-[11px] leading-relaxed text-slate-500">
+            Always follow the product label and your local agricultural officer. Wear protective
+            equipment and observe the pre-harvest interval before picking.
+          </p>
+          <SpeakButton
+            tone="subtle"
+            label="safety notice"
+            text="Always follow the product label and your local agricultural officer. Wear protective equipment and observe the pre-harvest interval before picking."
+          />
+        </div>
 
         <Button fullWidth size="lg" onClick={onClose}>
           Done

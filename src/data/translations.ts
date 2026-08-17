@@ -105,6 +105,49 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     tourMarketTitle: 'Buy what you need',
     tourMarketDesc:
       'Browse seeds, crop protection and equipment from verified local sellers, with prices and ratings up front.',
+
+    // --- Voice: read-aloud controls and the microphone assistant ------------
+    close: 'Close',
+    readAloud: 'Read aloud',
+    stopReading: 'Stop reading',
+    voiceAssistant: 'Voice assistant',
+    voiceAssistantHint:
+      'Tap the microphone and ask in your own language. I can open any screen or explain how LeafCare works.',
+    voiceStartListening: 'Tap and speak',
+    voiceStopListening: 'Tap to stop',
+    voiceThinking: 'Understanding…',
+    voiceSuggestScan: 'Scan my crop',
+    voiceSuggestWeather: "Today's weather",
+    voiceSuggestMarket: 'Open the market',
+    voiceSuggestHow: 'How does it work?',
+    voiceErrorGeneric: 'That did not work. Try again.',
+    voiceErrorNoSpeech: 'I did not hear anything. Tap the mic and speak clearly.',
+    voiceErrorDenied: 'Microphone access is blocked. Allow it in your browser settings.',
+    voiceErrorUnsupported: 'This browser cannot record audio.',
+    voiceReplyScan: 'Opening the camera. Hold a single affected leaf steady in the frame.',
+    voiceReplyWeather:
+      'Here is your local forecast, with the spraying window for today at the top of the home screen.',
+    voiceReplyTools:
+      'The farming tools are on the home screen: a pesticide dosage calculator, a sowing calendar, and a spray weather check.',
+    voiceReplyMarket:
+      'Opening the marketplace — seeds, fertilizers, crop protection and tools from verified sellers.',
+    voiceReplyCommunity: 'Opening the community, where farmers near you share problems and answers.',
+    voiceReplyKnowledge: 'Opening the knowledge base — practical guides written by agronomists.',
+    voiceReplyCatalog:
+      'Opening the crop catalogue — soil, pH, spacing, nutrients and companion planting for every crop.',
+    voiceReplyCrops: 'Opening your crop list, where you can add or remove the crops you grow.',
+    voiceReplyProfile: 'Opening your profile and settings.',
+    voiceReplyLanguage:
+      'Opening language settings. LeafCare speaks English, Tamil, Hindi, Telugu, Malayalam and Kannada.',
+    voiceReplyHome: 'Taking you to the home screen.',
+    voiceReplyHowItWorks:
+      'LeafCare works in three steps. Pl@ntNet identifies the plant from your photo. If it is one of the supported crops, an EfficientNet model checks the leaf for disease. Then the app shows symptoms, immediate steps, and organic and chemical treatment options. Weather comes from Open-Meteo, and this voice is powered by ElevenLabs.',
+    voiceReplyAbout:
+      'LeafCare is a farming assistant. Photograph a leaf to find out what is wrong with it, check the local weather and spraying window, look up crops and guides, buy supplies, and ask other farmers. Everything is available in six languages, and every block of text can be read aloud.',
+    voiceReplyHelp:
+      'Try saying: scan my crop, show the weather, open the market, find guides, or how does it work.',
+    voiceReplyUnknown:
+      'I did not catch a command I know. Try: scan my crop, show the weather, open the market, or how does it work.',
   },
   ta: {
     welcome: 'வணக்கம்!',
@@ -210,6 +253,49 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     tourMarketTitle: 'தேவையானதை வாங்குங்கள்',
     tourMarketDesc:
       'சரிபார்க்கப்பட்ட உள்ளூர் விற்பனையாளர்களிடமிருந்து விதைகள், பயிர் பாதுகாப்பு பொருட்கள், கருவிகளை விலை மற்றும் மதிப்பீடுகளுடன் பாருங்கள்.',
+
+    // --- Voice: read-aloud controls and the microphone assistant ------------
+    close: 'மூடு',
+    readAloud: 'படித்துக் காட்டு',
+    stopReading: 'படிப்பதை நிறுத்து',
+    voiceAssistant: 'குரல் உதவியாளர்',
+    voiceAssistantHint:
+      'மைக்கை அழுத்தி உங்கள் மொழியில் கேளுங்கள். எந்தத் திரையையும் திறக்கவோ, LeafCare எப்படி வேலை செய்கிறது என்பதை விளக்கவோ முடியும்.',
+    voiceStartListening: 'அழுத்தி பேசுங்கள்',
+    voiceStopListening: 'நிறுத்த அழுத்துங்கள்',
+    voiceThinking: 'புரிந்துகொள்கிறேன்…',
+    voiceSuggestScan: 'என் பயிரை ஸ்கேன் செய்',
+    voiceSuggestWeather: 'இன்றைய வானிலை',
+    voiceSuggestMarket: 'சந்தையைத் திற',
+    voiceSuggestHow: 'இது எப்படி வேலை செய்கிறது?',
+    voiceErrorGeneric: 'அது வேலை செய்யவில்லை. மீண்டும் முயலுங்கள்.',
+    voiceErrorNoSpeech: 'எதுவும் கேட்கவில்லை. மைக்கை அழுத்தி தெளிவாகப் பேசுங்கள்.',
+    voiceErrorDenied: 'மைக்ரோஃபோன் அனுமதி தடுக்கப்பட்டுள்ளது. உலாவி அமைப்புகளில் அனுமதிக்கவும்.',
+    voiceErrorUnsupported: 'இந்த உலாவியில் ஒலிப்பதிவு செய்ய முடியாது.',
+    voiceReplyScan: 'கேமராவைத் திறக்கிறேன். பாதிக்கப்பட்ட ஒரு இலையை சட்டகத்தில் அசையாமல் பிடியுங்கள்.',
+    voiceReplyWeather:
+      'உங்கள் பகுதியின் வானிலை இதோ; இன்றைய தெளிப்புக்கான ஏற்ற நேரம் முகப்புத் திரையின் மேலே உள்ளது.',
+    voiceReplyTools:
+      'விவசாயக் கருவிகள் முகப்புத் திரையில் உள்ளன: பூச்சிக்கொல்லி அளவு கணக்கிடுப்பான், விதைப்பு நாட்காட்டி, தெளிப்பு வானிலை சரிபார்ப்பு.',
+    voiceReplyMarket:
+      'சந்தையைத் திறக்கிறேன் — சரிபார்க்கப்பட்ட விற்பனையாளர்களிடமிருந்து விதைகள், உரங்கள், பயிர் பாதுகாப்பு பொருட்கள், கருவிகள்.',
+    voiceReplyCommunity: 'சமூகத்தைத் திறக்கிறேன்; அருகிலுள்ள விவசாயிகள் சிக்கல்களையும் தீர்வுகளையும் பகிர்கிறார்கள்.',
+    voiceReplyKnowledge: 'அறிவுத் தளத்தைத் திறக்கிறேன் — வேளாண் நிபுணர்கள் எழுதிய நடைமுறை வழிகாட்டிகள்.',
+    voiceReplyCatalog:
+      'பயிர் நூலகத்தைத் திறக்கிறேன் — ஒவ்வொரு பயிருக்கும் மண், pH, இடைவெளி, ஊட்டச்சத்து, சேர்த்துப் பயிரிடும் விவரங்கள்.',
+    voiceReplyCrops: 'உங்கள் பயிர் பட்டியலைத் திறக்கிறேன்; அங்கே பயிர்களைச் சேர்க்கவோ நீக்கவோ முடியும்.',
+    voiceReplyProfile: 'உங்கள் சுயவிவரத்தையும் அமைப்புகளையும் திறக்கிறேன்.',
+    voiceReplyLanguage:
+      'மொழி அமைப்புகளைத் திறக்கிறேன். LeafCare ஆங்கிலம், தமிழ், இந்தி, தெலுங்கு, மலையாளம், கன்னடத்தில் பேசும்.',
+    voiceReplyHome: 'முகப்புத் திரைக்கு அழைத்துச் செல்கிறேன்.',
+    voiceReplyHowItWorks:
+      'LeafCare மூன்று படிகளில் வேலை செய்கிறது. உங்கள் படத்திலிருந்து Pl@ntNet தாவரத்தை அடையாளம் காண்கிறது. அது ஆதரிக்கப்படும் பயிராக இருந்தால், EfficientNet மாதிரி இலையில் நோயைச் சரிபார்க்கிறது. பிறகு அறிகுறிகள், உடனடி நடவடிக்கைகள், இயற்கை மற்றும் இரசாயன சிகிச்சைகள் காட்டப்படும். வானிலை Open-Meteo வழியாகவும், இந்தக் குரல் ElevenLabs வழியாகவும் வருகிறது.',
+    voiceReplyAbout:
+      'LeafCare ஒரு விவசாய உதவியாளர். இலையைப் படமெடுத்து பிரச்சினையை அறியலாம், உள்ளூர் வானிலையையும் தெளிப்பு நேரத்தையும் பார்க்கலாம், பயிர்களையும் வழிகாட்டிகளையும் தேடலாம், பொருட்கள் வாங்கலாம், மற்ற விவசாயிகளிடம் கேட்கலாம். அனைத்தும் ஆறு மொழிகளில் கிடைக்கும், ஒவ்வொரு உரைப் பகுதியையும் படித்துக் காட்ட முடியும்.',
+    voiceReplyHelp:
+      'இப்படிச் சொல்லிப் பாருங்கள்: என் பயிரை ஸ்கேன் செய், வானிலையைக் காட்டு, சந்தையைத் திற, வழிகாட்டிகளைத் தேடு, அல்லது இது எப்படி வேலை செய்கிறது.',
+    voiceReplyUnknown:
+      'எனக்குத் தெரிந்த கட்டளை கிடைக்கவில்லை. முயற்சி செய்யுங்கள்: என் பயிரை ஸ்கேன் செய், வானிலையைக் காட்டு, சந்தையைத் திற, அல்லது இது எப்படி வேலை செய்கிறது.',
   },
   hi: {
     welcome: 'नमस्ते!',
@@ -315,6 +401,49 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     tourMarketTitle: 'ज़रूरत का सामान खरीदें',
     tourMarketDesc:
       'सत्यापित स्थानीय विक्रेताओं से बीज, फसल सुरक्षा उत्पाद और उपकरण देखें — कीमत और रेटिंग सामने।',
+
+    // --- Voice: read-aloud controls and the microphone assistant ------------
+    close: 'बंद करें',
+    readAloud: 'पढ़कर सुनाएँ',
+    stopReading: 'पढ़ना रोकें',
+    voiceAssistant: 'आवाज़ सहायक',
+    voiceAssistantHint:
+      'माइक दबाएँ और अपनी भाषा में पूछें। मैं कोई भी स्क्रीन खोल सकता हूँ या बता सकता हूँ कि LeafCare कैसे काम करता है।',
+    voiceStartListening: 'दबाकर बोलें',
+    voiceStopListening: 'रोकने के लिए दबाएँ',
+    voiceThinking: 'समझ रहा हूँ…',
+    voiceSuggestScan: 'मेरी फसल स्कैन करें',
+    voiceSuggestWeather: 'आज का मौसम',
+    voiceSuggestMarket: 'बाज़ार खोलें',
+    voiceSuggestHow: 'यह कैसे काम करता है?',
+    voiceErrorGeneric: 'यह काम नहीं आया। फिर से कोशिश करें।',
+    voiceErrorNoSpeech: 'मुझे कुछ सुनाई नहीं दिया। माइक दबाकर साफ़ बोलें।',
+    voiceErrorDenied: 'माइक्रोफ़ोन की अनुमति बंद है। ब्राउज़र सेटिंग में इसे चालू करें।',
+    voiceErrorUnsupported: 'यह ब्राउज़र ऑडियो रिकॉर्ड नहीं कर सकता।',
+    voiceReplyScan: 'कैमरा खोल रहा हूँ। प्रभावित एक पत्ती को फ़्रेम में स्थिर रखें।',
+    voiceReplyWeather:
+      'यह रहा आपके इलाके का मौसम; आज छिड़काव का सही समय होम स्क्रीन के ऊपर दिख रहा है।',
+    voiceReplyTools:
+      'खेती के औज़ार होम स्क्रीन पर हैं: दवा की मात्रा का कैलकुलेटर, बुवाई कैलेंडर, और छिड़काव मौसम जाँच।',
+    voiceReplyMarket:
+      'बाज़ार खोल रहा हूँ — सत्यापित विक्रेताओं से बीज, खाद, फसल सुरक्षा उत्पाद और उपकरण।',
+    voiceReplyCommunity: 'समुदाय खोल रहा हूँ, जहाँ आस-पास के किसान समस्याएँ और समाधान साझा करते हैं।',
+    voiceReplyKnowledge: 'ज्ञान केंद्र खोल रहा हूँ — कृषि विशेषज्ञों की लिखी व्यावहारिक जानकारी।',
+    voiceReplyCatalog:
+      'फसल सूची खोल रहा हूँ — हर फसल के लिए मिट्टी, pH, दूरी, पोषक तत्व और साथ लगाने वाली फसलें।',
+    voiceReplyCrops: 'आपकी फसलों की सूची खोल रहा हूँ, जहाँ आप फसलें जोड़ या हटा सकते हैं।',
+    voiceReplyProfile: 'आपकी प्रोफ़ाइल और सेटिंग खोल रहा हूँ।',
+    voiceReplyLanguage:
+      'भाषा सेटिंग खोल रहा हूँ। LeafCare अंग्रेज़ी, तमिल, हिन्दी, तेलुगु, मलयालम और कन्नड़ में बोलता है।',
+    voiceReplyHome: 'आपको होम स्क्रीन पर ले जा रहा हूँ।',
+    voiceReplyHowItWorks:
+      'LeafCare तीन चरणों में काम करता है। आपकी फ़ोटो से Pl@ntNet पौधे की पहचान करता है। अगर वह समर्थित फसलों में है, तो EfficientNet मॉडल पत्ती में बीमारी जाँचता है। फिर ऐप लक्षण, तुरंत उठाए जाने वाले कदम, और जैविक व रासायनिक उपचार दिखाता है। मौसम Open-Meteo से आता है, और यह आवाज़ ElevenLabs से।',
+    voiceReplyAbout:
+      'LeafCare एक खेती सहायक है। पत्ती की फ़ोटो लेकर समस्या पता करें, स्थानीय मौसम और छिड़काव का समय देखें, फसलें और जानकारी खोजें, सामान खरीदें, और दूसरे किसानों से पूछें। सब कुछ छह भाषाओं में है, और हर लेख पढ़कर सुनाया जा सकता है।',
+    voiceReplyHelp:
+      'ऐसे कहकर देखें: मेरी फसल स्कैन करें, मौसम दिखाएँ, बाज़ार खोलें, जानकारी खोजें, या यह कैसे काम करता है।',
+    voiceReplyUnknown:
+      'मुझे कोई परिचित आदेश नहीं मिला। कोशिश करें: मेरी फसल स्कैन करें, मौसम दिखाएँ, बाज़ार खोलें, या यह कैसे काम करता है।',
   },
   te: {
     welcome: 'స్వాగతం!',
@@ -420,6 +549,49 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     tourMarketTitle: 'కావలసినవి కొనండి',
     tourMarketDesc:
       'ధృవీకరించిన స్థానిక విక్రేతల నుండి విత్తనాలు, పంట రక్షణ ఉత్పత్తులు, పరికరాలను ధరలు మరియు రేటింగ్‌లతో చూడండి.',
+
+    // --- Voice: read-aloud controls and the microphone assistant ------------
+    close: 'మూసివేయి',
+    readAloud: 'చదివి వినిపించు',
+    stopReading: 'చదవడం ఆపు',
+    voiceAssistant: 'వాయిస్ సహాయకుడు',
+    voiceAssistantHint:
+      'మైక్ నొక్కి మీ భాషలో అడగండి. ఏ స్క్రీన్‌నైనా తెరవగలను, LeafCare ఎలా పనిచేస్తుందో వివరించగలను.',
+    voiceStartListening: 'నొక్కి మాట్లాడండి',
+    voiceStopListening: 'ఆపడానికి నొక్కండి',
+    voiceThinking: 'అర్థం చేసుకుంటున్నాను…',
+    voiceSuggestScan: 'నా పంటను స్కాన్ చెయ్',
+    voiceSuggestWeather: 'ఈ రోజు వాతావరణం',
+    voiceSuggestMarket: 'మార్కెట్ తెరువు',
+    voiceSuggestHow: 'ఇది ఎలా పనిచేస్తుంది?',
+    voiceErrorGeneric: 'అది పని చేయలేదు. మళ్లీ ప్రయత్నించండి.',
+    voiceErrorNoSpeech: 'నాకు ఏమీ వినిపించలేదు. మైక్ నొక్కి స్పష్టంగా మాట్లాడండి.',
+    voiceErrorDenied: 'మైక్రోఫోన్ అనుమతి నిరోధించబడింది. బ్రౌజర్ సెట్టింగ్‌లలో అనుమతించండి.',
+    voiceErrorUnsupported: 'ఈ బ్రౌజర్ ఆడియో రికార్డ్ చేయలేదు.',
+    voiceReplyScan: 'కెమెరా తెరుస్తున్నాను. వ్యాధి సోకిన ఒక ఆకును ఫ్రేమ్‌లో కదలకుండా పట్టుకోండి.',
+    voiceReplyWeather:
+      'ఇదిగో మీ ప్రాంత వాతావరణం; ఈ రోజు పిచికారీకి సరైన సమయం హోమ్ స్క్రీన్ పైభాగంలో ఉంది.',
+    voiceReplyTools:
+      'వ్యవసాయ పరికరాలు హోమ్ స్క్రీన్‌లో ఉన్నాయి: పురుగుమందు మోతాదు లెక్కింపు, విత్తన క్యాలెండర్, పిచికారీ వాతావరణ పరిశీలన.',
+    voiceReplyMarket:
+      'మార్కెట్ తెరుస్తున్నాను — ధృవీకరించిన విక్రేతల నుండి విత్తనాలు, ఎరువులు, పంట రక్షణ ఉత్పత్తులు, పరికరాలు.',
+    voiceReplyCommunity: 'సంఘాన్ని తెరుస్తున్నాను; దగ్గరలోని రైతులు సమస్యలు, పరిష్కారాలు పంచుకుంటారు.',
+    voiceReplyKnowledge: 'జ్ఞాన కేంద్రాన్ని తెరుస్తున్నాను — వ్యవసాయ నిపుణులు రాసిన ఆచరణాత్మక మార్గదర్శకాలు.',
+    voiceReplyCatalog:
+      'పంట గ్రంథాలయాన్ని తెరుస్తున్నాను — ప్రతి పంటకు నేల, pH, దూరం, పోషకాలు, కలిపి పండించే పంటలు.',
+    voiceReplyCrops: 'మీ పంటల జాబితాను తెరుస్తున్నాను; అక్కడ పంటలను చేర్చవచ్చు లేదా తీసివేయవచ్చు.',
+    voiceReplyProfile: 'మీ ప్రొఫైల్ మరియు సెట్టింగ్‌లను తెరుస్తున్నాను.',
+    voiceReplyLanguage:
+      'భాషా సెట్టింగ్‌లను తెరుస్తున్నాను. LeafCare ఇంగ్లీష్, తమిళం, హిందీ, తెలుగు, మలయాళం, కన్నడలో మాట్లాడుతుంది.',
+    voiceReplyHome: 'మిమ్మల్ని హోమ్ స్క్రీన్‌కు తీసుకువెళ్తున్నాను.',
+    voiceReplyHowItWorks:
+      'LeafCare మూడు దశల్లో పనిచేస్తుంది. మీ ఫోటో నుండి Pl@ntNet మొక్కను గుర్తిస్తుంది. అది మద్దతు ఉన్న పంట అయితే, EfficientNet మోడల్ ఆకులో వ్యాధిని పరిశీలిస్తుంది. తర్వాత లక్షణాలు, వెంటనే తీసుకోవలసిన చర్యలు, సేంద్రియ మరియు రసాయన చికిత్సలు చూపుతుంది. వాతావరణం Open-Meteo నుండి, ఈ గొంతు ElevenLabs నుండి వస్తుంది.',
+    voiceReplyAbout:
+      'LeafCare ఒక వ్యవసాయ సహాయకుడు. ఆకు ఫోటో తీసి సమస్యను తెలుసుకోండి, స్థానిక వాతావరణం మరియు పిచికారీ సమయం చూడండి, పంటలు మరియు మార్గదర్శకాలు వెతకండి, సామగ్రి కొనండి, ఇతర రైతులను అడగండి. అన్నీ ఆరు భాషల్లో ఉన్నాయి, ప్రతి పాఠ్యభాగాన్ని చదివి వినిపించవచ్చు.',
+    voiceReplyHelp:
+      'ఇలా చెప్పి చూడండి: నా పంటను స్కాన్ చెయ్, వాతావరణం చూపు, మార్కెట్ తెరువు, మార్గదర్శకాలు వెతుకు, లేదా ఇది ఎలా పనిచేస్తుంది.',
+    voiceReplyUnknown:
+      'నాకు తెలిసిన ఆదేశం దొరకలేదు. ప్రయత్నించండి: నా పంటను స్కాన్ చెయ్, వాతావరణం చూపు, మార్కెట్ తెరువు, లేదా ఇది ఎలా పనిచేస్తుంది.',
   },
   ml: {
     welcome: 'സ്വാഗതം!',
@@ -525,6 +697,49 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     tourMarketTitle: 'വേണ്ടത് വാങ്ങുക',
     tourMarketDesc:
       'സ്ഥിരീകരിച്ച പ്രാദേശിക വിൽപ്പനക്കാരിൽ നിന്ന് വിത്ത്, വിള സംരക്ഷണ ഉൽപ്പന്നങ്ങൾ, ഉപകരണങ്ങൾ വിലയും റേറ്റിംഗും സഹിതം കാണുക.',
+
+    // --- Voice: read-aloud controls and the microphone assistant ------------
+    close: 'അടയ്ക്കുക',
+    readAloud: 'വായിച്ചു കേൾപ്പിക്കുക',
+    stopReading: 'വായന നിർത്തുക',
+    voiceAssistant: 'ശബ്ദ സഹായി',
+    voiceAssistantHint:
+      'മൈക്ക് അമർത്തി നിങ്ങളുടെ ഭാഷയിൽ ചോദിക്കൂ. ഏത് സ്ക്രീനും തുറക്കാം, LeafCare എങ്ങനെ പ്രവർത്തിക്കുന്നു എന്നു വിശദീകരിക്കാം.',
+    voiceStartListening: 'അമർത്തി സംസാരിക്കൂ',
+    voiceStopListening: 'നിർത്താൻ അമർത്തുക',
+    voiceThinking: 'മനസ്സിലാക്കുന്നു…',
+    voiceSuggestScan: 'എന്റെ വിള സ്കാൻ ചെയ്യൂ',
+    voiceSuggestWeather: 'ഇന്നത്തെ കാലാവസ്ഥ',
+    voiceSuggestMarket: 'മാർക്കറ്റ് തുറക്കൂ',
+    voiceSuggestHow: 'ഇത് എങ്ങനെ പ്രവർത്തിക്കുന്നു?',
+    voiceErrorGeneric: 'അത് ശരിയായില്ല. വീണ്ടും ശ്രമിക്കൂ.',
+    voiceErrorNoSpeech: 'എനിക്ക് ഒന്നും കേട്ടില്ല. മൈക്ക് അമർത്തി വ്യക്തമായി സംസാരിക്കൂ.',
+    voiceErrorDenied: 'മൈക്രോഫോൺ അനുമതി തടഞ്ഞിരിക്കുന്നു. ബ്രൗസർ ക്രമീകരണങ്ങളിൽ അനുവദിക്കൂ.',
+    voiceErrorUnsupported: 'ഈ ബ്രൗസറിൽ ഓഡിയോ റെക്കോർഡ് ചെയ്യാൻ കഴിയില്ല.',
+    voiceReplyScan: 'ക്യാമറ തുറക്കുന്നു. രോഗം ബാധിച്ച ഒരു ഇല ഫ്രെയിമിൽ അനങ്ങാതെ പിടിക്കൂ.',
+    voiceReplyWeather:
+      'ഇതാ നിങ്ങളുടെ പ്രദേശത്തെ കാലാവസ്ഥ; ഇന്ന് തളിക്കാൻ പറ്റിയ സമയം ഹോം സ്ക്രീനിന്റെ മുകളിലുണ്ട്.',
+    voiceReplyTools:
+      'കൃഷി ഉപകരണങ്ങൾ ഹോം സ്ക്രീനിലുണ്ട്: കീടനാശിനി അളവ് കണക്കുകൂട്ടൽ, വിതയ്ക്കൽ കലണ്ടർ, തളിക്കൽ കാലാവസ്ഥ പരിശോധന.',
+    voiceReplyMarket:
+      'മാർക്കറ്റ് തുറക്കുന്നു — സ്ഥിരീകരിച്ച വിൽപ്പനക്കാരിൽ നിന്ന് വിത്ത്, വളം, വിള സംരക്ഷണ ഉൽപ്പന്നങ്ങൾ, ഉപകരണങ്ങൾ.',
+    voiceReplyCommunity: 'കമ്മ്യൂണിറ്റി തുറക്കുന്നു; അടുത്തുള്ള കർഷകർ പ്രശ്നങ്ങളും പരിഹാരങ്ങളും പങ്കുവയ്ക്കുന്നു.',
+    voiceReplyKnowledge: 'വിജ്ഞാന കേന്ദ്രം തുറക്കുന്നു — കാർഷിക വിദഗ്ധർ എഴുതിയ പ്രായോഗിക വഴികാട്ടികൾ.',
+    voiceReplyCatalog:
+      'വിള ലൈബ്രറി തുറക്കുന്നു — ഓരോ വിളയ്ക്കും മണ്ണ്, pH, അകലം, പോഷകങ്ങൾ, ഒപ്പം നടാവുന്ന വിളകൾ.',
+    voiceReplyCrops: 'നിങ്ങളുടെ വിള പട്ടിക തുറക്കുന്നു; അവിടെ വിളകൾ ചേർക്കാനും നീക്കാനും കഴിയും.',
+    voiceReplyProfile: 'നിങ്ങളുടെ പ്രൊഫൈലും ക്രമീകരണങ്ങളും തുറക്കുന്നു.',
+    voiceReplyLanguage:
+      'ഭാഷാ ക്രമീകരണങ്ങൾ തുറക്കുന്നു. LeafCare ഇംഗ്ലീഷ്, തമിഴ്, ഹിന്ദി, തെലുങ്ക്, മലയാളം, കന്നഡ സംസാരിക്കുന്നു.',
+    voiceReplyHome: 'നിങ്ങളെ ഹോം സ്ക്രീനിലേക്ക് കൊണ്ടുപോകുന്നു.',
+    voiceReplyHowItWorks:
+      'LeafCare മൂന്നു ഘട്ടങ്ങളിലാണ് പ്രവർത്തിക്കുന്നത്. നിങ്ങളുടെ ഫോട്ടോയിൽ നിന്ന് Pl@ntNet ചെടിയെ തിരിച്ചറിയുന്നു. അത് പിന്തുണയ്ക്കുന്ന വിളയാണെങ്കിൽ, EfficientNet മോഡൽ ഇലയിലെ രോഗം പരിശോധിക്കുന്നു. പിന്നെ ലക്ഷണങ്ങൾ, ഉടനടി ചെയ്യേണ്ട കാര്യങ്ങൾ, ജൈവ, രാസ ചികിത്സകൾ കാണിക്കുന്നു. കാലാവസ്ഥ Open-Meteo-യിൽ നിന്നും, ഈ ശബ്ദം ElevenLabs-ൽ നിന്നും വരുന്നു.',
+    voiceReplyAbout:
+      'LeafCare ഒരു കൃഷി സഹായിയാണ്. ഇലയുടെ ഫോട്ടോ എടുത്ത് പ്രശ്നം അറിയാം, പ്രാദേശിക കാലാവസ്ഥയും തളിക്കൽ സമയവും കാണാം, വിളകളും വഴികാട്ടികളും തിരയാം, സാധനങ്ങൾ വാങ്ങാം, മറ്റു കർഷകരോട് ചോദിക്കാം. എല്ലാം ആറ് ഭാഷകളിൽ ലഭ്യമാണ്, ഓരോ വാചകഭാഗവും വായിച്ചു കേൾപ്പിക്കാം.',
+    voiceReplyHelp:
+      'ഇങ്ങനെ പറഞ്ഞു നോക്കൂ: എന്റെ വിള സ്കാൻ ചെയ്യൂ, കാലാവസ്ഥ കാണിക്കൂ, മാർക്കറ്റ് തുറക്കൂ, വഴികാട്ടികൾ തിരയൂ, അല്ലെങ്കിൽ ഇത് എങ്ങനെ പ്രവർത്തിക്കുന്നു.',
+    voiceReplyUnknown:
+      'എനിക്കറിയാവുന്ന ഒരു നിർദ്ദേശം കിട്ടിയില്ല. ശ്രമിക്കൂ: എന്റെ വിള സ്കാൻ ചെയ്യൂ, കാലാവസ്ഥ കാണിക്കൂ, മാർക്കറ്റ് തുറക്കൂ, അല്ലെങ്കിൽ ഇത് എങ്ങനെ പ്രവർത്തിക്കുന്നു.',
   },
   kn: {
     welcome: 'స్వాగత!',
@@ -630,5 +845,48 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     tourMarketTitle: 'ಬೇಕಾದದ್ದನ್ನು ಖರೀದಿಸಿ',
     tourMarketDesc:
       'ಪರಿಶೀಲಿತ ಸ್ಥಳೀಯ ಮಾರಾಟಗಾರರಿಂದ ಬೀಜ, ಬೆಳೆ ಸಂರಕ್ಷಣಾ ಉತ್ಪನ್ನ ಮತ್ತು ಉಪಕರಣಗಳನ್ನು ಬೆಲೆ ಹಾಗೂ ರೇಟಿಂಗ್‌ನೊಂದಿಗೆ ನೋಡಿ.',
+
+    // --- Voice: read-aloud controls and the microphone assistant ------------
+    close: 'ಮುಚ್ಚಿ',
+    readAloud: 'ಓದಿ ಹೇಳಿ',
+    stopReading: 'ಓದುವುದನ್ನು ನಿಲ್ಲಿಸಿ',
+    voiceAssistant: 'ಧ್ವನಿ ಸಹಾಯಕ',
+    voiceAssistantHint:
+      'ಮೈಕ್ ಒತ್ತಿ ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಕೇಳಿ. ಯಾವುದೇ ಪರದೆಯನ್ನು ತೆರೆಯಬಲ್ಲೆ, LeafCare ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ ಎಂದು ವಿವರಿಸಬಲ್ಲೆ.',
+    voiceStartListening: 'ಒತ್ತಿ ಮಾತನಾಡಿ',
+    voiceStopListening: 'ನಿಲ್ಲಿಸಲು ಒತ್ತಿ',
+    voiceThinking: 'ಅರ್ಥ ಮಾಡಿಕೊಳ್ಳುತ್ತಿದ್ದೇನೆ…',
+    voiceSuggestScan: 'ನನ್ನ ಬೆಳೆ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ',
+    voiceSuggestWeather: 'ಇಂದಿನ ಹವಾಮಾನ',
+    voiceSuggestMarket: 'ಮಾರುಕಟ್ಟೆ ತೆರೆಯಿರಿ',
+    voiceSuggestHow: 'ಇದು ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ?',
+    voiceErrorGeneric: 'ಅದು ಕೆಲಸ ಮಾಡಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.',
+    voiceErrorNoSpeech: 'ನನಗೆ ಏನೂ ಕೇಳಲಿಲ್ಲ. ಮೈಕ್ ಒತ್ತಿ ಸ್ಪಷ್ಟವಾಗಿ ಮಾತನಾಡಿ.',
+    voiceErrorDenied: 'ಮೈಕ್ರೊಫೋನ್ ಅನುಮತಿ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ. ಬ್ರೌಸರ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಅನುಮತಿಸಿ.',
+    voiceErrorUnsupported: 'ಈ ಬ್ರೌಸರ್ ಆಡಿಯೊ ರೆಕಾರ್ಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.',
+    voiceReplyScan: 'ಕ್ಯಾಮೆರಾ ತೆರೆಯುತ್ತಿದ್ದೇನೆ. ರೋಗ ಬಾಧಿತ ಒಂದು ಎಲೆಯನ್ನು ಚೌಕಟ್ಟಿನಲ್ಲಿ ಸ್ಥಿರವಾಗಿ ಹಿಡಿಯಿರಿ.',
+    voiceReplyWeather:
+      'ಇಲ್ಲಿದೆ ನಿಮ್ಮ ಪ್ರದೇಶದ ಹವಾಮಾನ; ಇಂದು ಸಿಂಪಡಣೆಗೆ ಸೂಕ್ತ ಸಮಯ ಹೋಮ್ ಪರದೆಯ ಮೇಲ್ಭಾಗದಲ್ಲಿದೆ.',
+    voiceReplyTools:
+      'ಕೃಷಿ ಸಾಧನಗಳು ಹೋಮ್ ಪರದೆಯಲ್ಲಿವೆ: ಕೀಟನಾಶಕ ಪ್ರಮಾಣ ಲೆಕ್ಕಾಚಾರ, ಬಿತ್ತನೆ ಕ್ಯಾಲೆಂಡರ್, ಸಿಂಪಡಣೆ ಹವಾಮಾನ ಪರಿಶೀಲನೆ.',
+    voiceReplyMarket:
+      'ಮಾರುಕಟ್ಟೆ ತೆರೆಯುತ್ತಿದ್ದೇನೆ — ಪರಿಶೀಲಿತ ಮಾರಾಟಗಾರರಿಂದ ಬೀಜ, ಗೊಬ್ಬರ, ಬೆಳೆ ಸಂರಕ್ಷಣಾ ಉತ್ಪನ್ನ ಮತ್ತು ಉಪಕರಣಗಳು.',
+    voiceReplyCommunity: 'ಸಮುದಾಯ ತೆರೆಯುತ್ತಿದ್ದೇನೆ; ಹತ್ತಿರದ ರೈತರು ಸಮಸ್ಯೆ ಮತ್ತು ಪರಿಹಾರಗಳನ್ನು ಹಂಚಿಕೊಳ್ಳುತ್ತಾರೆ.',
+    voiceReplyKnowledge: 'ಜ್ಞಾನ ಕೇಂದ್ರ ತೆರೆಯುತ್ತಿದ್ದೇನೆ — ಕೃಷಿ ತಜ್ಞರು ಬರೆದ ಪ್ರಾಯೋಗಿಕ ಮಾರ್ಗದರ್ಶಿಗಳು.',
+    voiceReplyCatalog:
+      'ಬೆಳೆ ಗ್ರಂಥಾಲಯ ತೆರೆಯುತ್ತಿದ್ದೇನೆ — ಪ್ರತಿ ಬೆಳೆಗೆ ಮಣ್ಣು, pH, ಅಂತರ, ಪೋಷಕಾಂಶ ಮತ್ತು ಜೊತೆಯಾಗಿ ಬೆಳೆಯುವ ಬೆಳೆಗಳು.',
+    voiceReplyCrops: 'ನಿಮ್ಮ ಬೆಳೆ ಪಟ್ಟಿ ತೆರೆಯುತ್ತಿದ್ದೇನೆ; ಅಲ್ಲಿ ಬೆಳೆಗಳನ್ನು ಸೇರಿಸಬಹುದು ಅಥವಾ ತೆಗೆಯಬಹುದು.',
+    voiceReplyProfile: 'ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಮತ್ತು ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯುತ್ತಿದ್ದೇನೆ.',
+    voiceReplyLanguage:
+      'ಭಾಷಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯುತ್ತಿದ್ದೇನೆ. LeafCare ಇಂಗ್ಲಿಷ್, ತಮಿಳು, ಹಿಂದಿ, ತೆಲುಗು, ಮಲಯಾಳಂ ಮತ್ತು ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡುತ್ತದೆ.',
+    voiceReplyHome: 'ನಿಮ್ಮನ್ನು ಹೋಮ್ ಪರದೆಗೆ ಕರೆದೊಯ್ಯುತ್ತಿದ್ದೇನೆ.',
+    voiceReplyHowItWorks:
+      'LeafCare ಮೂರು ಹಂತಗಳಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ. ನಿಮ್ಮ ಫೋಟೋದಿಂದ Pl@ntNet ಸಸ್ಯವನ್ನು ಗುರುತಿಸುತ್ತದೆ. ಅದು ಬೆಂಬಲಿತ ಬೆಳೆಯಾಗಿದ್ದರೆ, EfficientNet ಮಾದರಿ ಎಲೆಯಲ್ಲಿ ರೋಗವನ್ನು ಪರಿಶೀಲಿಸುತ್ತದೆ. ನಂತರ ಲಕ್ಷಣಗಳು, ತಕ್ಷಣದ ಕ್ರಮಗಳು, ಸಾವಯವ ಮತ್ತು ರಾಸಾಯನಿಕ ಚಿಕಿತ್ಸೆಗಳನ್ನು ತೋರಿಸುತ್ತದೆ. ಹವಾಮಾನ Open-Meteo ದಿಂದ, ಈ ಧ್ವನಿ ElevenLabs ದಿಂದ ಬರುತ್ತದೆ.',
+    voiceReplyAbout:
+      'LeafCare ಒಂದು ಕೃಷಿ ಸಹಾಯಕ. ಎಲೆಯ ಫೋಟೋ ತೆಗೆದು ಸಮಸ್ಯೆ ತಿಳಿಯಿರಿ, ಸ್ಥಳೀಯ ಹವಾಮಾನ ಮತ್ತು ಸಿಂಪಡಣೆ ಸಮಯ ನೋಡಿ, ಬೆಳೆ ಮತ್ತು ಮಾರ್ಗದರ್ಶಿಗಳನ್ನು ಹುಡುಕಿ, ಸಾಮಗ್ರಿ ಖರೀದಿಸಿ, ಇತರ ರೈತರನ್ನು ಕೇಳಿ. ಎಲ್ಲವೂ ಆರು ಭಾಷೆಗಳಲ್ಲಿ ಲಭ್ಯ, ಪ್ರತಿ ಪಠ್ಯ ಭಾಗವನ್ನೂ ಓದಿ ಹೇಳಬಹುದು.',
+    voiceReplyHelp:
+      'ಹೀಗೆ ಹೇಳಿ ನೋಡಿ: ನನ್ನ ಬೆಳೆ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ, ಹವಾಮಾನ ತೋರಿಸಿ, ಮಾರುಕಟ್ಟೆ ತೆರೆಯಿರಿ, ಮಾರ್ಗದರ್ಶಿಗಳನ್ನು ಹುಡುಕಿ, ಅಥವಾ ಇದು ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ.',
+    voiceReplyUnknown:
+      'ನನಗೆ ಗೊತ್ತಿರುವ ಆದೇಶ ಸಿಗಲಿಲ್ಲ. ಪ್ರಯತ್ನಿಸಿ: ನನ್ನ ಬೆಳೆ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ, ಹವಾಮಾನ ತೋರಿಸಿ, ಮಾರುಕಟ್ಟೆ ತೆರೆಯಿರಿ, ಅಥವಾ ಇದು ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ.',
   }
 };

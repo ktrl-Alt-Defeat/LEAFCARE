@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ONBOARDING_SLIDES } from '@/data/onboarding';
 import { ProgressDots } from '@/components/ui/ProgressDots';
 import { Button } from '@/components/ui/Button';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import { useLanguage } from '@/context/LanguageContext';
 
 export interface OnboardingCarouselProps {
@@ -69,6 +70,18 @@ export const OnboardingCarousel: React.FC<OnboardingCarouselProps> = ({ onComple
             <p className="text-base leading-relaxed text-slate-600">
               {t(currentSlide.descKey, currentSlide.defaultDesc)}
             </p>
+
+            {/* Onboarding is the first thing anyone reads, and the point where
+                someone who struggles with the written word gives up. */}
+            <SpeakButton
+              className="mt-4"
+              size="md"
+              label={t(currentSlide.titleKey, currentSlide.defaultTitle)}
+              text={[
+                t(currentSlide.titleKey, currentSlide.defaultTitle),
+                t(currentSlide.descKey, currentSlide.defaultDesc),
+              ]}
+            />
           </motion.div>
         </AnimatePresence>
       </div>

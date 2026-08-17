@@ -8,6 +8,7 @@ import { useAppState } from '@/context/AppStateContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { AgronomySheet } from './AgronomySheet';
 import { Button } from '@/components/ui/Button';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import { cn } from '@/lib/utils';
 
 const QuickStat: React.FC<{ label: string; value: string; icon: React.ReactNode }> = ({
@@ -113,9 +114,25 @@ export const CropDetail: React.FC<{ crop: Crop; agronomy: CropAgronomy | null }>
               </div>
             </div>
 
-            <p className="max-w-prose flex-1 text-sm leading-relaxed text-emerald-100/90">
-              {crop.description}
-            </p>
+            <div className="flex max-w-prose flex-1 items-start gap-3">
+              <p className="text-sm leading-relaxed text-emerald-100/90">
+                {crop.description}
+              </p>
+              {/* On the dark hero the default green pill disappears, so this one
+                  is glass over the gradient instead. */}
+              <SpeakButton
+                tone="onDark"
+                size="md"
+                label={displayName}
+                text={[
+                  displayName,
+                  crop.category,
+                  crop.description,
+                  agronomy &&
+                    `Temperature ${agronomy.growing.temperature}. Watering ${agronomy.growing.watering}. Life cycle ${agronomy.cultivation.lifeCycle}`,
+                ]}
+              />
+            </div>
           </div>
 
           {agronomy && (

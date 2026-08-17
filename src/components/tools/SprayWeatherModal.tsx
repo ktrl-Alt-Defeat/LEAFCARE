@@ -5,6 +5,7 @@ import { CloudRain, Wind, Thermometer, CheckCircle2, XCircle, AlertTriangle } fr
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import { useWeather } from '@/hooks/useWeather';
 import { SprayHour, SprayVerdict, buildSprayWindow, nextSprayWindow } from '@/lib/agronomy/spray';
 import { cn } from '@/lib/utils';
@@ -73,9 +74,29 @@ export const SprayWeatherModal: React.FC<{ isOpen: boolean; onClose: () => void 
               variant="gradient"
               className={cn('border-agro-300', !window && 'border-amber-300')}
             >
-              <h4 className="mb-1 text-xs font-bold uppercase tracking-wider text-agro-800">
-                Next good spray window
-              </h4>
+              <div className="mb-1 flex items-center gap-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-agro-800">
+                  Next good spray window
+                </h4>
+                {/* The one answer someone opens this tool for, spoken so it can
+                    be heard with a sprayer already on your back. */}
+                <SpeakButton
+                  className="ml-auto"
+                  label="next spray window"
+                  text={
+                    window
+                      ? [
+                          `The next good spray window starts at ${hourLabel(window.start.time)}`,
+                          window.length > 1 && `It lasts about ${window.length} hours`,
+                          window.start.reasons[0],
+                        ]
+                      : [
+                          'There is no good spray window in the next 18 hours',
+                          'Conditions stay outside the safe range. Re-check later rather than spraying now.',
+                        ]
+                  }
+                />
+              </div>
               {window ? (
                 <>
                   <p className="text-xl font-black text-slate-900">
@@ -112,9 +133,22 @@ export const SprayWeatherModal: React.FC<{ isOpen: boolean; onClose: () => void 
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-3">
-              <p className="text-[11px] font-bold uppercase tracking-wide text-slate-600">
-                How this is judged
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-slate-600">
+                  How this is judged
+                </p>
+                <SpeakButton
+                  className="ml-auto"
+                  tone="subtle"
+                  label="how spray conditions are judged"
+                  text={[
+                    'How spray conditions are judged',
+                    'Delta T, the gap between air and wet-bulb temperature, measures how fast droplets evaporate. Two to eight is the target range.',
+                    'Wind under 3 kilometres per hour is flagged too, because still air often means a temperature inversion that carries spray off-target later.',
+                    'Rain within 2 hours washes product off before the crop absorbs it.',
+                  ]}
+                />
+              </div>
               <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
                 Delta T (the gap between air and wet-bulb temperature) measures how fast droplets
                 evaporate; 2–8 is the target range. Wind under 3 km/h is flagged too, because still

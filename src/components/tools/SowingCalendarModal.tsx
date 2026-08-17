@@ -5,6 +5,7 @@ import { CalendarDays, Sprout, Scissors } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import { useCrops } from '@/hooks/useLeafCareData';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAppState } from '@/context/AppStateContext';
@@ -57,6 +58,24 @@ const SeasonCard: React.FC<{ status: SeasonStatus; now: number }> = ({ status, n
           {status.rationale}
         </span>
       </div>
+
+      {/* The month strips below are colour only — spoken, the windows have to
+          be named outright or the card says nothing at all. */}
+      <SpeakButton
+        tone="subtle"
+        label={status.label}
+        text={[
+          status.label,
+          status.rationale,
+          status.sowingNow
+            ? 'You can sow now'
+            : `Sowing starts in ${status.monthsUntilSowing} ${status.monthsUntilSowing === 1 ? 'month' : 'months'}`,
+          `Sowing window, ${formatWindow(status.sowFrom, status.sowTo)}`,
+          status.season !== 'perennial' &&
+            `Harvest window, ${formatWindow(status.harvestFrom, status.harvestTo)}`,
+        ]}
+      />
+
       <span
         className={cn(
           'shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide',
@@ -170,10 +189,17 @@ export const SowingCalendarModal: React.FC<{ isOpen: boolean; onClose: () => voi
           </div>
         )}
 
-        <p className="text-[11px] leading-relaxed text-slate-500">
-          Windows are typical for Indian cropping seasons and shift by a few weeks with latitude and
-          monsoon onset. Check locally before sowing.
-        </p>
+        <div className="flex items-start gap-2">
+          <p className="text-[11px] leading-relaxed text-slate-500">
+            Windows are typical for Indian cropping seasons and shift by a few weeks with latitude and
+            monsoon onset. Check locally before sowing.
+          </p>
+          <SpeakButton
+            tone="subtle"
+            label="calendar note"
+            text="Windows are typical for Indian cropping seasons and shift by a few weeks with latitude and monsoon onset. Check locally before sowing."
+          />
+        </div>
 
         <Button fullWidth size="lg" onClick={onClose}>
           Done

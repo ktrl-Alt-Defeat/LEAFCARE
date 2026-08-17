@@ -3,6 +3,7 @@
 import React from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 
 export interface SymptomsCardProps {
   symptoms: string[];
@@ -18,6 +19,11 @@ export const SymptomsCard: React.FC<SymptomsCardProps> = ({ symptoms, causes }) 
           <h3 className="text-base font-black text-slate-900">
             Observed Symptoms
           </h3>
+          <SpeakButton
+            className="ml-auto"
+            label="observed symptoms"
+            text={['Observed symptoms', ...symptoms]}
+          />
         </div>
         <ul className="flex flex-col gap-2">
           {symptoms.map((symptom, idx) => (
@@ -31,9 +37,17 @@ export const SymptomsCard: React.FC<SymptomsCardProps> = ({ symptoms, causes }) 
 
       {causes && causes.length > 0 && (
         <div className="pt-3 border-t border-slate-100">
-          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-            Root Causes:
-          </h4>
+          <div className="mb-2 flex items-center gap-2">
+            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Root Causes:
+            </h4>
+            <SpeakButton
+              className="ml-auto"
+              tone="subtle"
+              label="root causes"
+              text={['Root causes', ...causes]}
+            />
+          </div>
           <ul className="flex flex-col gap-1.5">
             {causes.map((cause, idx) => (
               <li key={idx} className="text-xs text-slate-600 leading-normal">

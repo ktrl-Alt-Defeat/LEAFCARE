@@ -2,9 +2,11 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AppStateProvider } from '@/context/AppStateContext';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { SpeechProvider } from '@/context/SpeechContext';
 import { AppShell } from '@/components/layout/AppShell';
 import { TourProvider } from '@/context/TourContext';
 import { GuidedTour } from '@/components/tour/GuidedTour';
+import { VoiceAssistantBubble } from '@/components/voice/VoiceAssistantBubble';
 
 export const metadata: Metadata = {
   title: 'LeafCare — AI Crop Disease Detection',
@@ -38,12 +40,18 @@ export default function RootLayout({
       <body>
         <AppStateProvider>
           <LanguageProvider>
-            {/* The tour sits outside AppShell so its state survives the route
-                changes it performs while walking the user through the app. */}
-            <TourProvider>
-              <AppShell>{children}</AppShell>
-              <GuidedTour />
-            </TourProvider>
+            {/* Speech wraps the shell so a clip keeps playing across a route
+                change, and so one shared player guarantees that only one
+                passage is ever being read at a time. */}
+            <SpeechProvider>
+              {/* The tour sits outside AppShell so its state survives the route
+                  changes it performs while walking the user through the app. */}
+              <TourProvider>
+                <AppShell>{children}</AppShell>
+                <GuidedTour />
+              </TourProvider>
+              <VoiceAssistantBubble />
+            </SpeechProvider>
           </LanguageProvider>
         </AppStateProvider>
       </body>

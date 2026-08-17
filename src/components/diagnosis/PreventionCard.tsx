@@ -3,6 +3,7 @@
 import React from 'react';
 import { ShieldCheck, AlertTriangle } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 
 export interface PreventionCardProps {
   preventionTips: string[];
@@ -21,6 +22,11 @@ export const PreventionCard: React.FC<PreventionCardProps> = ({
           <h3 className="text-base font-black text-slate-900">
             Prevention & Cultural Practices
           </h3>
+          <SpeakButton
+            className="ml-auto"
+            label="prevention and cultural practices"
+            text={['Prevention and cultural practices', ...preventionTips]}
+          />
         </div>
         <ul className="flex flex-col gap-2">
           {preventionTips.map((tip, idx) => (
@@ -38,6 +44,8 @@ export const PreventionCard: React.FC<PreventionCardProps> = ({
         <p className="text-xs font-medium leading-relaxed">
           {disclaimer}
         </p>
+        {/* A safety notice is the last thing that should go unread. */}
+        <SpeakButton tone="subtle" label="safety notice" text={disclaimer} className="mt-0.5" />
       </div>
     </div>
   );

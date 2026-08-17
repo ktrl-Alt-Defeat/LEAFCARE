@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import { useLanguage } from '@/context/LanguageContext';
 
 export interface PermissionCardProps {
@@ -106,6 +107,15 @@ export const PermissionCard: React.FC<PermissionCardProps> = ({
         <p className="text-base leading-relaxed text-slate-600">
           {t(config.descKey, config.defaultDesc)}
         </p>
+
+        {/* Being asked for a permission you cannot read is the point at which
+            people tap Skip, so this one matters more than most. */}
+        <SpeakButton
+          className="mt-4"
+          size="md"
+          label={t(config.titleKey, config.defaultTitle)}
+          text={[t(config.titleKey, config.defaultTitle), t(config.descKey, config.defaultDesc)]}
+        />
       </motion.div>
 
       <div className="flex flex-col gap-3 pb-6 lg:pb-0">

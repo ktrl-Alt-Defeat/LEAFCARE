@@ -20,6 +20,8 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { CropAgronomy } from '@/types';
+import { SpeakButton } from '@/components/voice/SpeakButton';
+import type { SpeechPart } from '@/lib/voice/config';
 import { cn } from '@/lib/utils';
 
 /* -------------------------------------------------------------------------- */
@@ -32,7 +34,13 @@ const SheetCard: React.FC<{
   accent: string;
   children: React.ReactNode;
   className?: string;
-}> = ({ title, icon: Icon, accent, children, className }) => (
+  /**
+   * Spoken version of this section. The visual layout is a table of icons and
+   * short values, which read aloud verbatim would be a string of numbers with
+   * no labels — so each caller passes full sentences instead.
+   */
+  speech?: SpeechPart[];
+}> = ({ title, icon: Icon, accent, children, className, speech }) => (
   <section
     className={cn(
       'flex flex-col gap-3 rounded-3xl border border-slate-100 bg-white p-5 shadow-soft-sm',
@@ -44,6 +52,9 @@ const SheetCard: React.FC<{
         <Icon className="h-4 w-4" />
       </span>
       {title}
+      {speech && (
+        <SpeakButton className="ml-auto" label={title.toLowerCase()} text={[title, ...speech]} />
+      )}
     </h2>
     {children}
   </section>
@@ -202,7 +213,18 @@ export const AgronomySheet: React.FC<{ agronomy: CropAgronomy }> = ({ agronomy }
 
   return (
     <div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
-      <SheetCard title="Growing conditions" icon={Sun} accent="bg-amber-100 text-amber-700">
+      <SheetCard
+        title="Growing conditions"
+        icon={Sun}
+        accent="bg-amber-100 text-amber-700"
+        speech={[
+          `Temperature, ${growing.temperature}`,
+          `Exposure, ${growing.exposure}`,
+          `Rainfall, ${growing.rainfall}`,
+          growing.humidity && `Relative humidity, ${growing.humidity}`,
+          `Watering, ${growing.watering}`,
+        ]}
+      >
         <div className="flex flex-col">
           <DataRow icon={Thermometer} label="Temperature" value={growing.temperature} />
           <DataRow icon={Sun} label="Exposure" value={growing.exposure} />
@@ -214,7 +236,16 @@ export const AgronomySheet: React.FC<{ agronomy: CropAgronomy }> = ({ agronomy }
         </div>
       </SheetCard>
 
-      <SheetCard title="Soil parameters" icon={Layers} accent="bg-earth-100 text-earth-700">
+      <SheetCard
+        title="Soil parameters"
+        icon={Layers}
+        accent="bg-earth-100 text-earth-700"
+        speech={[
+          `Soil type, ${soil.type}`,
+          `pH range, ${soil.ph}`,
+          soil.drainage && `Drainage, ${soil.drainage}`,
+        ]}
+      >
         <div className="flex flex-col gap-4">
           <div className="flex flex-col">
             <DataRow icon={Layers} label="Soil type" value={soil.type} />
@@ -227,7 +258,18 @@ export const AgronomySheet: React.FC<{ agronomy: CropAgronomy }> = ({ agronomy }
         </div>
       </SheetCard>
 
-      <SheetCard title="Cultivation" icon={Sprout} accent="bg-agro-100 text-agro-700">
+      <SheetCard
+        title="Cultivation"
+        icon={Sprout}
+        accent="bg-agro-100 text-agro-700"
+        speech={[
+          `Life cycle, ${cultivation.lifeCycle}`,
+          `Labour requirement, ${cultivation.labour}`,
+          `Planting method, ${cultivation.plantingMethod}`,
+          `Row to row spacing, ${cultivation.rowSpacing}`,
+          `Plant to plant spacing, ${cultivation.plantSpacing}`,
+        ]}
+      >
         <div className="flex flex-col">
           <DataRow icon={RefreshCw} label="Life cycle" value={cultivation.lifeCycle} />
 
@@ -250,6 +292,11 @@ export const AgronomySheet: React.FC<{ agronomy: CropAgronomy }> = ({ agronomy }
           title="Nutrient requirement"
           icon={FlaskConical}
           accent="bg-sky-100 text-sky-700"
+          speech={[
+            `Nitrogen, ${nutrients.nitrogen}`,
+            `Phosphorus, ${nutrients.phosphorus}`,
+            `Potassium, ${nutrients.potassium}`,
+          ]}
         >
           <div className="grid grid-cols-3 gap-2.5">
             <NutrientTile
@@ -278,6 +325,10 @@ export const AgronomySheet: React.FC<{ agronomy: CropAgronomy }> = ({ agronomy }
           icon={Handshake}
           accent="bg-teal-100 text-teal-700"
           className="flex-1"
+          speech={[
+            `Good companions, ${companions.good.join(', ')}`,
+            `Avoid planting with, ${companions.bad.join(', ')}`,
+          ]}
         >
           <div className="flex flex-col gap-4">
             <CompanionList title="Good companions" items={companions.good} variant="good" />

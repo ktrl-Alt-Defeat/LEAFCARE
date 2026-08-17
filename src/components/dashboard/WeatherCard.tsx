@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useWeather } from '@/hooks/useWeather';
 import { useLanguage } from '@/context/LanguageContext';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import { SprayingCondition, WeatherBundle } from '@/lib/open-meteo';
 import { cn } from '@/lib/utils';
 
@@ -157,15 +158,33 @@ const CurrentConditions: React.FC<{ data: WeatherBundle; onRefresh: () => void }
             </span>
           </div>
 
-          <button
-            onClick={onRefresh}
-            title={`Updated ${toClockTime(current.observedAt)} · refresh`}
-            aria-label="Refresh weather"
-            className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md transition-colors hover:bg-black/40"
-          >
-            <RefreshCw className="h-3.5 w-3.5" />
-            <span>{toClockTime(current.observedAt)}</span>
-          </button>
+          <div className="flex shrink-0 items-center gap-1.5">
+            {/* Spoken as a forecast, not as the four separate tiles below it —
+                "twenty nine degrees, partly cloudy" is what a farmer asks for. */}
+            <SpeakButton
+              tone="onDark"
+              label="weather summary"
+              text={[
+                `Weather for ${location.name}${location.region ? `, ${location.region}` : ''}`,
+                `${Math.round(current.temperature)} degrees, ${current.condition.label}, feels like ${Math.round(current.apparentTemperature)}`,
+                `Humidity ${Math.round(current.humidity)} percent`,
+                `Chance of rain ${Math.round(today?.precipitationProbability ?? 0)} percent`,
+                `Wind ${Math.round(current.windSpeed)} kilometres per hour from the ${current.windDirectionLabel}`,
+                `UV index ${Math.round(today?.uvIndexMax ?? 0)}`,
+                `Spraying conditions are ${spraying.condition}. ${spraying.reason}`,
+              ]}
+            />
+
+            <button
+              onClick={onRefresh}
+              title={`Updated ${toClockTime(current.observedAt)} · refresh`}
+              aria-label="Refresh weather"
+              className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-md transition-colors hover:bg-black/40"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              <span>{toClockTime(current.observedAt)}</span>
+            </button>
+          </div>
         </div>
 
         <div className="mb-5 flex items-center justify-between gap-3">

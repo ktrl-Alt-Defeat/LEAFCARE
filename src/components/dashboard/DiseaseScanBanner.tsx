@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Camera, Sparkles, ArrowRight, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import { useLanguage } from '@/context/LanguageContext';
 
 export interface DiseaseScanBannerProps {
@@ -53,16 +54,34 @@ export const DiseaseScanBanner: React.FC<DiseaseScanBannerProps> = ({ cropName }
             )}
           </div>
 
-          <h2 className="mt-3 text-2xl font-black tracking-tight text-white xl:text-3xl">
-            {t('checkCropTitle', 'Check your crop')}
-          </h2>
+          <div className="mt-3 flex items-start gap-3">
+            <div className="min-w-0">
+              <h2 className="text-2xl font-black tracking-tight text-white xl:text-3xl">
+                {t('checkCropTitle', 'Check your crop')}
+              </h2>
 
-          <p className="mt-2 max-w-prose text-sm leading-relaxed text-emerald-100/90">
-            {t(
-              'checkCropDesc',
-              'Take a clear picture of a leaf or crop to identify possible diseases.'
-            )}
-          </p>
+              <p className="mt-2 max-w-prose text-sm leading-relaxed text-emerald-100/90">
+                {t(
+                  'checkCropDesc',
+                  'Take a clear picture of a leaf or crop to identify possible diseases.'
+                )}
+              </p>
+            </div>
+
+            <SpeakButton
+              tone="onDark"
+              size="md"
+              className="mt-1"
+              label={t('checkCropTitle', 'Check your crop')}
+              text={[
+                t('checkCropTitle', 'Check your crop'),
+                t(
+                  'checkCropDesc',
+                  'Take a clear picture of a leaf or crop to identify possible diseases.'
+                ),
+              ]}
+            />
+          </div>
 
           {/* Workflow */}
           <div className="mt-5 flex max-w-xl items-center justify-between gap-1 rounded-2xl border border-white/10 bg-white/10 p-3 text-xs text-emerald-200 backdrop-blur-md sm:gap-2">
