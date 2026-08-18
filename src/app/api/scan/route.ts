@@ -3,27 +3,48 @@ import { API_V1_URL } from '@/lib/api/config';
 
 /**
  * Runs a captured leaf frame through the backend's plant-analysis pipeline
- * (Pl@ntNet identification -> supported-crop gate -> EfficientNetV2-S disease
- * classifier) and returns a flattened result for the scanner.
+ * (YOLO11 leaf localization -> Pl@ntNet identification -> supported-crop gate
+ * -> DINOv2 disease classifier) and returns a flattened result for the scanner.
  *
  * The browser posts the captured data URL as JSON; converting it to multipart
  * happens here so the backend URL and the upload format stay server-side.
  */
 
-/** Inference on a cold CPU deployment can take well over a minute. */
+/** Inference on a cold deployment can take well over a minute. */
 export const maxDuration = 120;
+
+/** How the backend says a scan ended. */
+type ScanVerdict = 'diagnosed' | 'unsupported_plant' | 'uncertain' | 'unavailable';
 
 interface AnalysisResponse {
   data?: {
+    verdict?: ScanVerdict;
+    leafDetection?: {
+      status?: string;
+      leafCount?: number;
+      topConfidence?: number | null;
+      cropped?: boolean;
+    };
     plant?: { name?: string; scientificName?: string; confidence?: number } | null;
-    crop?: { name?: string; supported?: boolean };
+    crop?: { name?: string; id?: string; supported?: boolean };
     diseaseDetection?: {
       available?: boolean;
       disease?: { name?: string; confidence?: number } | null;
       message?: string;
     };
+    novelty?: {
+      verdict?: string;
+      accepted?: boolean;
+      knnDistance?: number;
+      energy?: number;
+      confidence?: number;
+      reason?: string;
+    };
+    message?: string;
   };
   message?: string;
+  /** Failure bodies carry the reason here rather than in `message`. */
+  error?: { code?: number; message?: string };
 }
 
 /** Splits a `data:image/jpeg;base64,...` URL into its MIME type and bytes. */
@@ -37,6 +58,20 @@ const decodeDataUrl = (dataUrl: string): { buffer: Buffer; mimeType: string } | 
     return null;
   }
 };
+
+/**
+ * The classifier's healthy classes come back as "Healthy" once the crop prefix
+ * is stripped. That is a result, not a disease, and the scanner presents it as
+ * one — so it is recognised here rather than being matched against a disease
+ * library that has no entry for it.
+ */
+const isHealthyLabel = (name: string): boolean => /^healthy$/i.test(name.trim());
+
+/**
+ * Crop keys are the backend's canonical form (BELL_PEPPER); the crop library is
+ * keyed by slug (bell_pepper). The two differ only in case.
+ */
+const toCropSlug = (cropId?: string): string => (cropId ? cropId.toLowerCase() : '');
 
 export async function POST(request: Request) {
   let payload: { image?: string };
@@ -75,24 +110,48 @@ export async function POST(request: Request) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: body?.message ?? 'The analysis service could not process this image.' },
+        {
+          error:
+            body?.error?.message ??
+            body?.message ??
+            'The analysis service could not process this image.',
+        },
         { status: response.status },
       );
     }
 
     const analysis = body.data ?? {};
     const detection = analysis.diseaseDetection ?? {};
+    const predicted = detection.available ? detection.disease?.name ?? '' : '';
+    const healthy = Boolean(predicted) && isHealthyLabel(predicted);
+
+    // Older backends did not send a verdict. Inferring it from the fields that
+    // were there keeps this route working against either.
+    const verdict: ScanVerdict =
+      analysis.verdict ?? (predicted ? 'diagnosed' : 'unavailable');
 
     return NextResponse.json({
+      verdict,
+      leafDetection: analysis.leafDetection ?? null,
       plant: analysis.plant ?? null,
       crop: {
+        // Slug for library lookups; the display name for the farmer.
+        id: toCropSlug(analysis.crop?.id),
         name: analysis.crop?.name ?? '',
         supported: Boolean(analysis.crop?.supported),
       },
-      disease: detection.available && detection.disease?.name
-        ? { name: detection.disease.name, confidence: detection.disease.confidence ?? 0 }
-        : null,
-      message: detection.message ?? body.message,
+      healthy,
+      // A healthy leaf is reported through `healthy`, never as a disease the
+      // farmer has to treat.
+      disease:
+        predicted && !healthy
+          ? { name: predicted, confidence: detection.disease?.confidence ?? 0 }
+          : null,
+      confidence: detection.disease?.confidence ?? 0,
+      // The backend's copy is written for the farmer; the novelty reason is
+      // written for a log. Prefer the former and keep the latter for support.
+      message: analysis.message ?? detection.message ?? body.message,
+      detail: analysis.novelty?.reason,
     });
   } catch (cause) {
     console.error('Scan analysis failed:', cause);

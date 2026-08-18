@@ -22,7 +22,13 @@ const DEFAULT_API_URL = 'http://localhost:5000';
  */
 const configuredUrl = process.env.LEAFCARE_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? '';
 
-export const API_BASE_URL = (configuredUrl || DEFAULT_API_URL).replace(/\/+$/, '');
+export const API_BASE_URL = (configuredUrl || DEFAULT_API_URL)
+  .replace(/\/+$/, '')
+  // A backend root is wanted here, but the variable is just as often set to the
+  // versioned root instead. Left alone that silently produces
+  // `/api/v1/api/v1/...` and every call 404s, which reads as a broken backend
+  // rather than a misread environment variable.
+  .replace(/\/api\/v\d+$/, '');
 
 /** True when no backend URL was configured and the localhost default is in use. */
 export const USING_DEFAULT_API_URL = configuredUrl.trim() === '';
