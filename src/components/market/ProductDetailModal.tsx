@@ -6,6 +6,7 @@ import { MarketProduct } from '@/types';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { SafeImage } from '@/components/ui/SafeImage';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 
 export interface ProductDetailModalProps {
   product: MarketProduct | null;
@@ -42,9 +43,23 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
         </div>
 
-        <p className="text-xs text-slate-600 leading-relaxed">
-          {product.description}
-        </p>
+        <div className="flex items-start gap-2">
+          <p className="text-xs leading-relaxed text-slate-600">
+            {product.description}
+          </p>
+          {/* Reads the listing the way a shopkeeper would describe it: what it
+              is, what it costs, and who is selling it. */}
+          <SpeakButton
+            tone="subtle"
+            label={product.name}
+            text={[
+              product.name,
+              product.description,
+              `Price ${product.price} rupees per ${product.unit}`,
+              `Sold by ${product.seller}, ${product.location}`,
+            ]}
+          />
+        </div>
 
         <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col gap-2 text-xs">
           <div className="flex items-center justify-between">

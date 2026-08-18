@@ -14,7 +14,6 @@ export const ScanAnalysisAnimation: React.FC<ScanAnalysisAnimationProps> = ({
   capturedImage,
   currentStepIndex
 }) => {
-  const currentStepText = ANALYSIS_STEPS[currentStepIndex] || ANALYSIS_STEPS[0];
   const progressPercent = Math.round(((currentStepIndex + 1) / ANALYSIS_STEPS.length) * 100);
 
   return (

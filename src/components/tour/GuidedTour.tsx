@@ -46,6 +46,8 @@ const useTargetRect = (target: string | undefined, stepId: string) => {
   const [settled, setSettled] = useState(false);
 
   useEffect(() => {
+    // Resets the measured DOM rect before re-measuring the new step's target.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRect(null);
     setSettled(false);
 

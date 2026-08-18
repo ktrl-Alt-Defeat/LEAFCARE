@@ -6,7 +6,8 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Camera } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
-import { NAV_ITEMS, isNavItemActive } from './navItems';
+import { useAppState } from '@/context/AppStateContext';
+import { navItemsForRole, isNavItemActive } from './navItems';
 import { cn } from '@/lib/utils';
 
 /**
@@ -16,8 +17,9 @@ import { cn } from '@/lib/utils';
 export const BottomNavigation: React.FC = () => {
   const pathname = usePathname();
   const { t } = useLanguage();
+  const { role } = useAppState();
 
-  const items = NAV_ITEMS.filter((item) => !item.desktopOnly);
+  const items = navItemsForRole(role).filter((item) => !item.desktopOnly);
 
   return (
     <div className="safe-bottom sticky bottom-0 z-40 w-full border-t border-slate-200/80 bg-white/95 shadow-lg backdrop-blur-lg lg:hidden">

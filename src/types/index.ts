@@ -1,5 +1,21 @@
 export type LanguageCode = 'en' | 'ta' | 'hi' | 'te' | 'ml' | 'kn';
 
+/**
+ * How the app is used. Mirrors the backend `user_role` enum.
+ *
+ * A seller is a farmer with one extra capability — listing products — so the
+ * seller dashboard is an addition to the regular app, never a replacement.
+ * An admin curates the crop library and knowledge base.
+ */
+export type UserRole = 'farmer' | 'seller' | 'admin';
+
+export interface RoleOption {
+  role: UserRole;
+  title: string;
+  description: string;
+  icon: string;
+}
+
 export interface LanguageOption {
   code: LanguageCode;
   nativeName: string;
@@ -15,14 +31,20 @@ export interface PermissionStatus {
   notifications: 'prompt' | 'granted' | 'denied' | 'skipped';
 }
 
+/** Indian cropping seasons, as the backend models them. */
+export type CropSeason = 'kharif' | 'rabi' | 'zaid' | 'perennial';
+
 export interface Crop {
   id: string;
   name: string;
   translatedNames: Record<LanguageCode, string>;
   category: 'Cereals' | 'Vegetables' | 'Fruits' | 'Herbs' | 'Cash Crops';
   icon: string;
+  image?: string;
   color: string;
   description: string;
+  /** Drives the sowing calendar. Empty when the backend has no season rows. */
+  seasons: CropSeason[];
 }
 
 /** Agronomy reference sheet shown in the crops catalog. */
@@ -98,7 +120,14 @@ export interface CommunityPost {
   authorAvatar: string;
   timestamp: string;
   cropName: string;
-  category: 'Disease Help' | 'Crop Advice' | 'Weather' | 'Fertilizer' | 'General Farming';
+  category:
+    | 'Disease Help'
+    | 'Crop Advice'
+    | 'Weather'
+    | 'Fertilizer'
+    | 'Irrigation'
+    | 'Marketplace'
+    | 'General Farming';
   title: string;
   content: string;
   imageUrl?: string;

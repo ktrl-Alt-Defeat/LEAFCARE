@@ -45,13 +45,22 @@ export const CropCard: React.FC<CropCardProps> = ({ crop, selected, onToggle }) 
 
       <span
         className={cn(
-          'mb-2 flex h-12 w-12 items-center justify-center rounded-full text-2xl shadow-inner sm:mb-3 sm:h-16 sm:w-16 sm:text-3xl',
+          'relative mb-2 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full shadow-inner sm:mb-3 sm:h-16 sm:w-16',
           crop.color
         )}
       >
-        <span role="img" aria-hidden="true">
-          {crop.icon}
-        </span>
+        {crop.image ? (
+          <img
+            src={crop.image}
+            alt={displayName}
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <span role="img" aria-hidden="true" className="text-2xl sm:text-3xl">
+            {crop.icon}
+          </span>
+        )}
       </span>
 
       <span className="line-clamp-2 text-center text-xs font-bold leading-tight text-slate-900 sm:text-sm">

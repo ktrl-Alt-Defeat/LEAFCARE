@@ -9,11 +9,14 @@ import { DiseaseScanBanner } from '@/components/dashboard/DiseaseScanBanner';
 import { ToolsGrid } from '@/components/dashboard/ToolsGrid';
 import { LibraryGrid } from '@/components/dashboard/LibraryGrid';
 import { CalculatorModal } from '@/components/dashboard/CalculatorModal';
+import { PesticideDosageModal } from '@/components/tools/PesticideDosageModal';
+import { SprayWeatherModal } from '@/components/tools/SprayWeatherModal';
+import { SowingCalendarModal } from '@/components/tools/SowingCalendarModal';
 import { CropChip } from '@/components/crops/CropChip';
 import { HowToUseButton } from '@/components/tour/HowToUseButton';
 import { useAppState } from '@/context/AppStateContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { CROPS_DATA } from '@/data/crops';
+import { useCrops } from '@/hooks/useLeafCareData';
 import { ToolItem } from '@/data/tools';
 import { Card } from '@/components/ui/Card';
 import { SafeImage } from '@/components/ui/SafeImage';
@@ -22,9 +25,12 @@ export default function HomePage() {
   const { selectedCrops, scanHistory, userProfile } = useAppState();
   const { t, language } = useLanguage();
   const [activeCropId, setActiveCropId] = useState<string | null>(null);
-  const [calcModalType, setCalcModalType] = useState<'fertilizer' | 'pesticide' | null>(null);
+  const [calcModalType, setCalcModalType] = useState<'fertilizer' | null>(null);
+  /** Which tool modal is open, keyed by the tool id from TOOLS_DATA. */
+  const [activeTool, setActiveTool] = useState<ToolItem['id'] | null>(null);
 
-  const activeCropsList = CROPS_DATA.filter((crop) => selectedCrops.includes(crop.id));
+  const { crops } = useCrops();
+  const activeCropsList = crops.filter((crop) => selectedCrops.includes(crop.id));
 
   // Derived rather than stored, so the first crop is correct straight after
   // the saved crop list hydrates.
@@ -35,8 +41,11 @@ export default function HomePage() {
     : null;
 
   const handleToolClick = (tool: ToolItem) => {
-    if (tool.id === 'fertilizer_calc') setCalcModalType('fertilizer');
-    else if (tool.id === 'pesticide_calc') setCalcModalType('pesticide');
+    if (tool.id === 'fertilizer_calc') {
+      setCalcModalType('fertilizer');
+      return;
+    }
+    setActiveTool(tool.id);
   };
 
   return (
@@ -133,6 +142,19 @@ export default function HomePage() {
       </div>
 
       <CalculatorModal type={calcModalType} onClose={() => setCalcModalType(null)} />
+
+      <PesticideDosageModal
+        isOpen={activeTool === 'pesticide_calc'}
+        onClose={() => setActiveTool(null)}
+      />
+      <SprayWeatherModal
+        isOpen={activeTool === 'weather_radar'}
+        onClose={() => setActiveTool(null)}
+      />
+      <SowingCalendarModal
+        isOpen={activeTool === 'planting_calendar'}
+        onClose={() => setActiveTool(null)}
+      />
     </Page>
   );
 }

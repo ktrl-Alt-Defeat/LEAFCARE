@@ -4,12 +4,12 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-  BookOpen,
   ShieldAlert,
-  Sun,
+  CloudSun,
   Sprout,
   Bug,
-  HeartHandshake,
+  Lightbulb,
+  FlaskConical,
   type LucideIcon
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -29,8 +29,10 @@ export interface LibraryItem {
 export const LIBRARY_ITEMS: LibraryItem[] = [
   {
     id: 'crops_guide',
+    // Count intentionally omitted — the catalogue is served by the backend and
+    // a hardcoded number goes stale the moment a crop is added.
     title: 'Crops Catalog',
-    desc: '35 supported crops with full agronomy reference sheets',
+    desc: 'Supported crops with full agronomy reference sheets',
     icon: Sprout,
     color: 'bg-emerald-100 text-emerald-700',
     href: '/catalog'
@@ -40,14 +42,16 @@ export const LIBRARY_ITEMS: LibraryItem[] = [
     title: 'Pests & Diseases',
     desc: 'Visual identification guide for common farm pathogens',
     icon: Bug,
-    color: 'bg-rose-100 text-rose-700'
+    color: 'bg-rose-100 text-rose-700',
+    href: '/knowledge'
   },
   {
     id: 'cultivation_tips',
     title: 'Cultivation Tips',
     desc: 'Seasonal land preparation & organic soil fertility',
-    icon: BookOpen,
-    color: 'bg-amber-100 text-amber-700'
+    icon: Lightbulb,
+    color: 'bg-amber-100 text-amber-700',
+    href: '/knowledge'
   },
   {
     id: 'disease_alerts',
@@ -60,14 +64,14 @@ export const LIBRARY_ITEMS: LibraryItem[] = [
     id: 'weather_guide',
     title: 'Weather Guide',
     desc: 'Monsoon predictions & frost warning guidance',
-    icon: Sun,
+    icon: CloudSun,
     color: 'bg-sky-100 text-sky-700'
   },
   {
     id: 'fertilizer_guide',
     title: 'Fertilizer Guide',
     desc: 'NPK ratios, bio-fertilizers & micro-nutrients',
-    icon: HeartHandshake,
+    icon: FlaskConical,
     color: 'bg-teal-100 text-teal-700'
   }
 ];

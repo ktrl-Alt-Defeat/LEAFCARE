@@ -43,6 +43,9 @@ export const useWeather = (): UseWeatherResult => {
     const savedLocation = userProfile.location?.trim() ?? '';
 
     if (!coords && !savedLocation) {
+      // This effect drives an external fetch; its status is not derivable
+      // during render.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStatus('empty');
       setError(null);
       return;

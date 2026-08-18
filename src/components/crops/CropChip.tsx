@@ -27,7 +27,15 @@ export const CropChip: React.FC<CropChipProps> = ({
           : 'bg-white text-slate-700 border-slate-200 hover:border-agro-300 hover:bg-agro-50/50'
       }`}
     >
-      <span className="text-base select-none">{crop.icon}</span>
+      {crop.image ? (
+        <img
+          src={crop.image}
+          alt={name}
+          className="h-5 w-5 rounded-full object-cover select-none"
+        />
+      ) : (
+        <span className="text-base select-none">{crop.icon}</span>
+      )}
       <span>{name}</span>
     </button>
   );

@@ -15,7 +15,9 @@ export default function LanguagePage() {
   };
 
   const handleContinue = () => {
-    router.push('/onboarding');
+    // Role comes straight after language: it decides which dashboards and
+    // navigation the rest of onboarding leads into.
+    router.push('/role');
   };
 
   return (

@@ -6,13 +6,14 @@ import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, Share2, Camera } from 'lucide-react';
 import { useAppState } from '@/context/AppStateContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { MOCK_DISEASES } from '@/data/diseases';
+import { useCrop } from '@/hooks/useLeafCareData';
 import { ConfidenceMeter } from '@/components/diagnosis/ConfidenceMeter';
 import { SymptomsCard } from '@/components/diagnosis/SymptomsCard';
 import { ActionCard } from '@/components/diagnosis/ActionCard';
 import { PreventionCard } from '@/components/diagnosis/PreventionCard';
 import { Button } from '@/components/ui/Button';
 import { SafeImage } from '@/components/ui/SafeImage';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 
 function DiagnosisContent() {
   const searchParams = useSearchParams();
@@ -20,9 +21,18 @@ function DiagnosisContent() {
   const { hydrated, scanHistory, selectedCrops } = useAppState();
   const { language } = useLanguage();
 
+  const currentScan = hydrated
+    ? scanHistory.find((scan) => scan.id === scanId) || scanHistory[0]
+    : undefined;
+
+  // With no saved scan to show, the reference entry for the farmer's main crop
+  // stands in. Fetched from the backend, so it stays in step with the library.
+  const primaryCrop = selectedCrops[0] || 'tomato';
+  const { diseases, status } = useCrop(hydrated && !currentScan ? primaryCrop : null);
+
   // Saved scans live in localStorage. Rendering before they load would briefly
-  // show the sample disease instead of the scan the user actually opened.
-  if (!hydrated) {
+  // show the reference disease instead of the scan the user actually opened.
+  if (!hydrated || (!currentScan && status === 'loading')) {
     return (
       <div className="flex min-h-dvh items-center justify-center">
         <div className="text-sm font-bold text-slate-600">Loading diagnosis…</div>
@@ -30,10 +40,22 @@ function DiagnosisContent() {
     );
   }
 
-  const currentScan = scanHistory.find((scan) => scan.id === scanId) || scanHistory[0];
+  const disease = currentScan?.disease ?? diseases[0] ?? null;
 
-  const primaryCrop = selectedCrops[0] || 'tomato';
-  const disease = currentScan?.disease || MOCK_DISEASES[primaryCrop] || MOCK_DISEASES.tomato;
+  if (!disease) {
+    return (
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-3 px-6 text-center">
+        <p className="text-sm font-bold text-slate-700">No diagnosis to show yet</p>
+        <p className="max-w-xs text-xs font-medium text-slate-500">
+          Scan a leaf to get a diagnosis, or pick a crop the disease library covers.
+        </p>
+        <Link href="/scan">
+          <Button icon={<Camera className="h-5 w-5" />}>Scan a crop</Button>
+        </Link>
+      </div>
+    );
+  }
+
   const capturedImage = currentScan?.capturedImageData || disease.imageUrl;
   const diseaseTitle = disease.translatedNames[language] || disease.name;
 
@@ -94,23 +116,41 @@ function DiagnosisContent() {
             </div>
           </div>
 
-          <div className="flex flex-col">
-            <span className="text-xs font-bold uppercase tracking-widest text-agro-700">
-              Identified pathogen
-            </span>
-            <h1 className="text-2xl font-black leading-tight tracking-tight text-slate-900">
-              {diseaseTitle}
-            </h1>
-            <span className="mt-0.5 text-xs font-semibold italic text-slate-500">
-              {disease.scientificName}
-            </span>
+          <div className="flex items-start gap-3">
+            <div className="flex min-w-0 flex-col">
+              <span className="text-xs font-bold uppercase tracking-widest text-agro-700">
+                Identified pathogen
+              </span>
+              <h1 className="text-2xl font-black leading-tight tracking-tight text-slate-900">
+                {diseaseTitle}
+              </h1>
+              <span className="mt-0.5 text-xs font-semibold italic text-slate-500">
+                {disease.scientificName}
+              </span>
+            </div>
+
+            {/* The headline result: the crop, the diagnosis and how sure it is. */}
+            <SpeakButton
+              className="ml-auto mt-1"
+              size="md"
+              label="diagnosis summary"
+              text={[
+                `Diagnosis for your ${disease.cropName} crop`,
+                diseaseTitle,
+                `Scientific name, ${disease.scientificName}`,
+                `Confidence ${Math.round(disease.confidence)} percent, severity ${disease.severity}`,
+              ]}
+            />
           </div>
 
           <ConfidenceMeter confidence={disease.confidence} severity={disease.severity} />
 
-          <p className="max-w-prose rounded-2xl border border-slate-100 bg-white p-4 text-xs font-medium leading-relaxed text-slate-600 shadow-sm">
-            {disease.overview}
-          </p>
+          <div className="flex max-w-prose items-start gap-2 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+            <p className="text-xs font-medium leading-relaxed text-slate-600">
+              {disease.overview}
+            </p>
+            <SpeakButton tone="subtle" label="overview" text={disease.overview} />
+          </div>
 
           <Link href="/scan" className="hidden lg:block">
             <Button size="lg" fullWidth icon={<Camera className="h-5 w-5" />}>

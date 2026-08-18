@@ -7,9 +7,9 @@ import { PostCard } from '@/components/community/PostCard';
 import { CreatePostModal } from '@/components/community/CreatePostModal';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { FilterChips } from '@/components/ui/FilterChips';
-import { MOCK_COMMUNITY_POSTS } from '@/data/community';
 import { CommunityPost } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
+import { useCommunityPosts } from '@/hooks/useLeafCareData';
 
 const CATEGORIES = [
   'All',
@@ -17,15 +17,22 @@ const CATEGORIES = [
   'Crop Advice',
   'Weather',
   'Fertilizer',
+  'Irrigation',
+  'Marketplace',
   'General Farming',
 ] as const;
 
 export default function CommunityPage() {
   const { t } = useLanguage();
-  const [posts, setPosts] = useState<CommunityPost[]>(MOCK_COMMUNITY_POSTS);
+  const { posts: remotePosts, status, error } = useCommunityPosts();
+  // The backend exposes the feed read-only, so a question asked here is shown
+  // locally on top of it rather than persisted.
+  const [draftPosts, setDraftPosts] = useState<CommunityPost[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const posts = useMemo(() => [...draftPosts, ...remotePosts], [draftPosts, remotePosts]);
 
   const handleAddPost = (newPostData: {
     title: string;
@@ -47,7 +54,7 @@ export default function CommunityPage() {
       repliesCount: 0,
       isLiked: false,
     };
-    setPosts((prev) => [newPost, ...prev]);
+    setDraftPosts((prev) => [newPost, ...prev]);
   };
 
   const filteredPosts = useMemo(() => {
@@ -88,7 +95,19 @@ export default function CommunityPage() {
         <FilterChips options={CATEGORIES} value={activeCategory} onChange={setActiveCategory} />
       </div>
 
-      {filteredPosts.length > 0 ? (
+      {status === 'error' ? (
+        <div className="flex flex-col items-center gap-2 rounded-3xl border border-dashed border-red-300 bg-red-50/60 px-6 py-16 text-center">
+          <MessagesSquare className="h-8 w-8 text-red-400" />
+          <p className="text-sm font-bold text-red-700">Could not load the community feed</p>
+          <p className="max-w-xs text-xs font-medium text-red-600">{error}</p>
+        </div>
+      ) : status === 'loading' ? (
+        <div className="grid gap-3 lg:grid-cols-2 lg:items-start lg:gap-4">
+          {Array.from({ length: 4 }, (_, index) => (
+            <div key={index} className="h-48 animate-pulse rounded-3xl bg-slate-200/60" />
+          ))}
+        </div>
+      ) : filteredPosts.length > 0 ? (
         // A single readable column on phones; two balanced columns once a laptop
         // has the width, so the feed doesn't become one very long strip.
         <div

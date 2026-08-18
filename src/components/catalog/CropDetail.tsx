@@ -3,12 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Check, Plus, Thermometer, Waves, RefreshCw, FileText, Camera } from 'lucide-react';
-import { CROPS_DATA } from '@/data/crops';
-import { getCropAgronomy } from '@/data/cropDetails';
+import { Crop, CropAgronomy } from '@/types';
 import { useAppState } from '@/context/AppStateContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { AgronomySheet } from './AgronomySheet';
 import { Button } from '@/components/ui/Button';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import { cn } from '@/lib/utils';
 
 const QuickStat: React.FC<{ label: string; value: string; icon: React.ReactNode }> = ({
@@ -30,14 +30,16 @@ const QuickStat: React.FC<{ label: string; value: string; icon: React.ReactNode 
   </div>
 );
 
-export const CropDetail: React.FC<{ cropId: string }> = ({ cropId }) => {
+/**
+ * Presentational only — the crop and its agronomy sheet are fetched on the
+ * server by the catalog route, so this renders without a client round-trip.
+ */
+export const CropDetail: React.FC<{ crop: Crop; agronomy: CropAgronomy | null }> = ({
+  crop,
+  agronomy,
+}) => {
   const { language } = useLanguage();
   const { selectedCrops, toggleCropSelection } = useAppState();
-
-  const crop = CROPS_DATA.find((entry) => entry.id === cropId);
-  const agronomy = getCropAgronomy(cropId);
-
-  if (!crop) return null;
 
   const displayName = crop.translatedNames[language] || crop.name;
   const isSelected = selectedCrops.includes(crop.id);
@@ -81,13 +83,21 @@ export const CropDetail: React.FC<{ cropId: string }> = ({ cropId }) => {
             <div className="flex items-center gap-4">
               <span
                 className={cn(
-                  'flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl text-5xl shadow-inner',
+                  'relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-3xl shadow-inner',
                   crop.color
                 )}
               >
-                <span role="img" aria-hidden="true">
-                  {crop.icon}
-                </span>
+                {crop.image ? (
+                  <img
+                    src={crop.image}
+                    alt={displayName}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span role="img" aria-hidden="true" className="text-5xl">
+                    {crop.icon}
+                  </span>
+                )}
               </span>
 
               <div className="flex min-w-0 flex-col">
@@ -104,9 +114,25 @@ export const CropDetail: React.FC<{ cropId: string }> = ({ cropId }) => {
               </div>
             </div>
 
-            <p className="max-w-prose flex-1 text-sm leading-relaxed text-emerald-100/90">
-              {crop.description}
-            </p>
+            <div className="flex max-w-prose flex-1 items-start gap-3">
+              <p className="text-sm leading-relaxed text-emerald-100/90">
+                {crop.description}
+              </p>
+              {/* On the dark hero the default green pill disappears, so this one
+                  is glass over the gradient instead. */}
+              <SpeakButton
+                tone="onDark"
+                size="md"
+                label={displayName}
+                text={[
+                  displayName,
+                  crop.category,
+                  crop.description,
+                  agronomy &&
+                    `Temperature ${agronomy.growing.temperature}. Watering ${agronomy.growing.watering}. Life cycle ${agronomy.cultivation.lifeCycle}`,
+                ]}
+              />
+            </div>
           </div>
 
           {agronomy && (

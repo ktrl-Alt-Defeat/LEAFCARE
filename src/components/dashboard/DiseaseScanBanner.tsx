@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Camera, Sparkles, ArrowRight, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { SpeakButton } from '@/components/voice/SpeakButton';
 import { useLanguage } from '@/context/LanguageContext';
 
 export interface DiseaseScanBannerProps {
@@ -25,8 +26,16 @@ export const DiseaseScanBanner: React.FC<DiseaseScanBannerProps> = ({ cropName }
   return (
     <motion.div
       whileHover={{ y: -2 }}
-      className="relative h-full overflow-hidden rounded-3xl border border-agro-700/50 bg-gradient-to-br from-agro-900 via-agro-800 to-emerald-950 p-5 text-white shadow-soft-lg sm:p-6 lg:p-7"
+      className="relative h-full overflow-hidden rounded-3xl border border-agro-700/50 bg-agro-950 p-5 text-white shadow-soft-lg sm:p-6 lg:p-7"
     >
+      {/* Background farmer photo */}
+      <img
+        src="/farmer-scanner.jpg"
+        alt="Farmer checking crop in field"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-right sm:object-center opacity-80"
+      />
+      {/* Gradient overlay for contrast */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-950/95 via-agro-950/80 to-transparent sm:via-agro-950/65" />
       <div className="pointer-events-none absolute right-0 top-0 h-52 w-52 rounded-full bg-agro-500/20 blur-3xl" />
 
       {/* On laptops the copy and the action sit side by side instead of stacking
@@ -45,16 +54,34 @@ export const DiseaseScanBanner: React.FC<DiseaseScanBannerProps> = ({ cropName }
             )}
           </div>
 
-          <h2 className="mt-3 text-2xl font-black tracking-tight text-white xl:text-3xl">
-            {t('checkCropTitle', 'Check your crop')}
-          </h2>
+          <div className="mt-3 flex items-start gap-3">
+            <div className="min-w-0">
+              <h2 className="text-2xl font-black tracking-tight text-white xl:text-3xl">
+                {t('checkCropTitle', 'Check your crop')}
+              </h2>
 
-          <p className="mt-2 max-w-prose text-sm leading-relaxed text-emerald-100/90">
-            {t(
-              'checkCropDesc',
-              'Take a clear picture of a leaf or crop to identify possible diseases.'
-            )}
-          </p>
+              <p className="mt-2 max-w-prose text-sm leading-relaxed text-emerald-100/90">
+                {t(
+                  'checkCropDesc',
+                  'Take a clear picture of a leaf or crop to identify possible diseases.'
+                )}
+              </p>
+            </div>
+
+            <SpeakButton
+              tone="onDark"
+              size="md"
+              className="mt-1"
+              label={t('checkCropTitle', 'Check your crop')}
+              text={[
+                t('checkCropTitle', 'Check your crop'),
+                t(
+                  'checkCropDesc',
+                  'Take a clear picture of a leaf or crop to identify possible diseases.'
+                ),
+              ]}
+            />
+          </div>
 
           {/* Workflow */}
           <div className="mt-5 flex max-w-xl items-center justify-between gap-1 rounded-2xl border border-white/10 bg-white/10 p-3 text-xs text-emerald-200 backdrop-blur-md sm:gap-2">
